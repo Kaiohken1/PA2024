@@ -21,6 +21,9 @@
                                 Nom
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
+                                Prénom
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-center">
                                 Email
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
@@ -36,6 +39,9 @@
                             <tr class="bg-white border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
                                     {{ $user->name }}
+                                </td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
+                                    {{ $user->first_name }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     {{ $user->email }}
