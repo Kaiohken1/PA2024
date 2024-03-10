@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'first_name',
+        'avatar',
         'email',
         'password',
     ];
@@ -52,5 +54,13 @@ class User extends Authenticatable
 
     public function isAdmin() {
         return $this->roles->contains('nom', 'admin');
+    }
+
+    public function getImageUrl() {
+        if($this->avatar) {
+            return Storage::url($this->avatar);
+        } else {
+            return "https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?w=300&ssl=1";
+        }
     }
 }
