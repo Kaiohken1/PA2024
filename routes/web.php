@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AppartementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,3 +42,16 @@ Route::resource('admin/users', AdminController::class)
     ->middleware(['auth', 'admin']);
 
 require __DIR__.'/auth.php';
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::prefix('appartement')->group(function(){
+    Route::get('/display', [AppartementController::class, 'display'])->name('appartement.display');
+    Route::get('/create', [AppartementController::class, 'create'])->name('appartement.create');
+    Route::get('/delete', [AppartementController::class, 'delete'])->name('appartement.delete');
+});
