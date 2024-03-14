@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,15 +29,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('admin/users', AdminController::class)
-    ->only(['index', 'store', 'edit', 'update', 'destroy'])
-    ->names([
-        'index' => 'admin.users.index',
-        'store' => 'admin.users.store',
-        'edit' => 'admin.users.edit',
-        'update' => 'admin.users.update',
-        'destroy' => 'admin.users.destroy',
-    ])
-    ->middleware(['auth', 'admin']);
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+});
+
+
+Route::get('/admin', function () {
+    return view('admin.index');
+})->middleware(['auth', 'admin'])->name('admin');
 
 require __DIR__.'/auth.php';
