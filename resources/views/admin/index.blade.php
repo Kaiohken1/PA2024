@@ -5,30 +5,32 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="flex justify-center">
-                    <x-users-logo/>
-                    <a href="{{ route('admin.users.index') }}" class="mt-3 ml-2 hover:text-gray-500">Gestion des Utilisateurs</a>
+    <div class="py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <a href="{{ route('admin.users.index') }}" class="block hover:bg-gray-200">
+                <div class="flex justify-center items-center h-40 pr-2 pl-2">
+                    <x-users-logo class="h-24 w-24"/>
+                    <p class="block text-center py-2">Gestion des Utilisateurs</p>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="max-w-7xl mx-auto mt-7 sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="flex align-middle justify-center">
-                    <x-home-notification-logo/>
-                    <a href="/" class="mt-3 ml-2 hover:text-gray-500">Gestion des Appartements</a>
+
+        <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <a href="/" class="block hover:bg-gray-200">
+                <div class="flex justify-center items-center h-40 pr-2 pl-2">
+                    <x-home-notification-logo class="h-24 w-24"/>
+                    <p class="block text-center py-2">Gestion des Appartements</p>
                 </div>
-            </div>
+            </a>
         </div>
-        <div class="max-w-7xl mx-auto mt-7 sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="flex align-middle justify-center">
-                    <x-presta-logo/>
-                    <a href="/" class="mt-3 ml-2 hover:text-gray-500">Gestion des Prestataires</a>
+
+        <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <a href="/" class="block hover:bg-gray-200">
+                <div class="flex justify-center items-center h-40 pr-2 pl-2">
+                    <x-presta-logo class="h-24 w-24"/>
+                    <p class="block text-center py-2">Gestion des Prestataires</p>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </x-app-layout>
