@@ -5,6 +5,17 @@
         </h2>
     </x-slot>
 
+    
+    <div>
+        <h2>Notifications</h2>
+        <ul>
+            @foreach($notifications as $notification)
+                <li>{{ $notification->data['message'] }}</li>
+            @endforeach
+        </ul>
+    </div>
+
+
     <div class="py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <a href="{{ route('admin.users.index') }}" class="block hover:bg-gray-200">
