@@ -32,19 +32,28 @@ class PrestataireController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'nom' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
-            'tarif' => ['required', 'numeric', 'between:0,100']
+            'tarif' => ['required', 'numeric', 'between:0,100'],
+            'image' => ['required', 'image'],
         ]);
+
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('habilitations', 'public');
+            $request->image = $path; 
+        }      
 
         $presta = Prestataire::create([
             'nom' => $request->nom,
             'description' => $request->description,
             'tarif' => $request->tarif,
             'user_id' => Auth::user()->id,
-        ]);
-        
+            'image' => $request->image,
+        ]);        
+
         event(new PrestataireCreated($presta));
 
         return redirect(RouteServiceProvider::HOME);

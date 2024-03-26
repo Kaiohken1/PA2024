@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('tarif_evolutif')->default(false);
             $table->string('statut')->default('en attente');
             $table->decimal('tarif', 10, 2)->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -31,8 +32,6 @@ return new class extends Migration
 
         Schema::create('habilitations_prestataires', function (Blueprint $table) {
             $table->id();
-            $table->string('image')->nullable();
-
             $table->foreignId('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->foreignId('prestataire_id')->references('id')->on('prestataires')->onDelete('cascade');
         });

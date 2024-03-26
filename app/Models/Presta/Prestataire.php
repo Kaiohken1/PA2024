@@ -18,6 +18,7 @@ class Prestataire extends Model
         'description',
         'tarif',
         'user_id',
+        'image',
     ];
 
     public function habilitations(): BelongsToMany
