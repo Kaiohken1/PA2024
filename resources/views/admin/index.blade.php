@@ -32,5 +32,14 @@
                 </div>
             </a>
         </div>
+
+        <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <a href="{{route('services.index')}}" class="block hover:bg-gray-200">
+                <div class="flex justify-center items-center h-40 pr-2 pl-2">
+                    <x-presta-logo class="h-24 w-24"/>
+                    <p class="block text-center py-2">Gestion des Services</p>
+                </div>
+            </a>
+        </div>
     </div>
 </x-app-layout>

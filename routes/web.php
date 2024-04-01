@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\Provider\ServiceController;
+use App\Models\Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
@@ -37,9 +40,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
-
 Route::get('/admin', function () {
     return view('admin.index');
-})->middleware(['auth', 'admin'])->name('admin');
+})->middleware(['admin'])->name('admin');
+
+Route::resource('services', ServiceController::class)->middleware(['admin']);
+
+Route::resource('prestataire', ProviderController::class)->middleware(['auth']);
+
+
 
 require __DIR__.'/auth.php';
