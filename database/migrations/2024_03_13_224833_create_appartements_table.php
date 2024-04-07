@@ -14,11 +14,17 @@ return new class extends Migration
         Schema::create('appartements', function (Blueprint $table) {
             $table->id();
             $table->string('titre');
+            $table->string('adresse');
+            $table->boolean('disponibilite')->default(1);
             $table->integer('prix');
             $table->integer('superficie');
             $table->integer('voyageurs');
+            $table->boolean('validation')->default(0);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             //prévoir -> gérer plusieurs images
+            //nombre de pièce
         });
     }
 

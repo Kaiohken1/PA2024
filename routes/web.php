@@ -50,8 +50,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::prefix('appartement')->group(function(){
-    Route::get('/display', [AppartementController::class, 'display'])->name('appartement.display');
-    Route::get('/create', [AppartementController::class, 'create'])->name('appartement.create');
-    Route::get('/delete', [AppartementController::class, 'delete'])->name('appartement.delete');
-});
+Route::resource('appartements', AppartementController::class);
