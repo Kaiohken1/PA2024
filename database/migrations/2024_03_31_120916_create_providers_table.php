@@ -16,11 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->string('email');
-            $table->string('image')->nullable();
+            $table->string('email')->unique();
+            $table->string('avatar')->nullable();
             $table->text('description');
             $table->string('statut')->default('en attente');
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->unique();
             $table->timestamps();
         });
     }

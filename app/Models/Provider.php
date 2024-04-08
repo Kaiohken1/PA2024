@@ -28,7 +28,7 @@ class Provider extends Model
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'provider_services')
-                    ->withPivot(['price', 'flexPrice', 'habilitationImg', 'provider_description'])
+                    ->withPivot(['price', 'flexPrice', 'habilitationImg', 'description'])
                     ->withTimestamps();
     }
 

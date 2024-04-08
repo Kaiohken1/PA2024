@@ -46,7 +46,7 @@ Route::get('/admin', function () {
 
 Route::resource('services', ServiceController::class)->middleware(['admin']);
 
-Route::resource('prestataire', ProviderController::class)->middleware(['auth']);
+Route::resource('providers', ProviderController::class)->middleware(['auth']);
 
 
 

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Provider;
 
+use App\Models\Service;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
 {
@@ -14,7 +15,14 @@ class ProviderController extends Controller
      */
     public function index()
     {
-        
+        $providers = Provider::query()
+            ->select(['id', 'name', 'email'])
+            ->latest()
+            ->paginate(10);
+
+        return view('provider.index', [
+            'providers' => $providers,
+        ]);
     }
 
     /**
@@ -44,8 +52,7 @@ class ProviderController extends Controller
             'avatar' => ['image'],  
             'service_id' => ['required', 'exists:services,id'],
             'price' => ['required', 'numeric'],
-            'flexPrice' => ['boolean'],
-            'habilitationImg' => ['image'],
+            'habilitationImg' => ['required', 'image'],
             'provider_description' => ['max:255'],    
         ]);
 
@@ -53,7 +60,7 @@ class ProviderController extends Controller
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('providerPfp', 'public');
-            $validateData['image'] = $path;
+            $validateData['avatar'] = $path;
         }
 
         $provider = new Provider($validateData);
@@ -61,17 +68,19 @@ class ProviderController extends Controller
 
         $provider->save();
 
-        $provider->services()->attach($validateData['service_id'], [
-            'price' => $validateData['price'],
-            'flexPrice' => $request->has('flexPrice'),
-            'habilitationImg' => $validateData['habilitationImg'] ?? null,
-            'description' => $validateData['provider_description'],
-        ]);
+        $validateData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
 
         if ($request->hasFile('habilitationImg')) {
             $path = $request->file('habilitationImg')->store('providerHabilitations', 'public');
             $validateData['habilitationImg'] = $path;
         }
+        
+        $provider->services()->attach($validateData['service_id'], [
+            'price' => $validateData['price'],
+            'flexPrice' => $validateData['flexPrice'],
+            'habilitationImg' => $validateData['habilitationImg'],
+            'description' => $validateData['provider_description'],
+        ]);
 
         return redirect('/')
             ->with('success', "Votre demande a bien été prise en compte, elle sera soumise à validation par un administrateur");
@@ -82,7 +91,7 @@ class ProviderController extends Controller
      */
     public function show(Provider $provider)
     {
-        //
+        return view('provider.show', ['provider' => $provider, 'services' => $provider->services]);
     }
 
     /**
@@ -106,6 +115,13 @@ class ProviderController extends Controller
      */
     public function destroy(Provider $provider)
     {
-        //
+
+        dd($provider->services()->withPivot('habilitationImg')->get());
+        Storage::delete([$provider->avatar]);
+
+        $provider->delete();
+
+        return redirect()->route('providers.index')
+            ->with('success', 'Le prestataire a été supprimé avec succès');
     }
 }

@@ -10,30 +10,30 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     <x-auth-session-status class="mb-4" :status="session('status')" />
-                    <form method="POST" action="{{ route('prestataire.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('providers.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div>
                             <x-input-label for="name" :value="__('Nom de la société')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" />
+                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"/>
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"/>
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
                         <div>
-                            <x-input-label for="address" :value="__('Addresse')" />
-                            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" />
+                            <x-input-label for="address" :value="__('Adresse')" />
+                            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" />
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="description" :value="__('Description')" />
-                            <textarea name="description" class="block mt-1 w-full"></textarea>
+                            <textarea name="description" class="block mt-1 w-full" :value="old('description')"></textarea>
                             <x-input-error :messages="$errors->get('description')" class="mt-2" />
                         </div>
 
@@ -59,7 +59,7 @@
 
                         <div>
                             <x-input-label for="price" :value="__('Tarif')" />
-                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" />
+                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" :value="old('price')"/>
                             <x-input-error :messages="$errors->get('price')" class="mt-2" />
                         </div>
 
@@ -77,7 +77,7 @@
 
                         <div>
                             <x-input-label for="provider_description" :value="__('Description de votre prestation')" />
-                            <textarea name="provider_description" class="block mt-1 w-full"></textarea>
+                            <textarea name="provider_description" class="block mt-1 w-full" :value="old('provider_description')"></textarea>
                             <x-input-error :messages="$errors->get('provider_description')" class="mt-2" />
                         </div>
 
