@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\NewProvider;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\ProviderCreated;
 use App\Models\User;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,10 @@ class Provider extends Model
 
     protected $hidden = [
         'status'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => ProviderCreated::class,
     ];
 
     public function services(): BelongsToMany
