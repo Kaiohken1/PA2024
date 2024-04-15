@@ -18,7 +18,7 @@
                         <p><strong>Prix:</strong> {{ $service->pivot->price }}€</p>
                         <p><strong>Prix évolutif:</strong> {{ $service->pivot->flexPrice ? 'Oui' : 'Non' }}</p>
                         <p><strong>Description:</strong> {{ $service->pivot->description }}</p>
-                        <a href="{{ Storage::url($service->pivot->habilitationImg) }}"><strong><u>Habilitation</u></strong></a>
+                        <a href="{{ Storage::url($service->pivot->habilitationImg) }}"><strong><u>Habilitation(PDF)</u></strong></a>
                     @endforeach
                 </div>
 
@@ -27,13 +27,23 @@
                 </div>
 
                 @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())
+                <form action=""></form>
                 <div class="p-6 text-gray-900">
-                    <x-primary-button>
-                        Valider le prestataire
-                    </x-primary-button>
-                    <x-secondary-button>
-                        Refuser le prestataire
-                    </x-secondary-button>
+                    <form action="{{ route('providers.validate', $provider) }}" method="POST">
+                        @csrf
+                        @method('patch')
+                        <x-primary-button>
+                            Valider le prestataire
+                        </x-primary-button>
+                    </form>
+
+                    <form action="{{ route('providers.destroy', $provider) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <x-danger-button>
+                            Refuser le prestataire
+                        </x-danger-button>
+                    </form>
                 </div>
                 @endif
             </div>

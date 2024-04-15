@@ -38,6 +38,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+
+    Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
 });
 
 Route::get('/admin', function () {

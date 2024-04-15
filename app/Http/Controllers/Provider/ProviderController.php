@@ -17,7 +17,7 @@ class ProviderController extends Controller
     public function index()
     {
         $providers = Provider::query()
-            ->select(['id', 'name', 'email'])
+            ->select(['id', 'name', 'email', 'statut'])
             ->latest()
             ->paginate(10);
 
@@ -117,12 +117,23 @@ class ProviderController extends Controller
     public function destroy(Provider $provider)
     {
 
-        dd($provider->services()->withPivot('habilitationImg')->get());
-        Storage::delete([$provider->avatar]);
+        $provider->services()->withPivot('habilitationImg')->get();
+        
+        if ($provider->avatar !== NULL) {
+            Storage::delete([$provider->avatar]);
+        }
 
         $provider->delete();
 
         return redirect()->route('providers.index')
             ->with('success', 'Le prestataire a été supprimé avec succès');
     }
+
+    public function validateProvider($id) {
+
+        Provider::where('id', $id)->update(['statut' => 'Validé']);
+    
+        return redirect()->route('providers.index')
+            ->with('success', 'Le prestataire a été validé avec succès');
+    }    
 }
