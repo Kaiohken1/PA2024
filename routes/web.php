@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\ServiceController;
-use App\Models\Service;
+use App\Http\Controllers\Provider\ProviderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +49,7 @@ Route::get('/admin', function () {
 Route::resource('services', ServiceController::class)->middleware(['admin']);
 
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
+Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
 
 
 
