@@ -26,7 +26,7 @@ Route::get('/test', function () {
     return view('welcome');
 });
 
-Route::get('/', [AppartementController::class, 'index'])->name('appart.index');
+Route::get('/', [AppartementController::class, 'index'])->name('property.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,12 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
 
 
-    Route::resource('appart', AppartementController::class)->except(['index']);
+    Route::resource('property', AppartementController::class)->except(['index']);
     Route::resource('tag', TagController::class);
     Route::resource('fermeture', FermetureController::class)->except(['index']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
 
-    Route::delete('/appartimage/{id}', [AppartementController::class, 'destroyImg'])->name('appart.destroyImg');
+    Route::delete('/property/image/{id}', [AppartementController::class, 'destroyImg'])->name('property.destroyImg');
 
     Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation');
     Route::get('/reservation/{id}/edit', [ReservationController::class, 'edit'])->name('reservation.edit');
@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/reservation/refused/{id}', [ReservationController::class, 'refused'])->name('reservation.refused');
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
 
-    Route::prefix('appartement/{appartement}/edit')->group(function () {
+    Route::prefix('property/{appartement}/edit')->group(function () {
         Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
         Route::delete('/fermetures/{fermeture}', [FermetureController::class, 'destroy'])->name('fermeture.destroy');
         Route::patch('/fermetures/{fermeture}', [FermetureController::class, 'update'])->name('fermeture.update');

@@ -1,5 +1,5 @@
 <x-auth-session-status class="mb-4" :status="session('status')" />
-<form method="POST" action="{{ route('appart.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('property.store') }}" enctype="multipart/form-data">
     @csrf
 
     <div>

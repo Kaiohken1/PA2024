@@ -85,7 +85,7 @@ class ReservationController extends Controller
 
    
     if ($conflictingReservation) {
-        return redirect()->route('appart.show', $validatedData['appartement_id'])->with('error', "Les dates choisies ne sont pas disponibles. Veuillez choisir d'autres dates.");
+        return redirect()->route('property.show', $validatedData['appartement_id'])->with('error', "Les dates choisies ne sont pas disponibles. Veuillez choisir d'autres dates.");
     }
 
    

@@ -110,7 +110,7 @@ class AppartementController extends Controller
         }
          
     
-        return redirect()->route('appart.index')
+        return redirect()->route('property.index')
             ->with('success', "Appartement créé avec succès");
     }    
 
@@ -196,7 +196,7 @@ class AppartementController extends Controller
             $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();
     
             if($appartementImages->count() >= 4) {
-                return redirect()->route('appart.edit', $appartement->id)
+                return redirect()->route('property.edit', $appartement->id)
                     ->with('error', "Il y a déjà 4 images pour votre appartement. Pour en ajouter une nouvelle, veuillez en supprimer une autre.");
             }
 
@@ -218,7 +218,7 @@ class AppartementController extends Controller
                 $appartement->tags()->detach();
         }
     
-        return redirect()->route('appart.edit', $appartement->id)
+        return redirect()->route('property.edit', $appartement->id)
             ->with('success', "Appartement mis à jour avec succès");
     }
 
@@ -241,7 +241,7 @@ class AppartementController extends Controller
 
         $appartementImages->delete();
 
-        return redirect()->route('appart.edit', $appartementImages->appartement_id)
+        return redirect()->route('property.edit', $appartementImages->appartement_id)
         ->with('success', "Appartement mis à jour avec succès");
     }
 }

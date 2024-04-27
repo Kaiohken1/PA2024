@@ -4,7 +4,7 @@
             @forelse ($appartements as $appartement)
 
                 <div class="mt-9">
-                    <a href="{{ route('appart.show', $appartement) }}" class="block">
+                    <a href="{{ route('property.show', $appartement) }}" class="block">
                         <article>
                             @if ($appartement->images->isNotEmpty())
                                 <img class="rounded-md" src="{{ Storage::url($appartement->images->first()->image) }}" width="100%" style="height: 250px !important">
@@ -26,7 +26,7 @@
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg flex flex-col items-center">
                         <p class="text-center text-gray-600 text-lg">Aucun appartement disponible...</p>
-                        <x-primary-button class="mt-4"><a href="{{ route('appart.create') }}">Et si vous proposiez le vôtre ?</a></x-primary-button>
+                        <x-primary-button class="mt-4"><a href="{{ route('property.create') }}">Et si vous proposiez le vôtre ?</a></x-primary-button>
                     </div>
                 </div>
             </div>            

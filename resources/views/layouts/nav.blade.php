@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('appart.create')" :active="request()->routeIs('appart.create')">
+                    <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
                         {{ __('Louer mon logement') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
