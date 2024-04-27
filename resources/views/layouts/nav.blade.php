@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('appart.create')" :active="request()->routeIs('appart.create')">
+                        {{ __('Louer mon logement') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
+                        {{ __('Mes réservations') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('tag.index')" :active="request()->routeIs('tag.index')">
+                        {{ __('Mes Tags') }}
+                    </x-nav-link>
                 </div>
                 @if (Auth::user() && Auth::user()->isAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
