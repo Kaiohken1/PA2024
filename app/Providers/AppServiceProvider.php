@@ -22,10 +22,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('layouts.navigation', function ($view) {
-            $user = User::findOrFail(auth()->id());
-            $notifications = $user->notifications()->latest()->paginate(10);
-            $view->with('notifications', $notifications)
-            ->with('user', $user);
+            if($user = User::findOrFail(auth()->id())) {
+                $notifications = $user->notifications()->latest()->paginate(10);
+                $view->with('notifications', $notifications)
+                ->with('user', $user);
+            }
         });
     }
 }
