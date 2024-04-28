@@ -74,13 +74,14 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 
     Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::resource('services', ServiceController::class)->middleware(['admin']);
+
 });
 
 Route::get('/admin', function () {
     return view('admin.index');
 })->middleware(['admin'])->name('admin');
 
-Route::resource('services', ServiceController::class)->middleware(['admin']);
 
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
