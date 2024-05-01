@@ -14,7 +14,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::query()
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'price'])
             ->latest()
             ->paginate(10);
 
@@ -35,9 +35,11 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => ['required'],
+            'name' => ['required', 'string'],
+            'price' => ['numeric'],
+            'description' => ['required', 'string', 'max:255'],
         ]);
-
+        
         Service::create($validatedData);
 
         return redirect()->route('services.index')->with('succes', 'Service créé avec succès');
@@ -48,7 +50,7 @@ class ServiceController extends Controller
      */
     public function show(Service $service)
     {
-        //
+        return view('services.show', ['service' => $service]);
     }
 
     /**

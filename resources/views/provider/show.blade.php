@@ -1,8 +1,8 @@
-<x-app-layout>
+<x-admin-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-slate-950 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-white">
                     <h2 class="text-2xl font-bold mb-4">{{ $provider->name }}</h2>
                     <img src="{{ Storage::url($provider->avatar) }}" width="200" alt="Avatar du fournisseur">
                     <p><strong>Email:</strong> {{ $provider->email }}</p>
@@ -11,7 +11,7 @@
                     <p><strong>Utilisateur :</strong> {{ $provider->user->name }} {{ $provider->user->first_name }}</p>
                 </div>
 
-                <div class="p-6 text-gray-900">
+                <div class="p-6 text-white">
                     <h2 class="text-2xl font-bold mb-4">Services proposés : </h2>
                     @foreach ($services as $service)
                         <p><strong>Service:</strong> {{ $service->name }}</p>
@@ -22,13 +22,13 @@
                     @endforeach
                 </div>
 
-                <div class="p-6 text-gray-900">
+                <div class="p-6 text-white">
                     <p>Statut : <strong>{{ $provider->statut }}</strong></p>
                 </div>
 
                 @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())
                 <form action=""></form>
-                <div class="p-6 text-gray-900">
+                <div class="p-6 text-white">
                     <form action="{{ route('providers.validate', $provider) }}" method="POST">
                         @csrf
                         @method('patch')
@@ -49,4 +49,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ProfileController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 
@@ -62,6 +64,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('notifcations', NotificationsController::class);
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
+    Route::resource('property/{id}/interventions', InterventionController::class);
 
 });
 
@@ -75,6 +78,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
     Route::resource('services', ServiceController::class)->middleware(['admin']);
+    Route::resource('/intverventions', AdminInterventionController::class);
 
 });
 

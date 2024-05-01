@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Gestion des services') }}
         </h2>
-            <x-nav-link :href="route('services.store')">
+            <x-nav-link :href="route('services.create')">
                 {{ __('Ajouter un nouveau service') }}
             </x-nav-link>
 
@@ -21,6 +21,7 @@
                     <thead class="border-b">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
+                            <th scope="col" class="px-6 py-3 text-center">Prix</th>
                             <th scope="col" class="px-6 py-3 text-center">Action</th>
                         </tr>
                     </thead>
@@ -28,11 +29,15 @@
                         @foreach ($services as $service)
                             <tr class="bg-gray-800 border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->price }}€</td>
+                                <td class="flex justify-center mt-3 mb-3">
+                                    <a href="{{ route('services.show', $service) }}">
+                                    <button class="btn btn-info mr-3">Voir</button>
+                                    </a>
                                     <form method="POST" action="{{ route('services.destroy', $service) }}">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="text-red-500 hover:text-red-700">Supprimer</button>
+                                        <button type="submit" class="btn btn-error" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce service ?')">Supprimer</button>
                                     </form>
                                 </td>
                             </tr>
