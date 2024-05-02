@@ -33,4 +33,5 @@
             @endforelse
         </div>
     </div>
+    @include('appartements.partials.tag-filter-appartement')
 </x-app-layout>

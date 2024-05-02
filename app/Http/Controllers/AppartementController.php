@@ -13,27 +13,45 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppartementController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $validateData = $request->validate([
+            'tag_id' => ['array']
+        ]);
+
         
+
         $appartements = Appartement::query()
-            ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
-            ->latest()
-            ->with(['user:id,name'])
-            ->with(['tags' => function ($query) {
-                $query->select('tags.*');   //pour filtrer si des appartements ont des tag ou non
-            }])
-            ->with(['images:*'])
-            ->paginate(10);
+    ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
+    ->latest()
+    ->with(['user:id,name'])
+    ->with(['images:*']);
+
+if (isset($validateData['tag_id'])) {
+    $tags_id = $validateData['tag_id'];
+    foreach($tags_id as $tag_id){
+        $appartements->whereHas('tags', function ($query) use ($tag_id) {
+            $query->where('tags.id', $tag_id);
+        });
+    }
+    
+}
+
+$appartements = $appartements->paginate(10);
+        
+
+        $tags = Tag::all(); 
 
         return view('appartements.index', [
-            'appartements' => $appartements
+            'appartements' => $appartements,
+            'tags' => $tags,
         ]);
         
 
