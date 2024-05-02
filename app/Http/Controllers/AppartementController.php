@@ -23,14 +23,14 @@ class AppartementController extends Controller
     public function index(Request $request)
     {
         $validateData = $request->validate([
-            'tag_id' => ['array']
+            'tag_id' => ['array'],
+            'sort_type' => ['string']
         ]);
 
         
 
         $appartements = Appartement::query()
     ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
-    ->latest()
     ->with(['user:id,name'])
     ->with(['images:*']);
 
@@ -43,9 +43,30 @@ if (isset($validateData['tag_id'])) {
     }
     
 }
+if (isset($validateData['sort_type'])) {
+    $sortType = $validateData['sort_type'];
+
+    switch ($sortType) {
+        case 'price_asc':
+            $appartements->orderBy('price', 'asc');
+            break;
+
+        case 'price_desc':
+            $appartements->orderBy('price', 'desc');
+            break;
+    } 
+} else {
+    $appartements->latest();
+}
+    
+
+
 
 $appartements = $appartements->paginate(10);
         
+
+//pour trier sur le prix ou sur la surface par exemple faire des bouttons avec fleche qui pointe 
+// vers haut ou bas pour le order desc ou asc et renvoyer la value du btn dans un switch pour construire la querry avec le tri demandé
 
         $tags = Tag::all(); 
 
