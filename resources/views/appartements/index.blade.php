@@ -1,4 +1,5 @@
 <x-app-layout>
+        @include('appartements.partials.appartement-sorting')
     <div class="flex justify-center">
         <div class="grid grid-cols-6 gap-6 w-9/12">
             @forelse ($appartements as $appartement)
@@ -33,4 +34,5 @@
             @endforelse
         </div>
     </div>
+    @include('appartements.partials.tag-filter-appartement')
 </x-app-layout>

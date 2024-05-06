@@ -26,7 +26,7 @@ Route::get('/test', function () {
     return view('welcome');
 });
 
-Route::get('/', [AppartementController::class, 'index'])->name('property.index');
+Route::match(['get', 'post'], '/', [AppartementController::class, 'index'])->name('property.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

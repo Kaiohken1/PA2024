@@ -13,27 +13,82 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppartementController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $validateData = $request->validate([
+            'tag_id' => ['array'],
+            'sort_type' => ['string']
+        ]);
+
         
+
         $appartements = Appartement::query()
-            ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
-            ->latest()
-            ->with(['user:id,name'])
-            ->with(['tags' => function ($query) {
-                $query->select('tags.*');   //pour filtrer si des appartements ont des tag ou non
-            }])
-            ->with(['images:*'])
-            ->paginate(10);
+    ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
+    ->with(['user:id,name'])
+    ->with(['images:*']);
+
+if (isset($validateData['tag_id'])) {
+    $tags_id = $validateData['tag_id'];
+    foreach($tags_id as $tag_id){
+        $appartements->whereHas('tags', function ($query) use ($tag_id) {
+            $query->where('tags.id', $tag_id);
+        });
+    }
+    
+}
+if (isset($validateData['sort_type'])) {
+    $sortType = $validateData['sort_type'];
+
+    switch ($sortType) {
+        case 'price_asc':
+            $appartements->orderBy('price', 'asc');
+            break;
+
+        case 'price_desc':
+            $appartements->orderBy('price', 'desc');
+            break;
+
+        case 'surface_asc':
+            $appartements->orderBy('surface', 'asc');
+            break;
+
+        case 'surface_desc':
+            $appartements->orderBy('surface', 'desc');
+            break;
+        
+        case 'guest_count_asc':
+            $appartements->orderBy('guestCount', 'asc');
+            break;
+
+        case 'guest_count_desc':
+            $appartements->orderBy('guestCount', 'desc');
+            break;
+    } 
+} else {
+    $appartements->latest();
+}
+    
+
+
+
+$appartements = $appartements->paginate(10);
+        
+
+//pour trier sur le prix ou sur la surface par exemple faire des bouttons avec fleche qui pointe 
+// vers haut ou bas pour le order desc ou asc et renvoyer la value du btn dans un switch pour construire la querry avec le tri demandé
+
+        $tags = Tag::all(); 
 
         return view('appartements.index', [
-            'appartements' => $appartements
+            'appartements' => $appartements,
+            'tags' => $tags,
         ]);
         
 
