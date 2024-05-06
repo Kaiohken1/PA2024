@@ -54,6 +54,22 @@ if (isset($validateData['sort_type'])) {
         case 'price_desc':
             $appartements->orderBy('price', 'desc');
             break;
+
+        case 'surface_asc':
+            $appartements->orderBy('surface', 'asc');
+            break;
+
+        case 'surface_desc':
+            $appartements->orderBy('surface', 'desc');
+            break;
+        
+        case 'guest_count_asc':
+            $appartements->orderBy('guestCount', 'asc');
+            break;
+
+        case 'guest_count_desc':
+            $appartements->orderBy('guestCount', 'desc');
+            break;
     } 
 } else {
     $appartements->latest();

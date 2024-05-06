@@ -1,9 +1,5 @@
 <x-app-layout>
-<div class="flex justify-center">
-    <div class="grid grid-cols-6 gap-6 w-9/12">
         @include('appartements.partials.appartement-sorting')
-    </div>
-    </div>
     <div class="flex justify-center">
         <div class="grid grid-cols-6 gap-6 w-9/12">
             @forelse ($appartements as $appartement)
