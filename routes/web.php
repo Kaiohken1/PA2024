@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppartementController;
+use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\ServiceController;
@@ -84,6 +85,11 @@ Route::resource('services', ServiceController::class)->middleware(['admin']);
 
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
+
+Route::prefix('estimation')->group(function () {
+    Route::get('/', [EstimationController::class, 'index'])->name('estimation.index');
+    Route::post('/result', [EstimationController::class, 'result'])->name('estimation.result');
+});
 
 
 require __DIR__.'/auth.php';

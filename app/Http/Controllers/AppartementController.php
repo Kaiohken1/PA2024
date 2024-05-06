@@ -115,7 +115,7 @@ $appartements = $appartements->paginate(10);
      */
     public function create()
     {
-        $tags = Tag::all()->where("user_id", Auth()->id());    
+        $tags = Tag::all();    
         return view('appartements.create',[
             'tags' => $tags
         ]);
