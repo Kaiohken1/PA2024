@@ -38,7 +38,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('property', AppartementController::class)->except(['index']);
-    Route::resource('tag', TagController::class);
     Route::resource('fermeture', FermetureController::class)->except(['index']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
 
@@ -73,7 +72,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-
+    Route::resource('tags', TagController::class);
     Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
 });
 

@@ -4,7 +4,7 @@
             {{ __('Gestion des tags') }}
         </h2>
 
-        <x-nav-link :href="route('tag.create')" :active="request()->routeIs('tag.create')">
+        <x-nav-link :href="route('tags.create')" :active="route('tags.create')">
             {{ __('Créer un tag') }}
         </x-nav-link>
     </x-slot>
@@ -12,11 +12,12 @@
             @forelse ($tags as $tag)
                 <div class="mt-9">
                     <p>{{ $tag->name }}</p>
-                    <a href="{{ route('tag.edit', $tag) }}" class="mr-2">
+                    <p>{{ $tag->valorisation_coeff }}</p>
+                    <a href="{{ route('tags.edit', $tag) }}" class="mr-2">
                     <x-primary-button>Editer</x-primary-button>
                     </a>
 
-                    <form action="{{ route('tag.destroy', $tag) }}" method="POST">
+                    <form action="{{ route('tags.destroy', $tag) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <x-danger-button> Supprimer</x-danger-button>

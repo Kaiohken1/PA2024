@@ -25,6 +25,24 @@ class EstimationController extends Controller
 
         $basePrice = ($validateData['surface']) * 2;
         $priceEstimation = $basePrice * (1+$validateData['roomCount']/100);
-        dd($priceEstimation);
+
+        if(isset($validateData['tag_id'])){
+            $tags_id = $validateData['tag_id'];
+            $tags = Tag::query()
+            ->select(['id', 'name', 'valorisation_coeff'])
+            ->WhereIn('id', $tags_id)
+            ->get();
+        }
+
+
+        ;
+        foreach($tags as $tag){
+            $priceEstimation *= $tag->valorisation_coeff;
+        }
+
+        return view('estimation.result', [
+            'priceEstimation' => $priceEstimation,
+        ]);
+
     }
 }
