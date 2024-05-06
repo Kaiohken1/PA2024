@@ -16,6 +16,15 @@ class EstimationController extends Controller
 
     public function result(Request $request)
     {
-        
+        $validateData = $request->validate([
+            'surface' => ['required', 'numeric'],   
+            'guestCount' => ['required', 'numeric'],   
+            'roomCount' => ['required', 'numeric'],
+            'tag_id' => ['array']
+        ]);
+
+        $basePrice = ($validateData['surface']) * 2;
+        $priceEstimation = $basePrice * (1+$validateData['roomCount']/100);
+        dd($priceEstimation);
     }
 }
