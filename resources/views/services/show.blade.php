@@ -6,6 +6,15 @@
                     <h2 class="text-2xl font-bold mb-4">{{ $service->name }}</h2>
                     <p><strong>Prix:</strong> {{ $service->price }}€</p>
                     <p><strong>Description:</strong> {{ $service->description }}</p>
+
+                    <h2 class="text-2xl font-bold mt-4 mb-2">Paramètres</h2>
+                    @foreach ($service->parameters as $parameter)
+                        <div class="flex">
+                            <p class="mr-3"><strong>Nom : </strong> {{ $parameter->name }}</p>
+                            <p><strong>Type de donnée : </strong>{{ $parameter->dataType->name }}
+                            <p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

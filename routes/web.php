@@ -12,6 +12,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
+use App\Livewire\DynamicInput;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ Route::get('/test', function () {
 });
 
 Route::get('/', [AppartementController::class, 'index'])->name('property.index');
+
+Route::get('/dynamic-inputs', DynamicInput::class)->name('dynamic-inputs');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
