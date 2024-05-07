@@ -6,7 +6,6 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
-use App\Models\ServiceParameter;
 
 class ServiceController extends Controller
 {
@@ -107,6 +106,29 @@ class ServiceController extends Controller
 
         $service->update($validatedData);
 
+        $dynamicInputs = [];
+        foreach ($request->all() as $key => $value) {
+            if (strpos($key, 'input_') === 0) {
+                $fieldId = explode('_', $key)[1];
+    
+                if (strpos($key, '_name') !== false) {
+                    $dynamicInputs[$fieldId]['name'] = $value;
+                } elseif (strpos($key, '_type') !== false) {
+                    $dynamicInputs[$fieldId]['type'] = $value;
+                }
+            }
+        }
+
+        foreach ($dynamicInputs as $inputId => $input) {
+            $serviceParameter = new ServiceParameter();
+            $serviceParameter->name = $input['name'];
+            $serviceParameter->data_type_id = $input['type'];
+            $serviceParameter->service_id = $service->id;
+            $serviceParameter->save();
+
+            $service->parameters()->save($serviceParameter);
+        }
+
         return redirect()->route('services.edit', $service)
             ->with('success', "Service mis à jour avec succès");
     }
@@ -128,5 +150,28 @@ class ServiceController extends Controller
 
         return redirect()->route('services.edit', $service)
             ->with('success', "Paramètre supprimé avec succès");
+    }
+
+
+    public function updateParameter(Request $request, Service $service, $id)
+    {
+        $validatedData = [];
+    
+        $inputData = $request->all();
+    
+        foreach ($inputData as $key => $value) {
+            if (preg_match('/^input_(\d+)_name$/', $key, $matches)) {
+                $validatedData["name"] = $value;
+            } elseif (preg_match('/^input_(\d+)_type$/', $key, $matches)) {
+                $validatedData["data_type_id"] = $value;
+            }
+        }   
+
+        $serviceParameter = ServiceParameter::findOrFail($id);
+    
+        $serviceParameter->update($validatedData);
+    
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Paramètre mis à jour avec succès");
     }
 }

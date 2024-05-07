@@ -83,6 +83,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::resource('/intverventions', AdminInterventionController::class);
+    Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
+
 
 });
 
