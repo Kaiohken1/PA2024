@@ -6,6 +6,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
+use App\Models\ServiceParameter;
 
 class ServiceController extends Controller
 {
@@ -93,10 +94,21 @@ class ServiceController extends Controller
     public function update(Request $request, Service $service)
     {
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'unique:services'],
+            'name' => ['required', 'string'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
         ]);
+
+        $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+
+        if ($validatedData['flexPrice']) {
+            $service->price = null;
+        }
+
+        $service->update($validatedData);
+
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Service mis à jour avec succès");
     }
 
     /**
@@ -108,5 +120,13 @@ class ServiceController extends Controller
 
         return redirect()->route('services.index')
             ->with('success', 'Le service a été supprimé avec succès');
+    }
+
+    public function destroyParameter(Service $service, $id) {
+        $serviceParameter = ServiceParameter::findOrFail($id);
+        $serviceParameter->delete();
+
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Paramètre supprimé avec succès");
     }
 }
