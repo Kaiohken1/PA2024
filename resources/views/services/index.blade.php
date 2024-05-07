@@ -34,6 +34,9 @@
                                     <a href="{{ route('services.show', $service) }}">
                                     <button class="btn btn-info mr-3">Voir</button>
                                     </a>
+                                    <a href="{{ route('services.edit', $service) }}">
+                                        <button class="btn btn-success mr-3">Editer</button>
+                                    </a>
                                     <form method="POST" action="{{ route('services.destroy', $service) }}">
                                         @csrf
                                         @method('delete')

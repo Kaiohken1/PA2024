@@ -35,14 +35,14 @@
                 </div>
             </a>
         </div>
-
+{{-- 
         <div class="max-w-xs mx-auto bg-grey-100 border overflow-hidden shadow-sm sm:rounded-lg">
-            <a href="{{route('admin.interventions.index')}}" class="block hover:bg-gray-950">
+            <a href="{{route('interventions.index')}}" class="block hover:bg-gray-950">
                 <div class="flex justify-center items-center h-40 pr-2 pl-2">
                     <x-presta-logo class="h-24 w-24"/>
                     <p class="block text-center text-white py-2">Gestion des Interventions</p>
                 </div>
             </a>
-        </div>
+        </div> --}}
     </div>
 </x-admin-layout>

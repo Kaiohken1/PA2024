@@ -58,7 +58,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        //
+        return view('services.edit', ['service' => $service]);
     }
 
     /**
@@ -66,7 +66,22 @@ class ServiceController extends Controller
      */
     public function update(Request $request, Service $service)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => ['required', 'string'],
+            'price' => ['numeric'],
+            'description' => ['required', 'string', 'max:255'],
+        ]);
+
+        $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+
+        if ($validatedData['flexPrice']) {
+            $service->price = null;
+        }
+
+        $service->update($validatedData);
+
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Service mis à jour avec succès");
     }
 
     /**
