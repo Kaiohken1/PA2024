@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Provider;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ServiceParameter;
 
 class ServiceController extends Controller
 {
@@ -93,5 +94,13 @@ class ServiceController extends Controller
 
         return redirect()->route('services.index')
             ->with('success', 'Le service a été supprimé avec succès');
+    }
+
+    public function destroyParameter(Service $service, $id) {
+        $serviceParameter = ServiceParameter::findOrFail($id);
+        $serviceParameter->delete();
+
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Paramètre supprimé avec succès");
     }
 }

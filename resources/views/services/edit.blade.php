@@ -33,59 +33,50 @@
                             <x-input-label for="description" :value="__('Description du service')" class="text-white" />
                             <textarea id="description" name="description" class="textarea mb-5">{{ $service->description }}</textarea>
                         </div>
-
-                        @foreach ($service->parameters as $parameter)
-                        <div class="mr-4">
-                            <div class="mt-5 mr-5">
-                                <div class="w-full flex">
-                                    <div class="mr-4">
-                                        <input type="text" id="input_{{ $parameter->id }}_name"
-                                            name = "input_{{ $parameter->id }}_name"
-                                            wire:model.defer="inputs.{{ $parameter->id }}.name"
-                                            class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md"
-                                            autocomplete="off" value="{{$parameter->name}}">
-                                        @error('inputs.' . $parameter->id . '.name')
-                                            <span class="text-xs text-red-600">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        <select id="input_{{ $parameter->id }}_type" wire:model.defer="inputs.{{ $parameter->id }}.type" name ="input_{{$parameter->id}}_type"
-                                            class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
-                                            <option value="" disabled>Sélectionnez un type de donnée</option>
-                                            @foreach (\App\Models\DataType::All() as $type)
-                                                <option value="{{ $type->id }}" @if($type->id === $parameter->data_type_id) selected @endif>{{ $type->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('inputs.' . $parameter->id . '.type')
-                                            <span class="text-xs text-red-600">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    @if ($parameter->id > 0)
-                                        <div wire:click="removeInput({{ $parameter->id }})"
-                                            class="flex items-center justify-end text-red-600 text-sm cursor-pointer ml-4">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <p>Supprimer le paramètre</p>
-                                        </div>
-                                    @endif
-                                </div>
-                        </div>
-
-
-                        @endforeach
-
                         <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
                         <livewire:dynamic-input />
-                        
                         <div class="flex items-center gap-4 mt-5">
                             <button class="btn btn-active btn-neutral">Valider</button>
                         </div>
                     </form>
                 </div>
+
+
+                @if($service->parameters)
+                    <h1 class="text-white text-2xl font-bold mt-3">{{_('Paramètres existants')}}</h1>
+
+                    @foreach ($service->parameters as $parameter)
+                        <div class="mr-4 mt-5">
+                            <div class="w-full flex items-center gap-4">
+                                <input type="text" id="input_{{ $parameter->id }}_name"
+                                    name="input_{{ $parameter->id }}_name"
+                                    wire:model.defer="inputs.{{ $parameter->id }}.name"
+                                    class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md"
+                                    autocomplete="off" value="{{$parameter->name}}">
+                                <select id="input_{{ $parameter->id }}_type" wire:model.defer="inputs.{{ $parameter->id }}.type" name="input_{{$parameter->id}}_type"
+                                    class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <option value="" disabled>Sélectionnez un type de donnée</option>
+                                    @foreach (\App\Models\DataType::All() as $type)
+                                        <option value="{{ $type->id }}" @if($type->id === $parameter->data_type_id) selected @endif>{{ $type->name }}</option>
+                                    @endforeach
+                                </select>
+                                <form method="POST" action="{{ route('services.destroyParameter', ['service' => $service, 'id' => $parameter->id]) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="flex items-center justify-end text-red-600 text-sm cursor-pointer ml-4">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd"
+                                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                        <p>Supprimer le paramètre</p>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

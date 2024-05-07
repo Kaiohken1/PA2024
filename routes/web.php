@@ -81,6 +81,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
     Route::resource('services', ServiceController::class)->middleware(['admin']);
+    Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::resource('/intverventions', AdminInterventionController::class);
 
 });
