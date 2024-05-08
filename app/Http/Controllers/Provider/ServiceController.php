@@ -39,8 +39,8 @@ class ServiceController extends Controller
             'name' => ['required', 'string', 'unique:services'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
-            'input_*_name' => ['required', 'string'],
-            'input_*_type' => ['required', 'integer'],
+            'documentsId' => ['array'],
+            'documentsId*' => ['exists:documents,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -61,6 +61,10 @@ class ServiceController extends Controller
             }
         }
         $service = Service::create($validatedData);
+
+        foreach ($request->documentsId as $documentId) {
+            $service->documents()->attach($documentId);
+        }             
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -100,6 +104,8 @@ class ServiceController extends Controller
             'name' => ['required', 'string'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
+            'documentsId' => ['array'],
+            'documentsId*' => ['exists:documents,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -124,6 +130,10 @@ class ServiceController extends Controller
         }
 
         $service->update($validatedData);
+
+        foreach ($request->documentsId as $documentId) {
+            $service->documents()->attach($documentId);
+        }    
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -158,7 +168,6 @@ class ServiceController extends Controller
         return redirect()->route('services.edit', $service)
             ->with('success', "Paramètre supprimé avec succès");
     }
-
 
     public function updateParameter(Request $request, Service $service, $id)
     {
@@ -196,4 +205,25 @@ class ServiceController extends Controller
         return redirect()->route('services.edit', $service)
             ->with('success', "Paramètre mis à jour avec succès");
     }
+
+
+    public function destroyDocument(Service $service, $id)
+    {
+        $service->documents()->detach($id);
+
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Document supprimé avec succès");
+    }
+
+    public function updateDocument(Service $service, $id, Request $request) {
+        $validatedData = $request->validate([
+            'new_document_id' => ['required', 'exists:documents,id'],
+        ]);
+    
+        $service->documents()->updateExistingPivot($id, ['document_id' => $validatedData['new_document_id']]);
+        
+        return redirect()->route('services.edit', $service)
+            ->with('success', "Document modifié avec succès");
+    }
+    
 }

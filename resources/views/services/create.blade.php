@@ -64,6 +64,10 @@
                         @endif
                         <livewire:dynamic-input />
 
+                        <h1 class="text-white text-2xl font-bold">Ajouter des documents requis pour l'inscription au service</h1>
+
+                        <livewire:dynamic-select />
+
 
                         <div class="flex items-center gap-4 mt-5">
                             <button class="btn btn-active btn-neutral">Valider</button>

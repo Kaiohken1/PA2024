@@ -14,8 +14,14 @@
                     @foreach ($service->parameters as $parameter)
                         <div class="flex">
                             <p class="mr-3"><strong>Nom : </strong> {{ $parameter->name }}</p>
-                            <p><strong>Type de donnée : </strong>{{ $parameter->dataType->name }}
-                            <p>
+                            <p><strong>Type de donnée : </strong>{{ $parameter->dataType->name }}</p>
+                        </div>
+                    @endforeach
+
+                    <h2 class="text-2xl font-bold mt-4 mb-2">Documents requis</h2>
+                    @foreach ($service->documents as $document)
+                        <div class="flex">
+                            <p class="mr-3"><strong>Nom : </strong> {{ $document->name }}</p>
                         </div>
                     @endforeach
                 </div>

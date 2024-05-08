@@ -30,4 +30,8 @@ class Service extends Model
     public function parameters(): HasMany {
         return $this->hasMany(ServiceParameter::class);
     }
+
+    public function documents() : BelongsToMany {
+        return $this->BelongsToMany(Document::class, 'services_documents');
+    }
 }

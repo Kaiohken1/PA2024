@@ -48,6 +48,12 @@
                         </div>
                     @endif
                         <livewire:dynamic-input />
+
+
+                        <h1 class="text-white text-2xl font-bold">Ajouter des documents requis pour l'inscription au service</h1>
+
+                        <livewire:dynamic-select />
+
                         <div class="flex items-center gap-4 mt-5">
                             <button class="btn btn-active btn-neutral">Valider</button>
                         </div>
@@ -79,8 +85,6 @@
                                     @endforeach
                                 </select>
 
-                                    @csrf
-                                    @method('patch')
                                     <button type="submit" class="flex items-center justify-end text-green-600 text-sm cursor-pointer ml-4">
                                         <p>Modifer le paramètre</p>
                                     </button>
@@ -95,6 +99,44 @@
                                 </form>
                             </div>
                         </div>
+                    @endforeach
+                @endif
+
+                @if($service->documents)
+                    <h1 class="text-white text-2xl font-bold mt-3">{{_('Documents requis')}}</h1>
+                    @foreach ($service->documents as $document)
+                    <div class="mt-5 mr-5">
+                        <form action="{{ route('services.updateDocument', ['service' => $service, 'id' => $document->id ]) }}" method="POST">
+                            @csrf
+                            @method('patch')
+                        <div class="w-full flex">
+                                <div>
+                                    <select id="documents"  name ="new_document_id"
+                                        class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
+                                        <option value="" disabled>Sélectionnez un type de donnée</option>
+                                        @foreach (\App\Models\Document::All() as $documentType)
+                                            <option value="{{ $documentType->id }}" @if($documentType->id === $document->id) selected @endif>{{ $documentType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="flex items-center justify-end text-green-600 text-sm cursor-pointer ml-4">
+                                    <p>Modifer le paramètre</p>
+                                </button>
+                            </form>
+
+                            
+                            <div class="flex items-center justify-end text-red-600 text-sm cursor-pointer ml-4">
+                                <form method="POST" action="{{ route('services.destroyDocument', ['service' => $service, 'id' => $document->id]) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="flex items-center justify-end text-red-600 text-sm cursor-pointer ml-4">
+                                        <p>Supprimer le document</p>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     @endforeach
                 @endif
             </div>
