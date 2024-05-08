@@ -38,7 +38,7 @@
                         @foreach ($services as $service)
                             <tr class="bg-gray-800 border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->name }}</td>
-                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->price }}€</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center"> @if(!$service->flexPrice){{ $service->price }}€ @else {{_('Variable')}} @endif</td>
                                 <td class="flex justify-center mt-3 mb-3">
                                     <a href="{{ route('services.show', $service) }}">
                                     <button class="btn btn-info mr-3">Voir</button>

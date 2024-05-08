@@ -15,7 +15,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price'])
+            ->select(['id', 'name', 'price', 'flexPrice'])
             ->latest()
             ->paginate(10);
 

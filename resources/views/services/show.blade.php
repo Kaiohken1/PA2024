@@ -24,6 +24,9 @@
                             <p class="mr-3"><strong>Nom : </strong> {{ $document->name }}</p>
                         </div>
                     @endforeach
+                    <a href="{{route('services.edit', $service)}}">
+                    <button class="btn btn-success mt-5">Modifier ce service</button>
+                    </a>
                 </div>
             </div>
         </div>
