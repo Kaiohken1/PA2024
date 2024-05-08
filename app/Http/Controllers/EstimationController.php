@@ -20,10 +20,12 @@ class EstimationController extends Controller
             'surface' => ['required', 'numeric'],   
             'guestCount' => ['required', 'numeric'],   
             'roomCount' => ['required', 'numeric'],
-            'tag_id' => ['array']
+            'tag_id' => ['array'],
+            'aspect_rating' => ['required', 'numeric'],  
+            'location_rating' => ['required', 'numeric']
         ]);
 
-        $basePrice = ($validateData['surface']) * 2;
+        $basePrice = ($validateData['surface']) * (1+$validateData['location_rating']/5) * (1+$validateData['aspect_rating']/10);
         $priceEstimation = $basePrice * (1+$validateData['roomCount']/100);
 
         if(isset($validateData['tag_id'])){
