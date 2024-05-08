@@ -39,24 +39,28 @@ class ServiceController extends Controller
             'name' => ['required', 'string', 'unique:services'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
+            'input_*_name' => ['required', 'string'],
+            'input_*_type' => ['required', 'integer'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
-
-        $service = Service::create($validatedData);
 
         $dynamicInputs = [];
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'input_') === 0) {
                 $fieldId = explode('_', $key)[1];
-    
-                if (strpos($key, '_name') !== false) {
-                    $dynamicInputs[$fieldId]['name'] = $value;
-                } elseif (strpos($key, '_type') !== false) {
-                    $dynamicInputs[$fieldId]['type'] = $value;
-                }
+
+                $validationRules = [
+                    "input_{$fieldId}_name" => ['required', 'string'],
+                    "input_{$fieldId}_type" => ['required', 'exists:data_types,id'],
+                ];
+                $validatedDynamicData = $request->validate($validationRules);
+                $dynamicInputs[$fieldId]['name'] = $validatedDynamicData["input_{$fieldId}_name"];
+                $dynamicInputs[$fieldId]['type'] = $validatedDynamicData["input_{$fieldId}_type"];
+
             }
         }
+        $service = Service::create($validatedData);
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -104,20 +108,22 @@ class ServiceController extends Controller
             $service->price = null;
         }
 
-        $service->update($validatedData);
-
         $dynamicInputs = [];
         foreach ($request->all() as $key => $value) {
             if (strpos($key, 'input_') === 0) {
                 $fieldId = explode('_', $key)[1];
-    
-                if (strpos($key, '_name') !== false) {
-                    $dynamicInputs[$fieldId]['name'] = $value;
-                } elseif (strpos($key, '_type') !== false) {
-                    $dynamicInputs[$fieldId]['type'] = $value;
-                }
+
+                $validationRules = [
+                    "input_{$fieldId}_name" => ['required', 'string'],
+                    "input_{$fieldId}_type" => ['required', 'exists:data_types,id'],
+                ];
+                $validatedDynamicData = $request->validate($validationRules);
+                $dynamicInputs[$fieldId]['name'] = $validatedDynamicData["input_{$fieldId}_name"];
+                $dynamicInputs[$fieldId]['type'] = $validatedDynamicData["input_{$fieldId}_type"];
             }
         }
+
+        $service->update($validatedData);
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -144,7 +150,8 @@ class ServiceController extends Controller
             ->with('success', 'Le service a été supprimé avec succès');
     }
 
-    public function destroyParameter(Service $service, $id) {
+    public function destroyParameter(Service $service, $id)
+    {
         $serviceParameter = ServiceParameter::findOrFail($id);
         $serviceParameter->delete();
 
@@ -156,21 +163,36 @@ class ServiceController extends Controller
     public function updateParameter(Request $request, Service $service, $id)
     {
         $validatedData = [];
-    
+
         $inputData = $request->all();
-    
+
+
+        foreach ($inputData as $key => $value) {
+            if (strpos($key, 'input_') === 0) {
+                $fieldId = explode('_', $key)[1];
+
+                $validationRules = [
+                    "input_{$fieldId}_name" => ['required', 'string'],
+                    "input_{$fieldId}_type" => ['required', 'exists:data_types,id'],
+                ];
+                $validatedDynamicData = $request->validate($validationRules);
+                $inputData[$fieldId]['name'] = $validatedDynamicData["input_{$fieldId}_name"];
+                $inputData[$fieldId]['data_type_id'] = $validatedDynamicData["input_{$fieldId}_type"];
+            }
+        }
+
         foreach ($inputData as $key => $value) {
             if (preg_match('/^input_(\d+)_name$/', $key, $matches)) {
                 $validatedData["name"] = $value;
             } elseif (preg_match('/^input_(\d+)_type$/', $key, $matches)) {
                 $validatedData["data_type_id"] = $value;
             }
-        }   
+        }
 
         $serviceParameter = ServiceParameter::findOrFail($id);
-    
+
         $serviceParameter->update($validatedData);
-    
+
         return redirect()->route('services.edit', $service)
             ->with('success', "Paramètre mis à jour avec succès");
     }

@@ -34,6 +34,19 @@
                             <textarea id="description" name="description" class="textarea mb-5">{{ $service->description }}</textarea>
                         </div>
                         <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
+                        @if ($errors->any())
+                        <div class="text-red-500">
+                            <ul>
+                                @foreach ($errors->keys() as $errorKey)
+                                    @if (Str::startsWith($errorKey, 'input_'))
+                                        @foreach ($errors->get($errorKey) as $errorMessage)
+                                            <li>{{ $errorMessage }}</li>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                         <livewire:dynamic-input />
                         <div class="flex items-center gap-4 mt-5">
                             <button class="btn btn-active btn-neutral">Valider</button>
@@ -44,7 +57,6 @@
 
                 @if($service->parameters)
                     <h1 class="text-white text-2xl font-bold mt-3">{{_('Paramètres configurés')}}</h1>
-
                     @foreach ($service->parameters as $parameter)
                     <form action="{{ route('services.updateParameter', ['service' => $service, 'id' => $parameter->id ]) }}" method="POST">
                         @csrf
@@ -56,6 +68,9 @@
                                     wire:model.defer="inputs.{{ $parameter->id }}.name"
                                     class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md"
                                     autocomplete="off" value="{{$parameter->name}}">
+                                    @error('inputs_' . $parameter->id . '_name')
+                                    <span class="text-xs text-red-600">{{ $message }}</span>
+                                @enderror
                                 <select id="input_{{ $parameter->id }}_type" wire:model.defer="inputs.{{ $parameter->id }}.type" name="input_{{$parameter->id}}_type"
                                     class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
                                     <option value="" disabled>Sélectionnez un type de donnée</option>
