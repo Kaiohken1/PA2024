@@ -1,18 +1,20 @@
 <?php
 
-use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\DocumentsTypeController;
 use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
-use App\Livewire\DynamicInput;
+use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,8 +86,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::resource('/intverventions', AdminInterventionController::class);
     Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
-
-
+    Route::resource('/documents', DocumentController::class);
 });
 
 Route::get('/admin', function () {
