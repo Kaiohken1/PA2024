@@ -10,6 +10,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\StripeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,11 @@ Route::middleware('auth')->group(function () {
         Route::patch('/fermetures/{fermeture}', [FermetureController::class, 'update'])->name('fermeture.update');
         Route::get('/fermetures/create', [FermetureController::class, 'create'])->name('fermeture.create');
         Route::post('/fermetures', [FermetureController::class, 'store'])->name('fermeture.store');
+
+
+     
+
+       
     });
 
     Route::resource('notifcations', NotificationsController::class);
@@ -84,6 +90,11 @@ Route::resource('services', ServiceController::class)->middleware(['admin']);
 
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
+
+
+Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
+Route::post('/session', [StripeController::class, 'session'])->name('session');
+Route::get('/success', [StripeController::class, 'success'])->name('success');
 
 
 require __DIR__.'/auth.php';
