@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Stripe\Stripe;
+use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
 
 class StripeController extends Controller
@@ -15,13 +15,13 @@ class StripeController extends Controller
 
     public function session(Request $request)
     {
-        Stripe::setApiKey(config('stripe.sk'));
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
 
-        $productName = $request->input('reservation');
-        $totalPrice = $request->input('total') * 100; 
-       
+        $reservations = $request->input('reservation');
+        $totalPrice = $request->input('total') * 100; // Convertir le total en cents
         $total = strval($totalPrice);
 
+        // Création de la session de paiement avec Stripe
         $session = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [
@@ -29,7 +29,7 @@ class StripeController extends Controller
                     'price_data' => [
                         'currency' => 'eur',
                         'product_data' => [
-                            'name' => $productName,
+                            'name' => $reservations,
                         ],
                         'unit_amount' => $total,
                     ],
@@ -44,8 +44,10 @@ class StripeController extends Controller
         return redirect()->away($session->url);
     }
 
-    public function success()
+    public function success(Request $request)
     {
-        return "Merci";
+        // Rediriger vers la méthode store du ReservationController
+        $reservationData = $request->all();
+        return redirect()->route('reservation.store', $reservationData);
     }
 }

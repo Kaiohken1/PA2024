@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appartement;
+use Stripe\Stripe;
 use App\Models\Fermeture;
+use App\Models\Appartement;
 use App\Models\Reservation;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Stripe\Checkout\Session;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,45 +64,42 @@ class ReservationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    
-    $validatedData = $request->validate([
-        'start_time' => ['required', 'date', 'after_or_equal:today'],
-        'end_time' => ['required', 'date', 'after:start_date'],
-        'nombre_de_personne' => ['required', 'numeric'],
-        'appartement_id' => ['required', 'exists:appartements,id'],
-        'prix' => ['required', 'numeric'],
-    ]);
+    {
+        $validatedData = $request->validate([
+            'start_time' => ['required', 'date', 'after_or_equal:today'],
+            'end_time' => ['required', 'date', 'after:start_time'],
+            'nombre_de_personne' => ['required', 'numeric'],
+            'appartement_id' => ['required', 'exists:appartements,id'],
+            'prix' => ['required', 'numeric'],
+        ]);
 
-   
-    $conflictingReservation = Reservation::where('appartement_id', $validatedData['appartement_id'])
-        ->where(function ($query) use ($validatedData) {
-            $query->whereBetween('start_time', [$validatedData['start_time'], $validatedData['end_time']])
-                  ->orWhereBetween('end_time', [$validatedData['start_time'], $validatedData['end_time']])
-                  ->orWhere(function ($query) use ($validatedData) {
-                      $query->where('start_time', '<=', $validatedData['start_time'])
-                            ->where('end_time', '>=', $validatedData['end_time']);
-                  });
-        })
-        ->exists();
+        // Stocker les données validées dans la session
+        $request->session()->put('validatedData', $validatedData);
 
-   
-    if ($conflictingReservation) {
-        return redirect()->route('property.show', $validatedData['appartement_id'])->with('error', "Les dates choisies ne sont pas disponibles. Veuillez choisir d'autres dates.");
+        // Création de la session Stripe
+        Stripe::setApiKey(env('STRIPE_API_KEY'));
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'product_data' => [
+                            'name' => 'Réservation d\'appartement',
+                        ],
+                        'unit_amount' => $validatedData['prix'] * 100,
+                    ],
+                    'quantity' => 1,
+                ],
+            ],
+            'mode' => 'payment',
+            'success_url' => route('reservation.pay', ['id' => $validatedData['appartement_id']]),
+
+            'cancel_url' => route('property.show', $validatedData['appartement_id']),
+        ]);
+
+        return redirect()->away($session->url);
     }
-
-   
-    $reservation = new Reservation();
-    $reservation->appartement_id = $validatedData['appartement_id'];
-    $reservation->user_id = Auth::id();
-    $reservation->start_time = $validatedData['start_time'];
-    $reservation->end_time = $validatedData['end_time'];
-    $reservation->nombre_de_personne = $validatedData['nombre_de_personne'];
-    $reservation->prix = $validatedData['prix'];
-    $reservation->save();
-
-    return redirect()->route('reservation.index')->with('success', "Réservation bien prise en compte");
-}
 
 
 
@@ -190,5 +190,23 @@ class ReservationController extends Controller
         $appartement_name = Appartement::findOrFail($appartement_id)->name;
 
         return view('Reservation.showAll', compact('reservations', 'appartement_name'));
+    }
+
+    public function pay(Request $request)
+    {
+        $validatedData = $request->session()->get('validatedData');
+
+        // Créer la réservation dans la base de données
+        $reservation = new Reservation();
+        $reservation->appartement_id = $validatedData['appartement_id'];
+        $reservation->user_id = Auth::id();
+        $reservation->start_time = $validatedData['start_time'];
+        $reservation->end_time = $validatedData['end_time'];
+        $reservation->nombre_de_personne = $validatedData['nombre_de_personne'];
+        $reservation->prix = $validatedData['prix'];
+        $reservation->save();
+    
+        // Rediriger vers une page de confirmation ou une autre page appropriée
+        return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');
     }
 }

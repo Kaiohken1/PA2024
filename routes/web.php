@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/reservation/validate/{id}', [ReservationController::class, 'validate'])->name('reservation.validate');
     Route::patch('/reservation/refused/{id}', [ReservationController::class, 'refused'])->name('reservation.refused');
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
+   
 
     Route::prefix('property/{appartement}/edit')->group(function () {
         Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
@@ -92,9 +93,8 @@ Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
 
 
-Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
-Route::post('/session', [StripeController::class, 'session'])->name('session');
-Route::get('/success', [StripeController::class, 'success'])->name('success');
+Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+
 
 
 require __DIR__.'/auth.php';
