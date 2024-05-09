@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Provider;
 use App\Models\Service;
 use App\Models\Provider;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -48,13 +49,15 @@ class ProviderController extends Controller
         $validateData = $request->validate([
             'name' => ['required'],
             'address' => ['required', 'max:255'],
+            'phone' => ['required', 'numeric'],
             'email' => ['required'],
             'description' => ['required', 'max:255'],
-            'avatar' => ['image'],  
+            'avatar' => ['image'],
             'service_id' => ['required', 'exists:services,id'],
-            'price' => ['required', 'numeric'],
-            'habilitationImg' => ['required', 'image'],
-            'provider_description' => ['max:255'],    
+            'provider_description' => ['max:255'],
+            'documents' => ['array'],
+            'documents.*' => ['mimes:jpg,png,pdf'],
+            'bareme' => ['mimes:jpg,png,pdf']
         ]);
 
         $validateData['user_id'] = Auth()->id();
@@ -69,17 +72,24 @@ class ProviderController extends Controller
 
         $provider->save();
 
-        $validateData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+        if ($request->hasFile('documents')) {
+            $documents = $request->file('documents');
 
-        if ($request->hasFile('habilitationImg')) {
-            $path = $request->file('habilitationImg')->store('providerHabilitations', 'public');
-            $validateData['habilitationImg'] = $path;
+            foreach ($documents as $documentIndex => $file) {
+                $path = $file->store('providersDocs', 'public');
+
+                $provider->documents()->attach($documentIndex, [
+                    'service_id' => $validateData['service_id'],
+                    'provider_id' => $provider->id,
+                    'document' => $path,
+                ]);
+            }
         }
-        
+
+        $validateData['bareme'] = $request->hasFile('bareme') ? $path = $file->store('providersDocs', 'public') : null;
+
         $provider->services()->attach($validateData['service_id'], [
-            'price' => $validateData['price'],
-            'flexPrice' => $validateData['flexPrice'],
-            'habilitationImg' => $validateData['habilitationImg'],
+            'price_scale' => $validateData['bareme'],
             'description' => $validateData['provider_description'],
         ]);
 
@@ -92,7 +102,7 @@ class ProviderController extends Controller
      */
     public function show(Provider $provider)
     {
-        return view('provider.show', ['provider' => $provider, 'services' => $provider->services]);
+        return view('provider.show', ['provider' => $provider, 'service' => $provider->services->first()]);
     }
 
     /**
@@ -117,10 +127,17 @@ class ProviderController extends Controller
     public function destroy(Provider $provider)
     {
 
-        $provider->services()->withPivot('habilitationImg')->get();
-        
+        foreach ($provider->documents as $document) {
+            Storage::disk('public')->delete($document->pivot->document);
+
+        }
+
+        if($provider->services->first()->pivot->price_scale) {
+            Storage::disk('public')->delete($provider->services->first()->pivot->price_scale);
+        }
+
         if ($provider->avatar !== NULL) {
-            Storage::delete([$provider->avatar]);
+            Storage::disk('public')->delete($provider->avatar);
         }
 
         $provider->delete();
@@ -129,11 +146,12 @@ class ProviderController extends Controller
             ->with('success', 'Le prestataire a été supprimé avec succès');
     }
 
-    public function validateProvider($id) {
+    public function validateProvider($id)
+    {
 
         Provider::where('id', $id)->update(['statut' => 'Validé']);
-    
+
         return redirect()->route('providers.index')
             ->with('success', 'Le prestataire a été validé avec succès');
-    }    
+    }
 }
