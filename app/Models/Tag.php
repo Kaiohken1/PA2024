@@ -12,7 +12,8 @@ class Tag extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name'
+        'name',
+        'valorisation_coeff'
     ];
 
     public function tag(): BelongsTo {

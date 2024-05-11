@@ -15,12 +15,11 @@ class TagController extends Controller
     public function index()
     {
         $tags = Tag::query()
-            ->select(['id', 'name'])
-            ->where("user_id", Auth()->id())
+            ->select(['id', 'name', 'valorisation_coeff'])
             ->latest()
             ->paginate(10);
 
-        return view('tags.index', [
+        return view('admin.tags.index', [
             'tags' => $tags
         ]);
     }
@@ -30,7 +29,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('tags.create');
+        return view('admin.tags.create');
     }
 
     /**
@@ -39,16 +38,16 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validateData = $request->validate([
-            'name' => ['required', 'alpha']
+            'name' => ['required', 'alpha'],
+            'valorisation_coeff' => ['required', 'numeric', 'between:1,1.99']
         ]);
 
         $validateData['user_id'] = Auth()->id();
     
         $tag = new Tag($validateData);
-        $tag->user()->associate($validateData['user_id']);
         $tag->save();
 
-        return redirect()->route('tag.index')
+        return redirect()->route('tags.index')
             ->with('success', "Tag créé avec succès");
     }
 
@@ -66,7 +65,7 @@ class TagController extends Controller
     public function edit($id)
     {
         $tag = Tag::findOrFail($id);
-        return view('tags.edit', [
+        return view('admin.tags.edit', [
             'tag' => $tag,
         ]);
     }
@@ -78,13 +77,14 @@ class TagController extends Controller
     {
         $tag = Tag::findOrFail($id);
         $validateData = $request->validate([
-            'name' => ['required']
+            'name' => ['required'],
+            'valorisation_coeff' => ['required', 'numeric', 'between:1,1.99']
         ]);
     
 
         $tag->update($validateData);
 
-        return redirect()->route('tag.index')
+        return redirect()->route('tags.index')
             ->with('success', "Tag mis à jour avec succès");
     
     }
@@ -97,6 +97,6 @@ class TagController extends Controller
         $tag = Tag::findOrFail($id);
         $tag->delete();
 
-        return redirect()->route('tag.index');
+        return redirect()->route('tags.index');
     }
 }
