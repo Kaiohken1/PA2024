@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Models\DataType;
+use App\Models\Intervention;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ServiceParameter extends Model
 {
@@ -20,5 +22,10 @@ class ServiceParameter extends Model
     public function dataType()
     {
         return $this->belongsTo(DataType::class);
+    }
+
+    public function interventions(): HasMany
+    {
+        return $this->hasMany(Intervention::class, 'service_parameters_values');
     }
 }

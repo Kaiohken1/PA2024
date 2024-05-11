@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Intervention;
 use App\Models\Service;
 use App\Models\ServiceParameter;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(ServiceParameter::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Intervention::class)->constrained()->cascadeOnDelete();
             $table->string('value');
             $table->timestamps();
         });

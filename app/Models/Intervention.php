@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Statut;
 use App\Models\Service;
 use App\Models\Provider;
 use App\Events\Reservation;
@@ -49,5 +50,14 @@ class Intervention extends Model
     
     public function service() {
         return $this->belongsTo(Service::class);
+    }
+
+    public function service_parameters() {
+        return $this->belongsToMany(ServiceParameter::class, 'service_parameters_values')
+                    ->withPivot(['value', 'service_parameter_id']);
+    }
+
+    public function statut() {
+        return $this->belongsTo(Statut::class, 'statut_id');    
     }
 }

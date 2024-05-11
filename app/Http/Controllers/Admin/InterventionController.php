@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class InterventionController extends Controller
@@ -13,7 +14,14 @@ class InterventionController extends Controller
      */
     public function index()
     {
-        //
+        $interventions = Intervention::All();
+        
+        $services = Service::All();
+
+        return view('admin.interventions.index', [
+            'interventions' => $interventions,
+            'services' => $services,
+        ]);
     }
 
     /**

@@ -62,9 +62,11 @@ class ServiceController extends Controller
         }
         $service = Service::create($validatedData);
 
-        foreach ($request->documentsId as $documentId) {
-            $service->documents()->attach($documentId);
-        }             
+        if($request->has('documentsId')) {
+            foreach ($request->documentsId as $documentId) {
+                $service->documents()->attach($documentId);
+            }        
+        }           
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -131,9 +133,11 @@ class ServiceController extends Controller
 
         $service->update($validatedData);
 
-        foreach ($request->documentsId as $documentId) {
-            $service->documents()->attach($documentId);
-        }    
+        if($request->has('documentsId')) {
+            foreach ($request->documentsId as $documentId) {
+                $service->documents()->attach($documentId);
+            }        
+        }
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();

@@ -86,7 +86,7 @@ class ProviderController extends Controller
             }
         }
 
-        $validateData['bareme'] = $request->hasFile('bareme') ? $path = $file->store('providersDocs', 'public') : null;
+        $validateData['bareme'] = $request->hasFile('bareme') ? $validateData['bareme']->store('providersDocs', 'public') : null;
 
         $provider->services()->attach($validateData['service_id'], [
             'price_scale' => $validateData['bareme'],

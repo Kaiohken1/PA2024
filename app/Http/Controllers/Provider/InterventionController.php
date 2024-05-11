@@ -35,13 +35,15 @@ class InterventionController extends Controller
         $appartement_id = $request->route('id');
         $selectedAppartement = Appartement::find($appartement_id);
         $appartements = Appartement::all();
+        $selectedServices = [];
 
         $services = Service::All();
 
         return view('interventions.create', [
             'selectedAppartement' => $selectedAppartement,
             'services' => $services,
-            'appartements' => $appartements
+            'appartements' => $appartements,
+            'selectedServices' => $selectedServices,
         ]);
     }
 
@@ -51,29 +53,75 @@ class InterventionController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'description' => ['required', 'string', 'max:255'],
             'appartement_id' => ['required', 'exists:appartements,id'],
-            'service_id' => ['required', 'exists:services,id'],
+            'text' => ['nullable', 'array'],
+            'text.*' => ['array'],
+            'text.*.*' => ['string', 'max:255'],
+            'address' => ['nullable', 'array'],
+            'address.*' => ['array'],
+            'address.*.*' => ['string', 'max:255'],
+            'surface' => ['nullable', 'array'],
+            'surface.*' => ['array'],
+            'surface.*.*' => ['numeric'],
+            'roomCount' => ['nullable', 'array'],
+            'roomCount.*' => ['array'],
+            'roomCount.*.*' => ['numeric'],
+            'number' => ['nullable', 'array'],
+            'number.*' => ['array'],
+            'number.*.*' => ['numeric'],
+            'email' => ['nullable', 'array'],
+            'email.*' => ['array'],
+            'email.*.*' => ['email', 'max:255'],
+            'tel' => ['nullable', 'array'],
+            'tel.*' => ['array'],
+            'tel.*.*' => ['regex:/[0-9]{10}/'],
+            'description' => ['nullable', 'string'],
+            'date' => ['nullable', 'array'],
+            'date.*' => ['array'],
+            'date.*.*' => ['date'],
+            'checkbox' => ['nullable', 'array'],
+            'checkbox.*' => ['array'],
+            'services' => ['required', 'array'],
+            'services.*' => ['exists:services,id'],
         ]);
+
+        // dd($validatedData);
 
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
-        $service = Service::findOrfail($validatedData['service_id']);
 
-        $validatedData['price'] = $service->price;
+        foreach ($validatedData['services'] as $id) {
+            $service = Service::findOrfail($id);
+            $price = $service->flexPrice = 1 ? null : $service->price;
+            $validatedData['price'] = $price;
+            $role = $user->roles->first()->nom;
 
-        $role = $user->roles->first()->nom;
-    
-        if ($role) {
-            $validatedData['user_type'] = $role;
+            if ($role) {
+                $validatedData['user_type'] = $role;
+            }
+
+            $intervention = new Intervention($validatedData);
+            $intervention->user()->associate($validatedData['user_id']);
+            $intervention->service()->associate($id);
+            $intervention->statut_id = 1;
+            $intervention->save();
+
+            foreach ($validatedData as $value) {
+                if (is_array($value) && array_key_exists($id, $value)) {
+                    $parameters = $value[$id];
+                    foreach ($parameters as $key => $content) {
+                        $intervention->service_parameters()->attach($key, [
+                            'value' => $content,
+                            'intervention_id' => $intervention->id,
+                            'service_id' => $id,
+                        ]);
+                    }
+                }
+            }
         }
 
-        $intervention = new Intervention($validatedData);
-        $intervention->user()->associate($validatedData['user_id']);
-        $intervention->save();
-
-        return redirect()->route('interventions.create', ['id' => $validatedData['appartement_id']]);
+        return redirect()->route('property.index')->with('success', 'Intervention en attente de validation');
     }
 
     /**
