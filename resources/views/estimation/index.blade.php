@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Ajouter un bien à la location') }}
+            {{ __('Estimer la valeur de son bien en un clic') }}
         </h2>
     </x-slot>
 

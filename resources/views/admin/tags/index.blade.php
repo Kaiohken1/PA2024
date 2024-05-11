@@ -4,7 +4,7 @@
             {{ __('Gestion des tags') }}
         </h2>
 
-        <x-nav-link :href="route('tags.create')" :active="route('tags.create')">
+        <x-nav-link :href="route('tags.create')">
             {{ __('Créer un tag') }}
         </x-nav-link>
     </x-slot>

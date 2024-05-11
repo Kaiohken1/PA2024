@@ -54,7 +54,7 @@
 
 
     <x-primary-button class="ms-3 mt-5 ml-0">
-        {{ __('Créer un appartement') }}
+        {{ __('Commencer la simulation') }}
     </x-primary-button>
     </div>
 </form>

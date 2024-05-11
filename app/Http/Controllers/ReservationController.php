@@ -8,6 +8,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -16,6 +17,8 @@ class ReservationController extends Controller
      */
     public function index()
     {
+
+        Carbon::setTestNow(Carbon::create(2024, 5, 9, 12, 0, 0));
 
         $reservations = Reservation::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
