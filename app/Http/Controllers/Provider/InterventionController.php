@@ -84,8 +84,6 @@ class InterventionController extends Controller
             'services.*' => ['exists:services,id'],
         ]);
 
-        // dd($validatedData);
-
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
@@ -107,7 +105,7 @@ class InterventionController extends Controller
             $intervention->save();
 
             foreach ($validatedData as $value) {
-                if (is_array($value) && array_key_exists($id, $value)) {
+                if (is_array($value) && array_key_exists($id, $value) && is_array($value[$id])) {
                     $parameters = $value[$id];
                     foreach ($parameters as $key => $content) {
                         $intervention->service_parameters()->attach($key, [
@@ -119,7 +117,6 @@ class InterventionController extends Controller
                 }
             }
         }
-
         return redirect()->route('property.index')->with('success', 'Intervention en attente de validation');
     }
 
