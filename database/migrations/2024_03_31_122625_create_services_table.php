@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('price')->nullable();
             $table->boolean('flexPrice')->default(false);
             $table->text('description');
+            $table->boolean('active_flag')->default(false);
             $table->timestamps();
         });
 

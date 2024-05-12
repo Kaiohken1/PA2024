@@ -15,7 +15,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'flexPrice'])
+            ->select(['id', 'name', 'price', 'flexPrice', 'active_flag'])
             ->latest()
             ->paginate(10);
 
@@ -229,5 +229,12 @@ class ServiceController extends Controller
         return redirect()->route('services.edit', $service)
             ->with('success', "Document modifié avec succès");
     }
+
+    public function updateActive($id) {
+        $service = Service::findOrfail($id);
+        $service->active_flag = $service->active_flag ? 0 : 1;
+        $service->save();
     
+        return redirect()->back()->with('success', 'Statut du service ' . $service->name . " modifié avec succès");
+    }
 }

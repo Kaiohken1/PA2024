@@ -89,6 +89,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);
+    Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
 });
 
 Route::get('/admin', function () {

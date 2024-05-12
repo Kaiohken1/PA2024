@@ -98,7 +98,7 @@
                     @endforeach
                 </div>
                 <div>
-                    <p>{{__('Autre informations dont vous souhaiteriez nous faire part pour ce service (falcultatif)')}}</p>
+                    <p>{{__('Autre information dont vous souhaiteriez nous faire part (facultatif)')}}</p>
                     <textarea name="description" class="block mt-1 w-full" name="description"></textarea>
                 </div>
             @endif

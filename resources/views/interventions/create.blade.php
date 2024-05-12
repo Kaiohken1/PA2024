@@ -12,15 +12,19 @@
                 </ul>
             </div>
         @endif
-        <form id="intervention-form" method="POST"
-            action="{{ route('interventions.store', ['id' => $selectedAppartement]) }}">
-            @csrf
+        @if(!$services->isEmpty())
+            <form id="intervention-form" method="POST"
+                action="{{ route('interventions.store', ['id' => $selectedAppartement]) }}">
+                @csrf
 
-            <input type="hidden" name="appartement_id" value="{{ $selectedAppartement->id }}">
+                <input type="hidden" name="appartement_id" value="{{ $selectedAppartement->id }}">
 
-            <livewire:service-form />
+                <livewire:service-form />
 
-            <x-primary-button class="mt-4">{{ __('Demander une prestation') }}</x-primary-button>
-        </form>
+                <x-primary-button class="mt-4">{{ __('Demander une prestation') }}</x-primary-button>
+            </form>
+        @else
+            <p>Aucun service n'est disponible actuellement</p>
+        @endif
     </div>
 </x-app-layout>

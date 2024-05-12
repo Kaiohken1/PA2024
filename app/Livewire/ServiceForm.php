@@ -16,7 +16,7 @@ class ServiceForm extends Component
     public function mount()
     {
         $this->appartement = Appartement::findOrfail(request()->route('id'));
-        $this->services = Service::All();
+        $this->services = Service::All()->where('active_flag', 1);
     }
 
     public function render()

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Models\Service;
-use App\Models\Provider;
 use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
@@ -37,7 +36,7 @@ class InterventionController extends Controller
         $appartements = Appartement::all();
         $selectedServices = [];
 
-        $services = Service::All();
+        $services = Service::All()->where('active_flag', 1);
 
         return view('interventions.create', [
             'selectedAppartement' => $selectedAppartement,

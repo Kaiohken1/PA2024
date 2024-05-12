@@ -17,7 +17,8 @@ class Service extends Model
         'name',
         'price',
         'description',
-        'flexPrice'
+        'flexPrice',
+        'active_flag',
     ];
 
     public function providers(): BelongsToMany

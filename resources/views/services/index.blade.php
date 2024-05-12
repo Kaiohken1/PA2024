@@ -31,6 +31,7 @@
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
                             <th scope="col" class="px-6 py-3 text-center">Prix</th>
+                            <th scope="col" class="px-6 py-3 text-center">Statut</th>
                             <th scope="col" class="px-6 py-3 text-center">Action</th>
                         </tr>
                     </thead>
@@ -39,6 +40,9 @@
                             <tr class="bg-gray-800 border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->name }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center"> @if(!$service->flexPrice){{ $service->price }}€ @else {{_('Variable')}} @endif</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
+                                    {{$service->active_flag ? 'Activé' : 'Desactivé'}}
+                                </td>
                                 <td class="flex justify-center mt-3 mb-3">
                                     <a href="{{ route('services.show', $service) }}">
                                     <button class="btn btn-info mr-3">Voir</button>
@@ -46,6 +50,16 @@
                                     <a href="{{ route('services.edit', $service) }}">
                                         <button class="btn btn-success mr-3">Editer</button>
                                     </a>
+                                    <form method="POST" action="{{ route('services.updateActive', $service->id) }}">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="active_flag" value="{{$service->active_flag}}">
+                                        @if($service->active_flag)                                        
+                                            <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir désactiver ce service ?')">Désactiver</button>
+                                        @else
+                                            <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir activer ce service ?')">Activer</button>
+                                        @endif
+                                    </form>
                                     <form method="POST" action="{{ route('services.destroy', $service) }}">
                                         @csrf
                                         @method('delete')
