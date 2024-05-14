@@ -24,32 +24,37 @@
                     <x-nav-link :href="route('tag.index')" :active="request()->routeIs('tag.index')">
                         {{ __('Mes Tags') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('providers.create')" :active="request()->routeIs('providers.create')">
+                        {{ __('Presta') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @if(isset($notifications))
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div class="ms-1">
-                                    <x-bell-logo></x-bell-logo>
-                                </div>
-                            </button>
-                        </x-slot>
-                        <x-slot name="content">
-                            @foreach ($notifications as $notification)
-                                <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
-                                    class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
-                                    {{ $notification->data['message'] }}
-                                </a>
-                                {{ $user->unreadNotifications->markAsRead() }}
-                            @endforeach
-                        </x-slot>
-                    </x-dropdown>
+                    @if (isset($notifications))
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <div class="ms-1">
+                                        <x-bell-logo></x-bell-logo>
+                                    </div>
+                                </button>
+                            </x-slot>
+                            <x-slot name="content">
+                                @foreach ($notifications as $notification)
+                                    <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
+                                        class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
+                                        {{ $notification->data['message'] }}
+                                    </a>
+                                    {{ $user->unreadNotifications->markAsRead() }}
+                                @endforeach
+                            </x-slot>
+                        </x-dropdown>
                     @endif
 
                     <x-dropdown align="right" width="48">
@@ -118,6 +123,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
