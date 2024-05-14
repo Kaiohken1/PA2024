@@ -62,19 +62,11 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="start_date" class="block text-gray-700 text-sm font-bold mb-2">Date de début :</label>
-                                <input type="text" name="start_date" id="start_date"
+                                <label for="date_range" class="block text-gray-700 text-sm font-bold mb-2">Sélectionnez les dates de votre séjour :</label>
+                                <input type="text" name="date_range" id="date_range"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Sélectionnez la date de début" readonly>
+                                    placeholder="Sélectionnez les dates de votre séjour" readonly>
                             </div>
-                            
-                            <div class="mb-4">
-                                <label for="end_date" class="block text-gray-700 text-sm font-bold mb-2">Date de fin :</label>
-                                <input type="text" name="end_date" id="end_date"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Sélectionnez la date de fin" readonly>
-                            </div>
-                            
 
                             <div class="mb-4" id="total_price_container" style="display: none;">
                                 <p>Total : <span id="total_price">0 €</span></p>
@@ -121,21 +113,18 @@
         return false;
     }
 
-    flatpickr('#start_date', {
-    dateFormat: 'd-m-Y',
-    minDate: demain,
-    onChange: function(selectedDates, dateStr, instance) {
-        var endDatePicker = flatpickr('#end_date');
-        endDatePicker.set('minDate', selectedDates[0]);
-    }
-});
+    var demain = new Date();
+    demain.setDate(demain.getDate() + 1);
 
-flatpickr('#end_date', {
-    dateFormat: 'd-m-Y',
-    minDate: demain,
-    onChange: function(selectedDates, dateStr, instance) {
-        var startDatePicker = flatpickr('#start_date');
-        startDatePicker.set('maxDate', selectedDates[0]);
-    }
-});
+    flatpickr('#date_range', {
+        mode: 'range', 
+        dateFormat: 'd-m-Y',       
+        minDate: demain,
+        disable: [
+            function(date) {
+                
+                return estDansIntervalle(date, intervallesADesactiver, fermeturesADesactiver);
+            }
+        ]
+    });
 </script>
