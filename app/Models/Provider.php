@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Provider extends Model
 {
@@ -17,6 +18,7 @@ class Provider extends Model
     protected $fillable = [
         'name',
         'address',
+        'phone',
         'email', 
         'description',
         'avatar', 
@@ -33,11 +35,17 @@ class Provider extends Model
     public function services(): BelongsToMany
     {
         return $this->belongsToMany(Service::class, 'provider_services')
-                    ->withPivot(['price', 'flexPrice', 'habilitationImg', 'description'])
+                    ->withPivot(['description', 'service_id', 'price_scale'])
                     ->withTimestamps();
     }
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
+    }
+
+    public function documents(): BelongsToMany {
+        return $this->belongsToMany(Document::class, 'providers_documents')
+                    ->withPivot(['document'])
+                    ->withTimestamps();
     }
 }

@@ -1,15 +1,21 @@
 <?php
 
+use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AppartementController;
+use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\DocumentsTypeController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Http\Controllers\StripeController;
 
 /*
@@ -27,7 +33,9 @@ Route::get('/test', function () {
     return view('welcome');
 });
 
-Route::get('/', [AppartementController::class, 'index'])->name('property.index');
+Route::match(['get', 'post'], '/', [AppartementController::class, 'index'])->name('property.index');
+
+Route::get('/dynamic-inputs', DynamicInput::class)->name('dynamic-inputs');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -38,7 +46,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('property', AppartementController::class)->except(['index']);
-    Route::resource('tag', TagController::class);
     Route::resource('fermeture', FermetureController::class)->except(['index']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
 
@@ -68,6 +75,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('notifcations', NotificationsController::class);
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
+    Route::resource('property/{id}/interventions', InterventionController::class);
 
 });
 
@@ -78,18 +86,30 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-
+    Route::resource('tags', TagController::class);
     Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::resource('services', ServiceController::class)->middleware(['admin']);
+    Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
+    Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
+    Route::resource('/intverventions', AdminInterventionController::class);
+    Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
+    Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
+    Route::resource('/documents', DocumentController::class);
+    Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
 });
 
 Route::get('/admin', function () {
     return view('admin.index');
 })->middleware(['admin'])->name('admin');
 
-Route::resource('services', ServiceController::class)->middleware(['admin']);
 
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
+
+Route::prefix('estimation')->group(function () {
+    Route::get('/', [EstimationController::class, 'index'])->name('estimation.index');
+    Route::post('/result', [EstimationController::class, 'result'])->name('estimation.result');
+});
 
 
 Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');

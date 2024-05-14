@@ -3,6 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Ajouter un bien à la location') }}
         </h2>
+        <x-nav-link :href="route('estimation.index')">
+            {{ __('Faire un devis de son bien') }}
+        </x-nav-link>
     </x-slot>
 
     <div class="py-12">
