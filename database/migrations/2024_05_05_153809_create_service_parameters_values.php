@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(ServiceParameter::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Intervention::class)->constrained()->cascadeOnDelete();
             $table->string('value');
+            $table->integer('parameter_version');
             $table->timestamps();
         });
     }

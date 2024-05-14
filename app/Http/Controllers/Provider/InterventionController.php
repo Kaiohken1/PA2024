@@ -7,6 +7,7 @@ use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ServiceParameter;
 use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
@@ -109,10 +110,12 @@ class InterventionController extends Controller
                 if (is_array($value) && array_key_exists($id, $value) && is_array($value[$id])) {
                     $parameters = $value[$id];
                     foreach ($parameters as $key => $content) {
+                        $parameter = ServiceParameter::findOrfail($key);
                         $intervention->service_parameters()->attach($key, [
                             'value' => $content,
                             'intervention_id' => $intervention->id,
                             'service_id' => $id,
+                            'parameter_version' => $parameter->currentVersion()->version_id,
                         ]);
                     }
                 }

@@ -27,6 +27,8 @@
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{$intervention->user->name}}</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{$intervention->statut->nom}}</td>
+                                    <td class="px-6 py-4 font-medium whitespace-nowrap text-center"><a href="{{ route('intverventions.show', $intervention->id) }}">
+                                        <button class="btn btn-info mr-3">Voir</button></a></td>
                                 </tr>
                                 @endforeach
                             </tbody>

@@ -59,10 +59,10 @@ class Intervention extends Model
 
     public function service_parameters() {
         return $this->belongsToMany(ServiceParameter::class, 'service_parameters_values')
-                    ->withPivot(['value', 'service_parameter_id']);
+                    ->withPivot(['value', 'service_parameter_id', 'parameter_version']);
     }
 
     public function statut() {
-        return $this->belongsTo(Statut::class, 'statut_id');    
+        return $this->belongsTo(Statut::class, 'statut_id');
     }
 }

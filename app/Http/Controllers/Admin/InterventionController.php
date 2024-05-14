@@ -43,9 +43,10 @@ class InterventionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Intervention $intervention)
+    public function show($id)
     {
-        //
+        $intervention = Intervention::findOrfail($id);
+        return view('admin.interventions.show', ['intervention' => $intervention]);
     }
 
     /**
