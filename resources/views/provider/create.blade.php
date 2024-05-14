@@ -50,13 +50,6 @@
                         </div>
 
                         <livewire:show-service-form />
-                        
-
-                        {{-- <div>
-                            <x-input-label for="habilitationImg" :value="__('Habilitation')" />
-                            <input type="file" id="habilitationImg" name="habilitationImg" />
-                            <x-input-error :messages="$errors->get('habilitationImg')" class="mt-2" />
-                        </div> --}}
 
                         <div>
                             <x-input-label for="provider_description" :value="__('Description de votre prestation')" />

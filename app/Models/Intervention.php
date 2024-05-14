@@ -50,7 +50,9 @@ class Intervention extends Model
     }
 
     public function service() {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class)
+                ->withTrashed();
+
     }
 
     public function services() {
@@ -59,7 +61,8 @@ class Intervention extends Model
 
     public function service_parameters() {
         return $this->belongsToMany(ServiceParameter::class, 'service_parameters_values')
-                    ->withPivot(['value', 'service_parameter_id', 'parameter_version']);
+                    ->withPivot(['value', 'service_parameter_id', 'parameter_version'])
+                    ->withTrashed();
     }
 
     public function statut() {

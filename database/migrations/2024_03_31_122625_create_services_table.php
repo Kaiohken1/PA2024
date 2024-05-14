@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('description');
             $table->boolean('active_flag')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('provider_services', function (Blueprint $table) {

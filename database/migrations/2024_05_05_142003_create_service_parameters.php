@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignIdFor(DataType::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
