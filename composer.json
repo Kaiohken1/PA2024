@@ -10,6 +10,8 @@
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
+        "livewire/livewire": "^3.4",
+        "mpociot/versionable": "^4.4",
         "owenvoke/blade-fontawesome": "^2.6"
     },
     "require-dev": {

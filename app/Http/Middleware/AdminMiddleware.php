@@ -20,6 +20,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        abort(403, 'Accès interdit');
+        abort(404, 'Non trouvé');
     }
 }

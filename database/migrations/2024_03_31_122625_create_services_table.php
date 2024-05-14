@@ -16,15 +16,18 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('price')->nullable();
+            $table->boolean('flexPrice')->default(false);
+            $table->text('description');
+            $table->boolean('active_flag')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('provider_services', function (Blueprint $table) {
             $table->id();
-            $table->integer('price');
-            $table->boolean('flexPrice')->default(false);
-            $table->string('habilitationImg');
             $table->text('description');
+            $table->string('price_scale')->nullable();
             $table->foreignIdFor(Provider::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
@@ -36,6 +39,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('provider_services');
         Schema::dropIfExists('services');
     }

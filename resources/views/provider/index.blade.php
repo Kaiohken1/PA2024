@@ -1,6 +1,6 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             {{ __('Gestion des prestataires') }}
         </h2>
 
@@ -14,9 +14,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <table class="w-full text-sm text-left text-gray-800">
-                    <thead class="border-b">
+                    <thead class="border-b bg-gray-800 text-white">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
                             <th scope="col" class="px-6 py-3 text-center">Email</th>
@@ -24,9 +24,9 @@
                             <th scope="col" class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-gray-800 text-white">
                         @foreach ($providers as $provider)
-                            <tr class="bg-white border-b">
+                            <tr class="border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->name }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->email }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->statut }}</td>
@@ -59,4 +59,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

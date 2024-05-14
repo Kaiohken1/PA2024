@@ -1,68 +1,63 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-gray-950 shadow">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{route('admin')}}"
+                    <h2 class="font-semibold text-xl text-white leading-tight hover:text-gray-300">
+                        {{ __('PCS Admin') }}
+                    </h2>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('admin.users.index')">
+                        {{ __('Utilisateurs') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
-                        {{ __('Louer mon logement') }}
+                    <x-nav-link :href="route('admin')">
+                        {{ __('Appartements') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
-                        {{ __('Mes réservations') }}
+                    <x-nav-link :href="route('providers.index')">
+                        {{ __('Prestataires') }}
                     </x-nav-link>
-
-                    <x-nav-link :href="route('providers.create')" :active="request()->routeIs('providers.create')">
-                        {{ __('Presta') }}
+                    <x-nav-link :href="route('services.index')">
+                        {{ __('Services') }}
                     </x-nav-link>
-
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @if (isset($notifications))
-                        <x-dropdown align="right" width="48">
-                            <x-slot name="trigger">
-                                <button
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                    <div class="ms-1">
-                                        <x-bell-logo></x-bell-logo>
-                                    </div>
-                                </button>
-                            </x-slot>
-                            <x-slot name="content">
-                                @foreach ($notifications as $notification)
-                                    <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
-                                        class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
-                                        {{ $notification->data['message'] }}
-                                    </a>
-                                    {{ $user->unreadNotifications->markAsRead() }}
-                                @endforeach
-                            </x-slot>
-                        </x-dropdown>
+                    @if(isset($notifications))
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div class="ms-1">
+                                    <x-bell-logo></x-bell-logo>
+                                </div>
+                            </button>
+                        </x-slot>
+                        <x-slot name="content">
+                            @foreach ($notifications as $notification)
+                                <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
+                                    class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
+                                    {{ $notification->data['message'] }}
+                                </a>
+                                {{ $user->unreadNotifications->markAsRead() }}
+                            @endforeach
+                        </x-slot>
+                    </x-dropdown>
                     @endif
 
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div class="avatar mr-3">
-                                    <div class="w-11 rounded-full ring ring-yellow-500 ring-offset-base-100 ring-offset-2">
-                                        <img src={{ Auth::user()->getImageUrl() }} />
-                                    </div>
-                                </div>
+                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-grey-800 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                 <div>{{ Auth::user()->first_name }} {{ Auth::user()->name }}</div>
 
                                 <div class="ms-1">
@@ -120,7 +115,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">

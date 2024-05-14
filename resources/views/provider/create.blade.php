@@ -26,6 +26,12 @@
                         </div>
 
                         <div>
+                            <x-input-label for="phone" :value="__('Numéro de téléphone')" />
+                            <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" pattern="[0-9]{10}" :value="old('phone')"/>
+                            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+                        </div>
+
+                        <div>
                             <x-input-label for="address" :value="__('Adresse')" />
                             <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" />
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
@@ -38,42 +44,12 @@
                         </div>
 
                         <div>
-                            <x-input-label for="avatar" :value="__('Avatar')" />
+                            <x-input-label for="avatar" :value="__('Logo')" />
                             <input type="file" id="avatar" name="avatar" />
                             <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
                         </div>
 
-
-                        <div>
-                            <x-input-label for="service" :value="__('Service proposé')" />
-                            <select name="service_id" id="service_id">
-                                <option value="default" disabled>Selectionnez un service</option>
-                                @foreach ($services as $service)
-                                    <option value="{{ $service->id }}">
-                                        {{ $service->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error :messages="$errors->get('service_id')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="price" :value="__('Tarif')" />
-                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" :value="old('price')"/>
-                            <x-input-error :messages="$errors->get('price')" class="mt-2" />
-                        </div>
-
-
-                        <div>
-                            <x-input-label for="flexPrice" :value="__('Tarif évolutif')" />
-                            <input type="checkbox" id="flexPrice" name="flexPrice">
-                        </div>
-
-                        <div>
-                            <x-input-label for="habilitationImg" :value="__('Habilitation')" />
-                            <input type="file" id="habilitationImg" name="habilitationImg" />
-                            <x-input-error :messages="$errors->get('habilitationImg')" class="mt-2" />
-                        </div>
+                        <livewire:show-service-form />
 
                         <div>
                             <x-input-label for="provider_description" :value="__('Description de votre prestation')" />
