@@ -22,6 +22,7 @@ class Intervention extends Model
         'appartement_id',
         'service_id',
         'price',
+        'planned_date',
     ];
 
 

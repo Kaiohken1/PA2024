@@ -28,8 +28,9 @@ return new class extends Migration
             $table->text("description")->nullable();
             $table->integer('price')->nullable();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete()->default(1);
-            $table->text('commentaire')->nullable();
+            $table->text('comment')->nullable();
             $table->integer('service_version');
+            $table->dateTime('planned_date');
             $table->timestamps();
         });
     }

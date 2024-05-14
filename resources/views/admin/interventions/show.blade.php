@@ -8,6 +8,7 @@
                     <p><strong>Service:</strong> {{ $intervention->services->getModel()->name }}</p>
                     <p><strong>Prestataire en charge:</strong> @if($intervention->provider){{ $intervention->provider->name }}@else À définir @endif</p>
                     <p><strong>Prix:</strong> @if($intervention->services->getModel()->price){{ $intervention->services->getModel()->price }}€@else À définir par le prestataire @endif</p>
+                    <p><strong>Date d'intervention:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</p>
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
                     @foreach ($intervention->service_parameters as $parameter)
                         <div class="flex">

@@ -83,6 +83,7 @@ class InterventionController extends Controller
             'checkbox.*' => ['array'],
             'services' => ['required', 'array'],
             'services.*' => ['exists:services,id'],
+            'planned_date' => ['required', 'date']
         ]);
 
         $user = Auth::user();

@@ -11,6 +11,7 @@
                                     <th scope="col" class="px-6 py-3 text-center">Date de demande</th>
                                     <th scope="col" class="px-6 py-3 text-center">Client</th>
                                     <th scope="col" class="px-6 py-3 text-center">Prestataire</th>
+                                    <th scope="col" class="px-6 py-3 text-center">Date prévue</th>
                                     <th scope="col" class="px-6 py-3 text-center">Statut</th>
                                     <th scope="col" class="px-6 py-3 text-center">Action</th>
                                 </tr>
@@ -26,6 +27,7 @@
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{$intervention->user->name}}</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
+                                    <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{$intervention->statut->nom}}</td>
                                     <td class="px-6 py-4 font-medium whitespace-nowrap text-center"><a href="{{ route('intverventions.show', $intervention->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a></td>
