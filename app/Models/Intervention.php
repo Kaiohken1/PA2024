@@ -10,6 +10,7 @@ use App\Events\Reservation;
 use App\Models\Appartement;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Mpociot\Versionable\Version;
 
 class Intervention extends Model
 {
@@ -47,9 +48,13 @@ class Intervention extends Model
     {
         return $this->belongsTo(Appartement::class);
     }
-    
+
     public function service() {
         return $this->belongsTo(Service::class);
+    }
+
+    public function services() {
+        return $this->belongsTo(Version::class, 'service_version');
     }
 
     public function service_parameters() {

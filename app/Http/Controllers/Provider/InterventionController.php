@@ -102,6 +102,7 @@ class InterventionController extends Controller
             $intervention->user()->associate($validatedData['user_id']);
             $intervention->service()->associate($id);
             $intervention->statut_id = 1;
+            $intervention->service_version = $service->currentVersion()->version_id;
             $intervention->save();
 
             foreach ($validatedData as $value) {

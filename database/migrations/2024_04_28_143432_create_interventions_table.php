@@ -24,11 +24,12 @@ return new class extends Migration
             $table->foreignIdFor(Reservation::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Provider::class)->nullable()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
-            $table->enum('user_type', ['voyageur', 'bailleur']);            
+            $table->enum('user_type', ['voyageur', 'bailleur']);
             $table->text("description")->nullable();
             $table->integer('price')->nullable();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete()->default(1);
             $table->text('commentaire')->nullable();
+            $table->integer('service_version');
             $table->timestamps();
         });
     }

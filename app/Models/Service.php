@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Mpociot\Versionable\VersionableTrait;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, VersionableTrait;
 
     protected $fillable = [
         'name',
