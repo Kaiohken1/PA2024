@@ -32,7 +32,9 @@
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @if (isset($notifications))
+                    @livewire('notifications')
+
+                    {{-- @if (isset($notifications))
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button
@@ -52,7 +54,7 @@
                                 @endforeach
                             </x-slot>
                         </x-dropdown>
-                    @endif
+                    @endif --}}
 
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
