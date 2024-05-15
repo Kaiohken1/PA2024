@@ -37,7 +37,7 @@
                             <x-input-label :value="$document->name" />
                             <input class="file-input w-full max-w-xs" id="{{ $document->name }}" type="file"
                                 name="documents[{{$document->id}}]">
-                            <x-input-error :messages="$errors->get('documents[{{$document->id}}]')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('documents')" class="mt-2" />
                         </div>
                     @endforeach
                 </ul>

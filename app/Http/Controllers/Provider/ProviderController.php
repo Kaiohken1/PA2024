@@ -55,7 +55,7 @@ class ProviderController extends Controller
             'avatar' => ['image'],
             'service_id' => ['required', 'exists:services,id'],
             'provider_description' => ['max:255'],
-            'documents' => ['array'],
+            'documents' => ['required', 'array'],
             'documents.*' => ['mimes:jpg,png,pdf'],
             'bareme' => ['mimes:jpg,png,pdf']
         ]);

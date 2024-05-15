@@ -39,7 +39,7 @@ class ServiceController extends Controller
             'name' => ['required', 'string', 'unique:services'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
-            'documentsId' => ['array'],
+            'documentsId' => ['required', 'array'],
             'documentsId*' => ['exists:documents,id'],
         ]);
 
@@ -65,8 +65,8 @@ class ServiceController extends Controller
         if($request->has('documentsId')) {
             foreach ($request->documentsId as $documentId) {
                 $service->documents()->attach($documentId);
-            }        
-        }           
+            }
+        }
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -136,7 +136,7 @@ class ServiceController extends Controller
         if($request->has('documentsId')) {
             foreach ($request->documentsId as $documentId) {
                 $service->documents()->attach($documentId);
-            }        
+            }
         }
 
         foreach ($dynamicInputs as $inputId => $input) {
@@ -213,19 +213,25 @@ class ServiceController extends Controller
 
     public function destroyDocument(Service $service, $id)
     {
+        if ($service->documents()->count() <= 1) {
+            return redirect()->route('services.edit', $service)
+                ->with('error', "Pour pouvoir supprimer ce document, veuillez en rajouter un autre");
+        }
+
         $service->documents()->detach($id);
 
         return redirect()->route('services.edit', $service)
             ->with('success', "Document supprimé avec succès");
     }
 
+
     public function updateDocument(Service $service, $id, Request $request) {
         $validatedData = $request->validate([
             'new_document_id' => ['required', 'exists:documents,id'],
         ]);
-    
+
         $service->documents()->updateExistingPivot($id, ['document_id' => $validatedData['new_document_id']]);
-        
+
         return redirect()->route('services.edit', $service)
             ->with('success', "Document modifié avec succès");
     }
@@ -234,7 +240,7 @@ class ServiceController extends Controller
         $service = Service::findOrfail($id);
         $service->active_flag = $service->active_flag ? 0 : 1;
         $service->save();
-    
+
         return redirect()->back()->with('success', 'Statut du service ' . $service->name . " modifié avec succès");
     }
 }
