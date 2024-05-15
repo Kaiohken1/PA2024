@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Tag;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
-use App\Models\Tag;
+use App\Models\AppartementAvis;
 use App\Models\AppartementImage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -85,10 +86,11 @@ $appartements = $appartements->paginate(10);
 // vers haut ou bas pour le order desc ou asc et renvoyer la value du btn dans un switch pour construire la querry avec le tri demandé
 
         $tags = Tag::all(); 
+        
 
         return view('appartements.index', [
             'appartements' => $appartements,
-            'tags' => $tags,
+            'tags' => $tags
         ]);
         
 
@@ -195,11 +197,23 @@ $appartements = $appartements->paginate(10);
         })
         ->toArray();
 
+        $appartementAvisSessionUser = AppartementAvis::where('appartement_id', $id)
+            ->where('user_id', auth()->id())
+            ->get();
+
+        $appartementAvisOtherUser = AppartementAvis::where('appartement_id', $id)
+            ->latest()
+            ->where('user_id', '!=', auth()->id())
+            ->get();
+
+        $appartementAvis = $appartementAvisSessionUser->merge($appartementAvisOtherUser);
+
         return view('appartements.show', [
             'appartement' => $appartement,
             'fermetures' => $fermeture,
             'intervalles' => $intervalle,
-            'reservedDates' => $reservedDates
+            'reservedDates' => $reservedDates,
+            'appartementAvis' => $appartementAvis
         ]);
     }
     /**

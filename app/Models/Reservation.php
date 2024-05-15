@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Events\Reservation as EventsReservation;
 use App\Models\User;
 use App\Models\Appartement;
+use App\Models\AppartementAvis;
 use Illuminate\Database\Eloquent\Model;
+use App\Events\Reservation as EventsReservation;
 
 class Reservation extends Model
 {
@@ -31,5 +32,10 @@ class Reservation extends Model
     public function appartement()
     {
         return $this->belongsTo(Appartement::class, 'appartement_id');
+    }
+
+    public function avis(): HasOne
+    {
+        return $this->hasOne(AppartementAvis::class);
     }
 }
