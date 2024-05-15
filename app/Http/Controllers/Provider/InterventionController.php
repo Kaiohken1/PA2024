@@ -75,7 +75,8 @@ class InterventionController extends Controller
             'tel' => ['nullable', 'array'],
             'tel.*' => ['array'],
             'tel.*.*' => ['regex:/[0-9]{10}/'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'array'],
+            'description.*' =>['string'],
             'date' => ['nullable', 'array'],
             'date.*' => ['array'],
             'date.*.*' => ['date'],
@@ -95,6 +96,11 @@ class InterventionController extends Controller
             $price = $service->flexPrice = 1 ? null : $service->price;
             $validatedData['price'] = $price;
             $role = $user->roles->first()->nom;
+            foreach($validatedData['description'] as $key => $value) {
+                if($key == $id) {
+                    $description = $value;
+                }
+            }
 
             if ($role) {
                 $validatedData['user_type'] = $role;
@@ -104,6 +110,7 @@ class InterventionController extends Controller
             $intervention->user()->associate($validatedData['user_id']);
             $intervention->service()->associate($id);
             $intervention->statut_id = 1;
+            $intervention->description = $description;
             $intervention->service_version = $service->currentVersion()->version_id;
             $intervention->save();
 

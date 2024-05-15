@@ -106,7 +106,7 @@
                 </div>
                 <div>
                     <p>{{__('Autre information dont vous souhaiteriez nous faire part (facultatif)')}}</p>
-                    <textarea name="description" class="block mt-1 w-full" name="description"></textarea>
+                    <textarea name="description[{{ $service->id }}]" class="block mt-1 w-full"></textarea>
                 </div>
             @endif
         @endforeach
