@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Tag;
 use App\Models\Appartement;
 use App\Models\Reservation;
+use App\Models\Subscription;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
@@ -85,5 +86,12 @@ class User extends Authenticatable
 
     public function tags():HasMany {
         return $this->hasMany(Tag::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany(Subscription::class)
+                    ->withPivot('free_service_count', 'last_free_service_date')
+                    ->withTimestamps();
     }
 }

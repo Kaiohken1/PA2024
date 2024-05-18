@@ -16,6 +16,7 @@ use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\StripeController;
 
 /*
@@ -97,6 +98,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
+    Route::resource('/subscriptions', SubscriptionsController::class);
 });
 
 Route::get('/admin', function () {
