@@ -102,7 +102,7 @@ class ProviderController extends Controller
      */
     public function show(Provider $provider)
     {
-        return view('admin.providers.show', ['provider' => $provider, 'service' => $provider->services->first()]);
+        return view('provider.show', ['provider' => $provider, 'service' => $provider->services->first()]);
     }
 
     /**

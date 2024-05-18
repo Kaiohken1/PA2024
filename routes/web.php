@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\InterventionController as AdminInterventionContro
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\ContractController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,17 +70,12 @@ Route::middleware('auth')->group(function () {
         Route::patch('/fermetures/{fermeture}', [FermetureController::class, 'update'])->name('fermeture.update');
         Route::get('/fermetures/create', [FermetureController::class, 'create'])->name('fermeture.create');
         Route::post('/fermetures', [FermetureController::class, 'store'])->name('fermeture.store');
-
-
-     
-
-       
     });
 
     Route::resource('notifcations', NotificationsController::class);
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     Route::resource('property/{id}/interventions', InterventionController::class);
-
+    Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
 });
 
 

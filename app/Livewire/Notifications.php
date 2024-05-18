@@ -25,7 +25,6 @@ class Notifications extends Component
     public function markAsRead($notificationId)
     {
         Auth::user()->unreadNotifications->where('id', $notificationId)->markAsRead();
-        $this->emit('notificationsUpdated'); // Émettre un événement personnalisé
         $this->refreshNotifications();
     }
 
