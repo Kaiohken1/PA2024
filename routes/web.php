@@ -16,6 +16,7 @@ use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\StripeController;
 
@@ -89,7 +90,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
-    Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::patch('/provider/{id}', [AdminProviderController::class, 'validateProvider'])->name('admin.providers.validate');
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
@@ -99,6 +100,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('/documents', DocumentController::class);
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
     Route::resource('/subscriptions', SubscriptionsController::class);
+    Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
 });
 
 Route::get('/admin', function () {

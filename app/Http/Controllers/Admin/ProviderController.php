@@ -1,20 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Provider;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Service;
 use App\Models\Provider;
 use Illuminate\Http\Request;
-use App\Models\ProviderDocument;
-use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $providers = Provider::query()
@@ -22,7 +18,7 @@ class ProviderController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('provider.index', [
+        return view('admin.providers.index', [
             'providers' => $providers,
         ]);
     }
@@ -30,16 +26,16 @@ class ProviderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $services = Service::query()
-            ->select(['id', 'name'])
-            ->get();
+    // public function create()
+    // {
+    //     $services = Service::query()
+    //         ->select(['id', 'name'])
+    //         ->get();
 
-        return view('provider.create', [
-            'services' => $services
-        ]);
-    }
+    //     return view('provider.create', [
+    //         'services' => $services
+    //     ]);
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +46,7 @@ class ProviderController extends Controller
             'name' => ['required'],
             'address' => ['required', 'max:255'],
             'phone' => ['required', 'numeric'],
-            'email' => ['required', 'unique:providers'],
+            'email' => ['required'],
             'description' => ['required', 'max:255'],
             'avatar' => ['image'],
             'service_id' => ['required', 'exists:services,id'],
@@ -142,16 +138,26 @@ class ProviderController extends Controller
 
         $provider->delete();
 
-        return redirect()->route('providers.index')
+        return redirect()->route('admin.providers.index')
             ->with('success', 'Le prestataire a été supprimé avec succès');
     }
 
     public function validateProvider($id)
     {
 
-        Provider::where('id', $id)->update(['statut' => 'Validé']);
+        $provider = Provider::find($id);
 
-        return redirect()->route('providers.index')
+        if ($provider) {
+            $provider->update(['statut' => 'Validé']);
+            
+            $role = Role::where('nom', 'prestataire')->first();
+            if ($role) {
+                $provider->user->roles()->sync([$role->id]);
+            }
+        }
+        
+
+        return redirect()->route('admin.providers.index')
             ->with('success', 'Le prestataire a été validé avec succès');
     }
 }

@@ -31,14 +31,14 @@
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->email }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->statut }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <a href="{{ route('providers.show', $provider) }}" class="text-blue-500 hover:text-blue-700 ml-2">
+                                    <a href="{{ route('admin.providers.show', $provider) }}" class="text-blue-500 hover:text-blue-700 ml-2">
                                         <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
                                         <span class="ml-1 mr-3">Voir</span>
                                     </a>
 
-                                    <form method="POST" action="{{ route('providers.destroy', $provider) }}" class="inline">
+                                    <form method="POST" action="{{ route('admin.providers.destroy', $provider) }}" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce prestataire ?')">

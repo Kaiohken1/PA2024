@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-slate-950 overflow-hidden shadow-sm sm:rounded-lg">
@@ -31,7 +31,27 @@
                 <div class="p-6 text-white">
                     <p>Statut : <strong>{{ $provider->statut }}</strong></p>
                 </div>
+
+                @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())
+                <div class="p-6 text-white flex">
+                    <form action="{{ route('admin.providers.validate', $provider) }}" method="POST" class="mr-5">
+                        @csrf
+                        @method('patch')
+                        <x-primary-button>
+                            Valider le prestataire
+                        </x-primary-button>
+                    </form>
+
+                    <form action="{{ route('admin.providers.destroy', $provider) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <x-danger-button>
+                            Refuser le prestataire
+                        </x-danger-button>
+                    </form>
+                </div>
+                @endif
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

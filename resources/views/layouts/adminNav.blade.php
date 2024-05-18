@@ -20,7 +20,7 @@
                     <x-nav-link :href="route('admin')">
                         {{ __('Appartements') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('providers.index')">
+                    <x-nav-link :href="route('admin.providers.index')">
                         {{ __('Prestataires') }}
                     </x-nav-link>
                     <x-nav-link :href="route('services.index')">
@@ -48,7 +48,7 @@
                         </x-slot>
                         <x-slot name="content">
                             @foreach ($notifications as $notification)
-                                <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
+                                <a href="{{ route('admin.providers.show', $notification->data['prestataire_id']) }}"
                                     class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
                                     {{ $notification->data['message'] }}
                                 </a>
