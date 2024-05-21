@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation');
     Route::get('/reservation/{id}/edit', [ReservationController::class, 'edit'])->name('reservation.edit');
+    Route::get('/calendar', function () {return view('home');});
     Route::get('reservation/create/{appartement_id}', [ReservationController::class, 'create'])->name('reservation.create');
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservation.index');
     Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
@@ -98,7 +99,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
-    Route::get('/calendar', [Calendar::class, 'render'])->name('calendar');
+    
     
 });
 

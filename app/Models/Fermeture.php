@@ -11,8 +11,10 @@ class Fermeture extends Model
     use HasFactory;
 
     protected $fillable = [
-        'start_time',
-        'end_time',
+        'start',
+        'end',
+        'title',
+        'comment',
     ];
 
     public function appartement(): BelongsTo {
