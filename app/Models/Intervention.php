@@ -8,9 +8,10 @@ use App\Models\Service;
 use App\Models\Provider;
 use App\Events\Reservation;
 use App\Models\Appartement;
+use Mpociot\Versionable\Version;
+use App\Models\InterventionEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Mpociot\Versionable\Version;
 
 class Intervention extends Model
 {
@@ -68,5 +69,9 @@ class Intervention extends Model
 
     public function statut() {
         return $this->belongsTo(Statut::class, 'statut_id');
+    }
+
+    public function intervention_event() {
+        return $this->hasOne(InterventionEvent::class);
     }
 }

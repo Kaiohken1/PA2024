@@ -30,6 +30,11 @@ class Service extends Model
                     ->withTimestamps();
     }
 
+    public function provider(): BelongsToMany
+    {
+        return $this->belongsToMany(Provider::class, 'provider_services');
+    }
+
     public function parameters(): HasMany {
         return $this->hasMany(ServiceParameter::class);
     }

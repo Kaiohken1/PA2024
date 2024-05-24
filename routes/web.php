@@ -3,23 +3,24 @@
 use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\EstimationController;
+use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\DocumentsTypeController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
-use App\Http\Controllers\Provider\InterventionController;
-use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
+use App\Http\Controllers\Admin\AvailabilityController;
 use App\Http\Controllers\Admin\SubscriptionsController;
-use App\Http\Controllers\StripeController;
-use App\Http\Controllers\ContractController;
+use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
+use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,9 +33,9 @@ use App\Http\Controllers\ContractController;
 |
 */
 
-Route::get('/test', function () {
-    return view('welcome');
-});
+Route::get('/test/{id}', function () {
+    return view('test');
+})->name('test');
 
 Route::match(['get', 'post'], '/', [AppartementController::class, 'index'])->name('property.index');
 
@@ -76,6 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
+    Route::get('/providers/{id}/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
 });
 
 
@@ -97,7 +99,11 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
     Route::resource('/subscriptions', SubscriptionsController::class);
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
+    Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
 });
+
+Route::get('/providers/available', [AvailabilityController::class, 'availableProviders'])->name('providers.available');
+
 
 Route::get('/admin', function () {
     return view('admin.index');

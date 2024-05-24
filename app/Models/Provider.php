@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Events\ProviderCreated;
 use App\Models\User;
 use App\Models\Service;
+use App\Models\Intervention;
+use App\Events\ProviderCreated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Provider extends Model
 {
@@ -47,5 +48,13 @@ class Provider extends Model
         return $this->belongsToMany(Document::class, 'providers_documents')
                     ->withPivot(['document'])
                     ->withTimestamps();
+    }
+
+    public function interventions() : HasMany {
+        return $this->hasMany(Intervention::class);
+    }
+
+    public function intervention_events() : HasMany {
+        return $this->hasMany(InterventionEvent::class);
     }
 }

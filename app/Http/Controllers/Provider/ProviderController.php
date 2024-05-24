@@ -154,4 +154,11 @@ class ProviderController extends Controller
         return redirect()->route('providers.index')
             ->with('success', 'Le prestataire a été validé avec succès');
     }
+
+
+    public function home($id) {
+        $provider = Provider::findOrFail($id);
+
+        return view('provider.home', ['provider' => $provider]);
+    }
 }

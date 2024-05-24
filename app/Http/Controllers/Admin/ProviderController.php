@@ -144,12 +144,11 @@ class ProviderController extends Controller
 
     public function validateProvider($id)
     {
+        Provider::where('id', $id)->update(['statut' => 'Validé']);
 
         $provider = Provider::find($id);
 
-        if ($provider) {
-            $provider->update(['statut' => 'Validé']);
-            
+        if ($provider) {            
             $role = Role::where('nom', 'prestataire')->first();
             if ($role) {
                 $provider->user->roles()->sync([$role->id]);

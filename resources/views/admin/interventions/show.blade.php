@@ -23,6 +23,18 @@
                     @if($intervention->description)<p><strong>Description:</strong> {{ $intervention->description }}</p>@endif
                     <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s') }}</p>
                     <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($intervention->updated_at)->format('d/m/Y H:i:s') }}</p>
+
+
+                    <form action="{{ route('providers.available') }}" method="GET">
+                        @csrf
+
+                        <input type="hidden" value="{{$intervention->id}}" name="intervention_id">
+                        <input type="hidden" value="{{$intervention->planned_date}}" name="start">
+                        <input type="hidden" value="{{$intervention->service_id}}" name="service_id">
+                    
+                        <button type="submit">Rechercher</button>
+                    </form>
+                    
                 </div>
             </div>
         </div>

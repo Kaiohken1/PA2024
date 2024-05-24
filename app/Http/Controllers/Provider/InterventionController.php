@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Provider;
 
 use App\Models\Service;
+use App\Models\Provider;
 use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\ServiceParameter;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
@@ -76,7 +77,7 @@ class InterventionController extends Controller
             'tel.*' => ['array'],
             'tel.*.*' => ['regex:/[0-9]{10}/'],
             'description' => ['nullable', 'array'],
-            'description.*' =>['string'],
+            'description.*' =>['nullable', 'string'],
             'date' => ['nullable', 'array'],
             'date.*' => ['array'],
             'date.*.*' => ['date'],
@@ -177,5 +178,10 @@ class InterventionController extends Controller
 
         return redirect()->route('interventions.index')
             ->with('success', 'Intervention deleted successfully.');
+    }
+
+
+    public function attribuate(Intervention $intervention, Provider $provider) {
+        $intervention->update(['provider_id'], $provider->id);
     }
 }

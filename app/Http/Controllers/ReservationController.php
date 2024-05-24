@@ -21,7 +21,7 @@ class ReservationController extends Controller
     public function index()
     {
 
-        Carbon::setTestNow(Carbon::create(2024, 5, 9, 12, 0, 0));
+        // Carbon::setTestNow(Carbon::create(2024, 5, 9, 12, 0, 0));
 
         $reservations = Reservation::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
