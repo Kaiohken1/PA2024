@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
+use App\Models\Intervention;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -160,5 +161,16 @@ class ProviderController extends Controller
         $provider = Provider::findOrFail($id);
 
         return view('provider.home', ['provider' => $provider]);
+    }
+
+    public function proposals($id) {
+        $provider = Provider::findOrFail($id);
+        $interventions = Intervention::query()
+                            ->where('service_id', $provider->services->first()->id)
+                            ->where('statut_id', 1)
+                            ->paginate(15);
+
+        return view('provider.proposals', ['interventions' => $interventions]);
+
     }
 }

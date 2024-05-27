@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -86,6 +88,10 @@ class User extends Authenticatable
 
     public function tags():HasMany {
         return $this->hasMany(Tag::class);
+    }
+
+    public function provider() : HasOne {
+        return $this->hasOne(Provider::class);
     }
 
     public function subscriptions()

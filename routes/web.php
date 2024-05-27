@@ -78,6 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
     Route::get('/providers/{id}/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
+    Route::get('/providers/{id}/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
+
 });
 
 
@@ -100,6 +102,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('/subscriptions', SubscriptionsController::class);
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
     Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
+
 });
 
 Route::get('/providers/available', [AvailabilityController::class, 'availableProviders'])->name('providers.available');

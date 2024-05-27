@@ -21,6 +21,10 @@
                     <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
                         {{ __('Mes disponibilités') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('providers.proposals', Auth::user()->provider->id)" :active="request()->routeIs('providers.proposals')">
+                        {{ __('Propositions') }}
+                    </x-nav-link>
                 </div>
             </div>
 
