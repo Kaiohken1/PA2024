@@ -1,6 +1,23 @@
 <x-auth-session-status class="mb-4" :status="session('status')" />
-<form method="POST" action="{{ route('property.store') }}" enctype="multipart/form-data">
+<form class="form" method="POST" action="{{ route('property.store') }}" enctype="multipart/form-data">
     @csrf
+
+    <div>
+    <x-input-label for="name" :value="__('Type de logement')" />
+        <select name="property_type" class="select select-bordered w-full max-w-xs">
+            <option value="appartement">Appartement</option>
+            <option value="house">Maison</option>
+            <option value="gite">Gite</option>
+        </select>
+    </div>
+
+    <div>
+    <x-input-label for="name" :value="__('Type de location')" />
+        <select name="location_type" class="select select-bordered w-full max-w-xs">
+            <option value="full_property">Logement complet</option>
+            <option value="guestroom">Chambre d'hôte</option>
+        </select>
+    </div>
 
     <div>
         <x-input-label for="name" :value="__('Titre')" />
@@ -13,6 +30,12 @@
         <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" />
         <x-input-error :messages="$errors->get('address')" class="mt-2" />
     </div>
+
+    <div>
+                            <x-input-label for="city" :value="__('Ville')" />
+                            <x-text-input id="city" class="block mt-1 w-full" type="text" name="city"/>
+                            <x-input-error :messages="$errors->get('city')" class="mt-2" />
+                        </div>
 
     <div>
         <x-input-label for="surface" :value="__('Surface (Au mètre carré)')" />
@@ -54,7 +77,7 @@
     
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez des tags</label>
-        <select class="chosen-select" multiple name="tag_id[]" id=tag_id>
+        <select class="select select-bordered w-full max-w-xs chosen-select" multiple name="tag_id[]" id=tag_id>
             @foreach($tags as $tag)
                 <option value="{{$tag->id}}">{{$tag->name}}</option>
             @endforeach

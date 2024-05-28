@@ -34,7 +34,10 @@ class AppartementAvisController extends Controller
             'comment' => ['required', 'max:255'],
             'appartement_id' => ['required', 'numeric'],
             'reservation_id' => ['required', 'numeric'],
-            'rating' => ['required', 'numeric', 'max:5']
+            'rating_cleanness' => ['required', 'numeric', 'max:5'],
+            'rating_price_quality' => ['required', 'numeric', 'max:5'],
+            'rating_location' => ['required', 'numeric', 'max:5'],
+            'rating_communication' => ['required', 'numeric', 'max:5'],
         ]);
         
         $validateData['user_id'] = Auth()->id();
@@ -43,7 +46,10 @@ class AppartementAvisController extends Controller
         $AppartementAvis->comment = $validateData['comment'];
         $AppartementAvis->appartement_id = $validateData['appartement_id'];
         $AppartementAvis->reservation_id = $validateData['reservation_id'];
-        $AppartementAvis->rating = $validateData['rating'];
+        $AppartementAvis->rating_cleanness = $validateData['rating_cleanness'];
+        $AppartementAvis->rating_price_quality = $validateData['rating_price_quality'];
+        $AppartementAvis->rating_location = $validateData['rating_location'];
+        $AppartementAvis->rating_communication = $validateData['rating_communication'];
         $AppartementAvis->user()->associate($validateData['user_id']);
         $AppartementAvis->save();
 
@@ -82,7 +88,10 @@ class AppartementAvisController extends Controller
             'comment' => ['required', 'max:255'],
             'appartement_id' => ['required', 'numeric'],
             'reservation_id' => ['required', 'numeric'],
-            'rating' => ['required', 'numeric', 'max:5']
+            'rating_cleanness' => ['required', 'numeric', 'max:5'],
+            'rating_price_quality' => ['required', 'numeric', 'max:5'],
+            'rating_location' => ['required', 'numeric', 'max:5'],
+            'rating_communication' => ['required', 'numeric', 'max:5'],
         ]);
         
     

@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('notifications', $notifications)
                 ->with('user', $user);
             }
+        
+        Carbon::setLocale('fr');
         });
     }
 }

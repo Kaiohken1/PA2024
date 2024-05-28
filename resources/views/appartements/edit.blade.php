@@ -31,6 +31,24 @@
                         enctype="multipart/form-data">
                         @csrf
                         @method('patch')
+
+                        <div>
+                        <x-input-label for="property_type" :value="__('Type de logement')" />
+                            <select name="property_type" class="select select-bordered w-full max-w-xs">
+                                <option value="appartement">Appartement</option>
+                                <option value="house">Maison</option>
+                                <option value="gite">Gite</option>
+                            </select>
+                        </div>
+
+                        <div>
+                        <x-input-label for="location_type" :value="__('Type de location')" />
+                            <select name="location_type" class="select select-bordered w-full max-w-xs">
+                                <option value="full_property">Logement complet</option>
+                                <option value="guestroom">Chambre d'hôte</option>
+                            </select>
+                        </div>
+
                         <div>
                             <x-input-label for="name" :value="__('Titre')" />
                             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
@@ -43,6 +61,13 @@
                             <x-text-input id="address" class="block mt-1 w-full" type="text" name="address"
                                 :value="old('address', $appartement->address)" />
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="city" :value="__('Ville')" />
+                            <x-text-input id="city" class="block mt-1 w-full" type="text" name="city"
+                                :value="old('city', $appartement->city)" />
+                            <x-input-error :messages="$errors->get('city')" class="mt-2" />
                         </div>
 
                         <div>

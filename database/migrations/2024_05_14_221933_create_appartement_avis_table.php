@@ -19,7 +19,10 @@ return new class extends Migration
             $table->foreignIdFor(Appartement::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Reservation::class)->constrained()->cascadeOnDelete();
-            $table->integer('rating');
+            $table->integer('rating_cleanness');
+            $table->integer('rating_price_quality');
+            $table->integer('rating_location');
+            $table->integer('rating_communication');
             $table->string('comment');
             $table->timestamps();
         });

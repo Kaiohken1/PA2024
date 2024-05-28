@@ -12,7 +12,10 @@ class AppartementAvis extends Model
     protected $table = 'appartement_avis';
 
     protected $fillable = [
-        'rating',
+        'rating_cleanness',
+        'rating_price_quality',
+        'rating_location',
+        'rating_communication',
         'comment'
     ];
 

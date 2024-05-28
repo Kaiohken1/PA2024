@@ -8,7 +8,6 @@
             </div>
         </x-slot>
     @endif
-
     <div class="flex justify-center">
         <div class="grid grid-cols-6 gap-6 w-9/12">
             @forelse ($appartements as $appartement)
@@ -22,10 +21,16 @@
                             @else
                                 <p>Aucune image disponible</p>
                             @endif
-                            <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
-                            <p>{{ $appartement->address }}</p>
-                            <p>Loué par {{ $appartement->user->name }}</p>
-                            <p><span class="font-extrabold">{{ $appartement->price }}€</span> par nuit</p>
+                            
+                                    <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
+                                    <p>{{ $appartement->address }}</p>
+                                    <p>Loué par {{ $appartement->user->name }}</p>
+                                    
+                                        
+                                    <p><span class="font-extrabold">{{ $appartement->price }}€</span> par nuit</p>
+                                
+                                    <span class="text-xl font-extrabold size-max inline-flex"><x-ri-star-fill class="size-1/12"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} Avis</span>
+                                    
                             @foreach ($appartement->tags as $tag)
                                 <span
                                     class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>

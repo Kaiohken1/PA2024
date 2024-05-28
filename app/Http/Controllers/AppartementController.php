@@ -10,6 +10,7 @@ use App\Models\Reservation;
 use Illuminate\Http\Request;
 use App\Models\AppartementAvis;
 use App\Models\AppartementImage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +34,13 @@ class AppartementController extends Controller
         $appartements = Appartement::query()
     ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
     ->with(['user:id,name'])
-    ->with(['images:*']);
+    ->with(['avis'])
+    ->with(['images:*'])
+    ->withCount('avis')
+    ->withAvg('avis', 'rating_cleanness')
+    ->withAvg('avis', 'rating_price_quality')
+    ->withAvg('avis', 'rating_location')
+    ->withAvg('avis', 'rating_communication');
 
 if (isset($validateData['tag_id'])) {
     $tags_id = $validateData['tag_id'];
@@ -78,27 +85,20 @@ if (isset($validateData['sort_type'])) {
     
 
 
-
 $appartements = $appartements->paginate(10);
-        
 
-//pour trier sur le prix ou sur la surface par exemple faire des bouttons avec fleche qui pointe 
-// vers haut ou bas pour le order desc ou asc et renvoyer la value du btn dans un switch pour construire la querry avec le tri demandé
+$appartements = $appartements->each(function ($appartement) {
+    $appartement->overall_rating = ($appartement->avis_avg_rating_cleanness + $appartement->avis_avg_rating_price_quality  + $appartement->avis_avg_rating_location  + $appartement->avis_avg_rating_communication) / 4;
+    return $appartement;
+});
 
         $tags = Tag::all(); 
-        
 
         return view('appartements.index', [
             'appartements' => $appartements,
-            'tags' => $tags
+            'tags' => $tags,
         ]);
         
-
-       /* $appartements = Appartement::with('tags','images','user');
-        return view('appartements.index', [
-            'appartements' => $appartements
-        ]);
-        */
     }
 
     public function userIndex()
@@ -138,7 +138,10 @@ $appartements = $appartements->paginate(10);
             'price' => ['required', 'numeric'],
             'image' => ['array'],
             'image.*' => ['image'],
-            'tag_id' => ['array']
+            'tag_id' => ['array'],
+            'property_type' => ['string', 'required'],
+            'city' => ['string', 'required'],
+            'location_type' => ['string', 'required']
         ]);
 
         unset($validateData['image']);
@@ -176,7 +179,23 @@ $appartements = $appartements->paginate(10);
      */
     public function show($id)
     {
-        $appartement = Appartement::findOrFail($id);
+        $appartement = Appartement::with('avis')
+        ->withAvg('avis', 'rating_cleanness')
+        ->withAvg('avis', 'rating_price_quality')
+        ->withAvg('avis', 'rating_location')
+        ->withAvg('avis', 'rating_communication')
+        ->withCount('avis')
+        ->findOrFail($id);
+
+        $total_avg = ($appartement->avis_avg_rating_cleanness +
+        $appartement->avis_avg_rating_price_quality +
+        $appartement->avis_avg_rating_location  + 
+        $appartement->avis_avg_rating_communication) / 4;
+
+        $appartement->overall_rating = round($total_avg, 2);
+
+
+    
 
         $intervalle = Reservation::where("appartement_id", $appartement->id)
             ->select("start_time","end_time")
@@ -208,6 +227,11 @@ $appartements = $appartements->paginate(10);
 
         $appartementAvis = $appartementAvisSessionUser->merge($appartementAvisOtherUser);
 
+        $appartementAvis = $appartementAvis->each(function ($avis) {
+            $avis->voyageur_rating = round(($avis->rating_cleanness + $avis->rating_price_quality  + $avis->rating_location  + $avis->rating_communication) / 4, 0);
+            return $avis;
+        });
+
         return view('appartements.show', [
             'appartement' => $appartement,
             'fermetures' => $fermeture,
@@ -227,7 +251,7 @@ $appartements = $appartements->paginate(10);
 
 
         $appartement = Appartement::findOrFail($id);
-        $tags = Tag::all()->where("user_id", Auth()->id());
+        $tags = Tag::all();
         return view('appartements.edit', [
             'appartement' => $appartement,
             'tags' => $tags
@@ -254,6 +278,9 @@ $appartements = $appartements->paginate(10);
             'image' => ['array'],
             'image.*' => ['image'],
             'tag_id' => ['array'],
+            'property_type' => ['string', 'required'],
+            'city' => ['string', 'required'],
+            'location_type' => ['string', 'required']
         ]);
         
 

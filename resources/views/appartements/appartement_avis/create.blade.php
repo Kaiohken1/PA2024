@@ -16,13 +16,40 @@
                             <form method="POST" action="{{ route('avis.store', $reservation->appartement_id) }}" enctype="multipart/form-data">
                                 @csrf
 
-                                <x-input-label for="rating" :value="__('Noté votre séjour')" />
+                                <x-input-label for="rating_cleanness" :value="__('Notez la propretée du bien')" />
                                 <div class="rating">
-                                    <input type="radio" name="rating" class="mask mask-star" value="1"/>
-                                    <input type="radio" name="rating" class="mask mask-star" value="2"/>
-                                    <input type="radio" name="rating" class="mask mask-star" value="3"/>
-                                    <input type="radio" name="rating" class="mask mask-star" value="4"/>
-                                    <input type="radio" name="rating" class="mask mask-star" value="5"/>
+                                    <input type="radio" name="rating_cleanness" class="mask mask-star" value="1"/>
+                                    <input type="radio" name="rating_cleanness" class="mask mask-star" value="2"/>
+                                    <input type="radio" name="rating_cleanness" class="mask mask-star" value="3"/>
+                                    <input type="radio" name="rating_cleanness" class="mask mask-star" value="4"/>
+                                    <input type="radio" name="rating_cleanness" class="mask mask-star" value="5"/>
+                                </div>
+
+                                <x-input-label for="rating_price_quality" :value="__('Notez le rapport qualité prix')" />
+                                <div class="rating">
+                                    <input type="radio" name="rating_price_quality" class="mask mask-star" value="1"/>
+                                    <input type="radio" name="rating_price_quality" class="mask mask-star" value="2"/>
+                                    <input type="radio" name="rating_price_quality" class="mask mask-star" value="3"/>
+                                    <input type="radio" name="rating_price_quality" class="mask mask-star" value="4"/>
+                                    <input type="radio" name="rating_price_quality" class="mask mask-star" value="5"/>
+                                </div>
+
+                                <x-input-label for="rating_location" :value="__('Notez l\'emplacement du bien')" />
+                                <div class="rating">
+                                    <input type="radio" name="rating_location" class="mask mask-star" value="1"/>
+                                    <input type="radio" name="rating_location" class="mask mask-star" value="2"/>
+                                    <input type="radio" name="rating_location" class="mask mask-star" value="3"/>
+                                    <input type="radio" name="rating_location" class="mask mask-star" value="4"/>
+                                    <input type="radio" name="rating_location" class="mask mask-star" value="5"/>
+                                </div>
+
+                                <x-input-label for="rating_communication" :value="__('Notez la communication des hôtes')" />
+                                <div class="rating">
+                                    <input type="radio" name="rating_communication" class="mask mask-star" value="1"/>
+                                    <input type="radio" name="rating_communication" class="mask mask-star" value="2"/>
+                                    <input type="radio" name="rating_communication" class="mask mask-star" value="3"/>
+                                    <input type="radio" name="rating_communication" class="mask mask-star" value="4"/>
+                                    <input type="radio" name="rating_communication" class="mask mask-star" value="5"/>
                                 </div>
 
                                 <div>
