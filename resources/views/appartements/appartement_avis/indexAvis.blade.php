@@ -1,6 +1,6 @@
 <div class="w-full bg-white shadow-md rounded my-4">
 <h1 class=" py-3 px-6 text-2xl font-extrabold">Avis des voyageurs</h1>
-<h2 class=" px-6 text-xl font-extrabold size-max inline-flex"><x-ri-star-fill class="size-1/12"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} Commentaires</h2>
+<h2 class=" px-6 text-xl font-extrabold size-max inline-flex"><x-ri-star-fill class="size-1/12"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} Avis</h2>
 <div class="py-3 flex flex-row">
     <div class="flex flex-col">
         <span class="px-6 text-xl font-extrabold">Propreté</span>
@@ -31,7 +31,7 @@
                                 <div class="avatar">
                                     <div class="w-12 rounded-full">
                                         <a href="profile">
-                                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                        <img src="{{ $avis->reservation->user->avatar != NULL ? Storage::url($avis->reservation->user->avatar) : 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?w=300&ssl=1'}}" />
                                         </a>
                                     </div>
                                 </div>
