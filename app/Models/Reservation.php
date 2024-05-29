@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\AppartementAvis;
 use Illuminate\Database\Eloquent\Model;
@@ -37,5 +38,9 @@ class Reservation extends Model
     public function avis(): HasOne
     {
         return $this->hasOne(AppartementAvis::class);
+    }
+    public function UserAvis()
+    {
+    return $this->hasMany(UserAvis::class);
     }
 }

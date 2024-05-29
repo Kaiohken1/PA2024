@@ -28,6 +28,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        
         if ($request->file('avatar') && $request->user()->avatar) {
                 Storage::disk('public')->delete($request->user()->avatar);
         }

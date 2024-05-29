@@ -54,9 +54,9 @@
         </div>
 
         <div>
-            <x-input-label for="description" :value="__('Description')" />
-            <textarea name="description" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm"></textarea>
-            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+            <x-input-label for="bio" :value="__('Bio')" />
+            <textarea name="bio" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm">{{ $user->bio }}</textarea>
+            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
         </div>
 
         <div>

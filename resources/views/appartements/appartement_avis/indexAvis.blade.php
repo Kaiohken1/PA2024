@@ -24,7 +24,6 @@
 
 
                     @foreach ( $appartementAvis as $avis)
-
              <div class="px-6 flex flex-col border-b-2 border-grey overflow-x-auto mb-3">
              <div class="flex flex-row ">
 
