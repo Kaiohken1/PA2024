@@ -10,6 +10,7 @@ use App\Events\Reservation;
 use App\Models\Appartement;
 use Mpociot\Versionable\Version;
 use App\Models\InterventionEvent;
+use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -22,6 +23,7 @@ class Intervention extends Model
         'commentaire',
         'appartement_id',
         'service_id',
+        'statut_id',
         'price',
         'planned_date',
     ];
@@ -73,5 +75,10 @@ class Intervention extends Model
 
     public function intervention_event() {
         return $this->hasOne(InterventionEvent::class);
+    }
+
+    public function estimations()
+    {
+        return $this->hasMany(InterventionEstimation::class);
     }
 }

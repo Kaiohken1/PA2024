@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Http\Controllers\InterventionEstimateController;
+use App\Http\Controllers\InterventionEstimationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/reservation/validate/{id}', [ReservationController::class, 'validate'])->name('reservation.validate');
     Route::patch('/reservation/refused/{id}', [ReservationController::class, 'refused'])->name('reservation.refused');
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
-   
+    
+    Route::post('/estimate', [InterventionEstimationController::class, 'store'])->name('estimate.store');
 
     Route::prefix('property/{appartement}/edit')->group(function () {
         Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
@@ -77,8 +80,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
-    Route::get('/providers/{id}/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
-    Route::get('/providers/{id}/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
+    Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
+    Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
+    Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('interventions.show');
+
 
 });
 

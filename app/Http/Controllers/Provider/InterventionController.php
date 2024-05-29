@@ -9,6 +9,7 @@ use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
+use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
@@ -136,9 +137,10 @@ class InterventionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Intervention $intervention)
+    public function show($id)
     {
-        return view('interventions.show', compact('intervention'));
+        $intervention = Intervention::findOrfail($id);
+        return view('interventions.show', ['intervention' => $intervention]);
     }
 
     /**
@@ -184,4 +186,5 @@ class InterventionController extends Controller
     public function attribuate(Intervention $intervention, Provider $provider) {
         $intervention->update(['provider_id'], $provider->id);
     }
+
 }

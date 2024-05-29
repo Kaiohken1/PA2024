@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Provider;
 
 use App\Models\Service;
 use App\Models\Provider;
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
-use App\Models\Intervention;
+use Illuminate\Support\Facades\Auth;
+use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -157,20 +159,21 @@ class ProviderController extends Controller
     }
 
 
-    public function home($id) {
-        $provider = Provider::findOrFail($id);
+    public function home() {
+
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
 
         return view('provider.home', ['provider' => $provider]);
     }
 
-    public function proposals($id) {
-        $provider = Provider::findOrFail($id);
+    public function proposals() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
         $interventions = Intervention::query()
                             ->where('service_id', $provider->services->first()->id)
                             ->where('statut_id', 1)
+                            ->latest()
                             ->paginate(15);
 
         return view('provider.proposals', ['interventions' => $interventions]);
-
     }
 }
