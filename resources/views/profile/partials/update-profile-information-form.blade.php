@@ -1,11 +1,11 @@
-<section>
+<section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Information générales') }}
+            {{ __('Informations générales') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __("Modifez les informations de votre profil.") }}
+            {{ __("Modifiez les informations de votre profil.") }}
         </p>
     </header>
 
@@ -18,35 +18,35 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Nom')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input-label for="name" class="form-label">{{ __('Nom') }}</x-input-label>
+            <x-text-input id="name" name="name" type="text" class="form-input mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="first_name" :value="__('Prénom')" />
-            <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('first_name', $user->first_name)" required autofocus autocomplete="first_name" />
+            <x-input-label for="first_name" class="form-label">{{ __('Prénom') }}</x-input-label>
+            <x-text-input id="first_name" name="first_name" type="text" class="form-input mt-1 block w-full" :value="old('first_name', $user->first_name)" required autofocus autocomplete="first_name" />
             <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
         </div>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-input-label for="email" class="form-label">{{ __('Email') }}</x-input-label>
+            <x-text-input id="email" name="email" type="email" class="form-input mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
+                        {{ __('Votre adresse email n\'est pas vérifiée.') }}
 
                         <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                            {{ __('Cliquez ici pour renvoyer l\'email de vérification.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
+                            {{ __('Un nouveau lien de vérification a été envoyé à votre adresse email.') }}
                         </p>
                     @endif
                 </div>
@@ -54,7 +54,13 @@
         </div>
 
         <div>
-            <x-input-label for="avatar" :value="__('Avatar')" />
+            <x-input-label for="description" :value="__('Description')" />
+            <textarea name="description" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm"></textarea>
+            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-input-label for="avatar" class="form-label">{{ __('Avatar') }}</x-input-label>
             <div class="avatar flex mb-3 mt-3">
                 <div class="w-32 rounded">
                     <img src="{{  $user->getImageUrl() }}" alt="Avatar">

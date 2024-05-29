@@ -22,7 +22,10 @@ export default {
       },
 
     plugins: [
-        forms,
-        require("daisyui")],
+        require('@tailwindcss/forms')({
+            strategy: 'class',
+          }),
+        require('daisyui'),
+      ],
         darkMode: 'false',
 };

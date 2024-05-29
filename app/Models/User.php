@@ -35,7 +35,8 @@ class User extends Authenticatable
         'adresse',
         'code_postal',
         'ville',
-        'iban'
+        'iban',
+        'display_city'
     ];
 
     /**

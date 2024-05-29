@@ -87,8 +87,11 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
-    Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::patch('/provider/{id}', [UserController::class, 'validateProvider'])->name('providers.validate');
 });
+
+Route::get('users/{user}/show', [UserController::class, 'show'])->name('users.show');
+
 
 Route::get('/admin', function () {
     return view('admin.index');

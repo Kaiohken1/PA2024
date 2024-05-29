@@ -47,7 +47,7 @@
 
                             <div>
                                 <x-input-label for="comment" :value="__('Commentaire')" />
-                                <x-text-input id="comment" class="block mt-1 w-full" type="text" name="comment" :value="$avis->comment" />
+                                <x-text-input id="comment" class="form-input block mt-1 w-full" type="text" name="comment" :value="$avis->comment" />
                                 <x-input-error :messages="$errors->get('comment')" class="mt-2" />
                             </div>
 

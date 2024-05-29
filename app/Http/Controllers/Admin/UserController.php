@@ -37,9 +37,12 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('profile.public_profile', [
+            'user' => $user
+        ]);
     }
 
     /**
