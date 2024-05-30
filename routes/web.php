@@ -67,6 +67,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
     
     Route::post('/estimate', [InterventionEstimationController::class, 'store'])->name('estimate.store');
+    Route::patch('/estimate/{id}', [InterventionEstimationController::class, 'update'])->name('estimate.update');
+    Route::delete('/estimate/{id}', [InterventionEstimationController::class, 'destroy'])->name('estimate.destroy');
+
+
 
     Route::prefix('property/{appartement}/edit')->group(function () {
         Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');

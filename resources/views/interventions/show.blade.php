@@ -33,36 +33,48 @@
                     @if($intervention->description)<p><strong>Description:</strong> {{ $intervention->description }}</p>@endif
 
 
-                    @foreach ($intervention->estimations as $estimation)
-                    @if($estimation->provider_id === Auth::user()->provider->id)
-                        <div>
-                            <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
-                            <a href="" class="btn btn-info">Modifier</a>
-                            <form action="" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Supprimer</button>
-                            </form>
-                        </div>
-                    @endif
-                @endforeach
+                    @forelse ($intervention->estimations as $estimation)
+                        @if($estimation->provider_id === Auth::user()->provider->id)
+                            <div>
+                                <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
+                                <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </form>
 
+                                <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
+                                    @csrf
+                                    @method('PATCH')
+                                    <x-input-label>Devis</x-input-label>
+                                    <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                                    @error('estimate')
+                                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                                    @enderror
+        
+                                    <div class="mt-5">
+                                        <x-primary-button>Modifier</x-primary-button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif                        
+                    @empty
+                        <form method="POST"action="{{route('estimate.store')}}" enctype="multipart/form-data" class="mt-5">
+                            @csrf
+                            <x-input-label>Devis</x-input-label>
+                            <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                            @error('estimate')
+                                <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                            @enderror
 
-                    <form method="POST"action="{{route('estimate.store')}}" enctype="multipart/form-data" class="mt-5">
-                        @csrf
-                        <x-input-label>Devis</x-input-label>
-                        <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
-                        @error('estimate')
-                            <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                        @enderror
+                            <input type="hidden" name="provider_id" value="{{Auth::user()->provider->id}}" />
+                            <input type="hidden" name="intervention_id" value="{{$intervention->id}}" />
 
-                        <input type="hidden" name="provider_id" value="{{Auth::user()->provider->id}}" />
-                        <input type="hidden" name="intervention_id" value="{{$intervention->id}}" />
-
-                        <div class="mt-5">
-                            <x-primary-button>envoyer</x-primary-button>
-                        </div>
-                    </form>
+                            <div class="mt-5">
+                                <x-primary-button>envoyer</x-primary-button>
+                            </div>
+                        </form>
+                    @endforelse
                 </div>
             </div>
         </div>
