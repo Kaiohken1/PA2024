@@ -18,7 +18,7 @@
                     <h2 class="text-2xl font-bold mb-4">Intervention #{{$intervention->id}}</h2>
                     <p><strong>Client :</strong> {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                     <p><strong>Appartement :</strong>{{ $intervention->appartement->address }}</p>
-                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</p>
+                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</p>
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
                     @foreach ($intervention->service_parameters as $parameter)
                         <div class="flex">
@@ -35,7 +35,9 @@
 
                     @forelse ($intervention->estimations as $estimation)
                         @if($estimation->provider_id === Auth::user()->provider->id)
-                            <div>
+                            <div class="mt-5">
+                                <p><strong>Tarif : </strong>{{$estimation->price}}€</p>
+                                <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($intervention->end_time)->format('d/m/Y à H:i:s')}}</p>
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
                                 <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
                                     @csrf
@@ -61,6 +63,18 @@
                     @empty
                         <form method="POST"action="{{route('estimate.store')}}" enctype="multipart/form-data" class="mt-5">
                             @csrf
+
+                            <div>
+                                <x-input-label for="end_time" :value="__('Date de fin')" />
+                                <x-text-input id="end_time" class="block mt-1 w-full" type="datetime-local" name="end_time"/>
+                                <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="price" :value="__('Tarif')" />
+                                <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
+                                <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                            </div>
+
                             <x-input-label>Devis</x-input-label>
                             <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
                             @error('estimate')

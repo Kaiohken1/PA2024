@@ -11,6 +11,8 @@
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
                             <th scope="col" class="px-6 py-3 text-center">Email</th>
+                            <th scope="col" class="px-6 py-3 text-center">Tarif</th>
+                            <th scope="col" class="px-6 py-3 text-center">Date de fin prévue</th>
                             <th scope="col" class="px-6 py-3 text-center">Devis</th>
                             <th scope="col" class="px-6 py-3 text-center">Actions</th>
                         </tr>
@@ -20,6 +22,9 @@
                             <tr class="border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->name }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->email }}</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->estimations->first()->price}}€</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</td>
+
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
                                     <a href="{{ Storage::url($provider->estimations->first()->estimate) }}" target="_blank">
                                         <button class="btn btn-primarty">Télécharger le devis</button>                                    

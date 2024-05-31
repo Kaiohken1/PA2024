@@ -14,6 +14,8 @@ class InterventionEstimationController extends Controller
             'intervention_id' => ['required', 'exists:interventions,id'],
             'provider_id' => ['required', 'exists:providers,id', 'unique:intervention_estimations'],
             'estimate' => ['required', 'image'],
+            'end_time' => ['required'],
+            'price' => ['required', 'numeric'],
         ]);
 
         $doc = $request->file('estimate');
