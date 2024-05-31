@@ -11,6 +11,7 @@
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
                             <th scope="col" class="px-6 py-3 text-center">Email</th>
+                            <th scope="col" class="px-6 py-3 text-center">Devis</th>
                             <th scope="col" class="px-6 py-3 text-center">Actions</th>
                         </tr>
                     </thead>
@@ -19,6 +20,12 @@
                             <tr class="border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->name }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->email }}</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
+                                    <a href="{{ Storage::url($provider->estimations->first()->estimate) }}" target="_blank">
+                                        <button class="btn btn-primarty">Télécharger le devis</button>                                    
+                                    </a>
+                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
 
                                     <button class="btn btn-success">Attribuer</button>

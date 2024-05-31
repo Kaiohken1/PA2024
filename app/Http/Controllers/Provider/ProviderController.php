@@ -176,4 +176,9 @@ class ProviderController extends Controller
 
         return view('provider.proposals', ['interventions' => $interventions]);
     }
+
+    public function calendar() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        return view('provider.calandar', ['provider' => $provider]);
+    }
 }

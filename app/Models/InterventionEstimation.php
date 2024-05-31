@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Statut;
+use App\Models\Provider;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class InterventionEstimation extends Model
 {
@@ -23,7 +25,12 @@ class InterventionEstimation extends Model
 
     public function provider()
     {
-        return $this->belongsTo(User::class, 'provider_id');
+        return $this->belongsTo(Provider::class);    
+    }
+
+    public function statut()
+    {
+        return $this->belongsTo(Statut::class);
     }
 
 }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\Provider;
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Role;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -158,5 +159,17 @@ class ProviderController extends Controller
 
         return redirect()->route('admin.providers.index')
             ->with('success', 'Le prestataire a été validé avec succès');
+    }
+
+
+    public function availableProviders($id) {
+
+        $intervention = Intervention::findOrFail($id);
+
+        $providers = $intervention->estimations->map(function ($estimation) {
+            return $estimation->provider;
+        })->unique();
+        
+        return view('provider.availability', ['id' => $intervention->id, 'intervention' => $intervention,'providers' => $providers]);
     }
 }

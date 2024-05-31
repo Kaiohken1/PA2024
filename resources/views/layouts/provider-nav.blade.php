@@ -12,14 +12,9 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Mes informations') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
-                        {{ __('Mon espace') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
-                        {{ __('Mes disponibilités') }}
+                    
+                    <x-nav-link :href="route('provider.calendar')" :active="request()->routeIs('provider.calendar')">
+                        {{ __('Mon calendrier') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('providers.proposals', Auth::user()->provider->id)" :active="request()->routeIs('providers.proposals')">

@@ -15,7 +15,6 @@ class ProviderCalendar extends Component
     
     public function render(Request $request)
     {        
-        $this->provider_id = $request->route('id');
 
         $interventionsQuery = InterventionEvent::query();
 

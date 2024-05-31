@@ -25,7 +25,7 @@
                     <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($intervention->updated_at)->format('d/m/Y H:i:s') }}</p>
 
 
-                    <form action="{{ route('providers.available') }}" method="GET">
+                    <form action="{{ route('providers.available', $intervention->id) }}" method="GET">
                         @csrf
 
                         <input type="hidden" value="{{$intervention->id}}" name="intervention_id">

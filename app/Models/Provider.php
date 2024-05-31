@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Service;
 use App\Models\Intervention;
 use App\Events\ProviderCreated;
+use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -56,5 +57,9 @@ class Provider extends Model
 
     public function intervention_events() : HasMany {
         return $this->hasMany(InterventionEvent::class);
+    }
+
+    public function estimations() {
+        return $this->hasMany(InterventionEstimation::class);
     }
 }

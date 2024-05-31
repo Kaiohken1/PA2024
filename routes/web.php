@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
     Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('interventions.show');
+    Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
 
 
 });
@@ -112,9 +113,13 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
     Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
 
+
+    Route::get('/intervention/{id}/providers', [AdminProviderController::class, 'availableProviders'])->name('providers.available');;
+
+
 });
 
-Route::get('/providers/available', [AvailabilityController::class, 'availableProviders'])->name('providers.available');
+Route::get('/providers/available', [AvailabilityController::class, 'availableProviders']);
 
 
 Route::get('/admin', function () {
