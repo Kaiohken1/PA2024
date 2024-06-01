@@ -49,7 +49,7 @@ class ReservationController extends Controller
             ->get();
 
         $fermeture = Fermeture::where("appartement_id", $appartement_id)
-            ->select("start_time","end_time")
+            ->select("start","end")
             ->get();
 
         return view('Reservation.create', [

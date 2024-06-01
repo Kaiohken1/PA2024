@@ -1,14 +1,17 @@
 <?php
 
+use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\EstimationController;
+use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\DocumentsTypeController;
 use App\Http\Controllers\NotificationsController;
@@ -16,8 +19,6 @@ use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\StripeController;
-use App\Livewire\Calendar;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('property', AppartementController::class)->except(['index']);
     Route::resource('fermeture', FermetureController::class)->except(['index']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
+    Route::get('/calendar/{appartement_id}', [CalendarController::class, 'show'])->name('calendar.show');
+
 
     Route::delete('/property/image/{id}', [AppartementController::class, 'destroyImg'])->name('property.destroyImg');
 

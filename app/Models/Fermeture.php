@@ -15,6 +15,7 @@ class Fermeture extends Model
         'end',
         'title',
         'comment',
+        'appartement_id',
     ];
 
     public function appartement(): BelongsTo {

@@ -21,7 +21,7 @@ class FermetureController extends Controller
         $appartement_id = $appartement->id;
 
         $intervalle = Reservation::where("appartement_id", $appartement_id)
-            ->select("start_time","end_time")
+            ->select("start","end")
             ->get();
 
 
@@ -38,11 +38,11 @@ class FermetureController extends Controller
     {
 
         $intervalle = Reservation::where("appartement_id", $appartement)
-            ->select("start_time","end_time")
+            ->select("start","end")
             ->get();
 
         $fermeture = Fermeture::where("appartement_id", $appartement)
-            ->select("start_time","end_time")
+            ->select("start","end")
             ->get();
 
 
@@ -57,15 +57,15 @@ class FermetureController extends Controller
     public function store(Request $request, $appartement)
     {
         $validator = Validator::make($request->all(), [
-            'start_time' => ['required', 'date', 'after_or_equal:today'],
-            'end_time' => ['required', 'date', 'after:start_time'],
+            'start' => ['required', 'date', 'after_or_equal:today'],
+            'end' => ['required', 'date', 'after:start'],
         ]);
 
         $validatedData = $validator->validated();
 
         $fermeture = new Fermeture();
-        $fermeture->start_time = $validatedData['start_time'];
-        $fermeture->end_time = $validatedData['end_time'];
+        $fermeture->start_time = $validatedData['start'];
+        $fermeture->end_time = $validatedData['end'];
         $fermeture->appartement_id = $appartement;
         $fermeture->save();
 
@@ -100,13 +100,13 @@ class FermetureController extends Controller
 
         $validator = Validator::make($request->all(), [
             'start_time' => ['required', 'date', 'after_or_equal:today'],
-            'end_time' => ['required', 'date', 'after:start_time'],
+            'end_time' => ['required', 'date', 'after:start'],
         ]);
 
         $validatedData = $validator->validated();
 
-        $fermetures->start_time = $validatedData['start_time'];
-        $fermetures->end_time = $validatedData['end_time'];
+        $fermetures->start_time = $validatedData['start'];
+        $fermetures->end_time = $validatedData['end'];
         $fermetures->save();
 
         return redirect()->route('fermeture.index', $appartement)

@@ -181,7 +181,7 @@ $appartements = $appartements->paginate(10);
             ->get();
 
         $fermeture = Fermeture::where("appartement_id", $appartement->id)
-            ->select("start_time","end_time")
+            ->select("start","end")
             ->get();
 
                     // Récupérer les dates déjà réservées pour cet appartement

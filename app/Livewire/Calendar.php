@@ -63,6 +63,17 @@ class Calendar extends Component
 
     public function eventAdd($fermetures)
 {
+
+    $appartement_id = $this->getAppartementId();
+
+    // Ajoutez l'ID de l'appartement aux données de fermeture
+    $fermetures['appartement_id'] = $appartement_id;
     Fermeture::create($fermetures);
+}
+
+private function getAppartementId()
+{
+    
+    return 1; 
 }
 }
