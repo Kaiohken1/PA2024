@@ -27,7 +27,7 @@
                         {{ __('Services') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('intverventions.index')">
+                    <x-nav-link :href="route('admin.interventions.index')">
                         {{ __('Interventions') }}
                     </x-nav-link>
                 </div>

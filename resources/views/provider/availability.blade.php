@@ -5,6 +5,11 @@
 
                 <p class="text-white">{{$intervention->planned_date}}</p>
 
+                @php
+                 if(!$errors->isEmpty()) {
+                    dd($errors);
+                 }   
+                @endphp
 
                 <table class="w-full text-sm text-left text-gray-800">
                     <thead class="border-b bg-gray-800 text-white">
@@ -22,9 +27,8 @@
                             <tr class="border-b">
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->name }}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->email }}</td>
-                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->estimations->first()->price}}€</td>
-                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</td>
-
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $provider->estimations()->where('intervention_id', $intervention->id)->first()->price}}€</td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ \Carbon\Carbon::parse($provider->estimations()->where('intervention_id', $intervention->id)->first()->end_time)->format('d/m/Y à H:i:s')}}</td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
                                     <a href="{{ Storage::url($provider->estimations->first()->estimate) }}" target="_blank">
                                         <button class="btn btn-primarty">Télécharger le devis</button>                                    
@@ -32,10 +36,17 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <form method="POST" action="{{route('admin.interventions.update', $intervention->id)}}">
+                                        @csrf
 
-                                    <button class="btn btn-success">Attribuer</button>
+                                        @method('PATCH')
 
-                                    
+                                        <input type="hidden" name="price" value="{{$provider->estimations()->where('intervention_id', $intervention->id)->first()->price}}">
+                                        <input type="hidden" name="provider_id" value="{{$provider->id}}">
+                                        <input type="hidden" name="planned_end_date" value="{{$provider->estimations()->where('intervention_id', $intervention->id)->first()->end_time}}">
+
+                                        <button class="btn btn-success">Attribuer</button>
+                                    </form>
                                     <a href="{{ route('admin.providers.show', $provider) }}">
                                         <button class="btn btn-info">Voir le profil</button>                                    
                                     </a>

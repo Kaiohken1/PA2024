@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
+use App\Models\Provider;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -60,9 +61,19 @@ class InterventionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Intervention $intervention)
+    public function update(Request $request, $id)
     {
-        //
+        $intervention = Intervention::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'price' => ['required', 'numeric'],
+            'provider_id' => ['required', 'exists:providers,id'],
+            'planned_end_date' => ['required'],
+        ]);
+
+        $intervention->update($validatedData);
+
+        return back()->with('succes', 'Proposition envoyée au client');
     }
 
     /**

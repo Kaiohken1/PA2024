@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +13,13 @@ class InterventionEstimationController extends Controller
 
         $validatedData = $request->validate([
             'intervention_id' => ['required', 'exists:interventions,id'],
-            'provider_id' => ['required', 'exists:providers,id', 'unique:intervention_estimations'],
+            'provider_id' => [
+                'required', 
+                'exists:providers,id', 
+                Rule::unique('intervention_estimations')->where(function ($query) use ($request) {
+                    return $query->where('intervention_id', $request->intervention_id);
+                })
+            ],
             'estimate' => ['required', 'image'],
             'end_time' => ['required'],
             'price' => ['required', 'numeric'],

@@ -23,6 +23,7 @@ return new class extends Migration
             ['nom' => 'En cours'],
             ['nom' => 'Terminée'],
             ['nom' => 'Annulée'],
+            ['nom' => 'Payée'],
         ]);
     }
 

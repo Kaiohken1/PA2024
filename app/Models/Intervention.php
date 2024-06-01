@@ -26,6 +26,8 @@ class Intervention extends Model
         'statut_id',
         'price',
         'planned_date',
+        'provider_id',
+        'planned_end_date',
     ];
 
 

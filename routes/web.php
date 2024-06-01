@@ -89,6 +89,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('interventions.show');
     Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
 
+    Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.index');
+    Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+    Route::post('/interventions/{id}', [InterventionController::class, 'plan'])->name('interventions.plan');
+
+
 
 });
 
@@ -104,7 +109,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
-    Route::resource('/intverventions', AdminInterventionController::class);
+    Route::resource('/intverventions', AdminInterventionController::class)->names('admin.interventions');
     Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);
@@ -112,7 +117,6 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('/subscriptions', SubscriptionsController::class);
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
     Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
-
 
     Route::get('/intervention/{id}/providers', [AdminProviderController::class, 'availableProviders'])->name('providers.available');;
 

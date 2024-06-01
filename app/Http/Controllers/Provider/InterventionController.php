@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
+use App\Models\InterventionEvent;
 use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
@@ -20,13 +21,10 @@ class InterventionController extends Controller
     public function index()
     {
         $interventions = Intervention::query()
-            ->select('id', 'description', 'statut', 'appartement_id', 'provider_id', 'service_id')
-            ->latest()
-            ->paginate(10);
+                        ->where('user_id', Auth::user()->id)
+                        ->paginate(10);
 
-        return view('interventions.index', [
-            'interventions' => $interventions,
-        ]);
+        return view('interventions.index', ['interventions' => $interventions]);
     }
 
     /**
@@ -187,4 +185,28 @@ class InterventionController extends Controller
         $intervention->update(['provider_id'], $provider->id);
     }
 
+
+    public function clientShow($id)
+    {
+        $intervention = Intervention::findOrfail($id);
+        return view('interventions.client-show', ['intervention' => $intervention]);
+    }
+
+    public function plan($id) {
+        $intervention = Intervention::findOrFail($id);
+        $intervention->statut_id = 5;
+
+        $intervention->save();
+
+        $event = new InterventionEvent();
+        $event->intervention_id = $intervention->id;
+        $event->provider_id = $intervention->provider->id;
+        $event->title = $intervention->service->name;
+        $event->start = $intervention->planned_date;
+        $event->end = $intervention->planned_end_date;
+
+        $event->save();
+
+        return back();
+    }
 }

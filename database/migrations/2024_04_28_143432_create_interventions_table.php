@@ -31,6 +31,7 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->integer('service_version');
             $table->dateTime('planned_date');
+            $table->dateTime('planned_end_date');
             $table->timestamps();
         });
     }
