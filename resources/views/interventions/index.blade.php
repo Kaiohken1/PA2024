@@ -25,6 +25,7 @@
 
                             <div class="ml-4">
                                 <h3 class="text-xl font-medium">{{ $intervention->service->name }}</h3>
+                                <span>Intervention #{{ $intervention->id }}</span>
                                 <p>Date d'intervention: {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y') }} | Heure: {{ \Carbon\Carbon::parse($intervention->planned_date)->format('H:i') }}</p>
                                 <p>
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $intervention->statut_id == 2 || $intervention->statut_id == 5 ? 'bg-green-100 text-green-800' : ($intervention->statut_id == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
