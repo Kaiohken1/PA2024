@@ -18,11 +18,8 @@
                     <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
                         {{ __('Louer mon logement') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
-                        {{ __('Mes réservations') }}
-                    </x-nav-link>
-
-                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client')">
+                    
+                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation')">
                         {{ __('Espace Client') }}
                     </x-nav-link>
                 </div>
