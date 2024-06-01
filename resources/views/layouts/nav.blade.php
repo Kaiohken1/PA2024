@@ -22,10 +22,9 @@
                         {{ __('Mes réservations') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('providers.create')" :active="request()->routeIs('providers.create')">
-                        {{ __('Presta') }}
+                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client')">
+                        {{ __('Espace Client') }}
                     </x-nav-link>
-
                 </div>
             </div>
 

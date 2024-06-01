@@ -1,8 +1,22 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h1 class="text-3xl font-bold ">Vos demandes de prestations</h1>
+        <p class="text-lg">Gérez vos demande de prestations</p>
+
+        @if (session('success'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600" role="alert">
+                {{ session('success') }}
+            </div>
+                @elseif (session('error'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-red-800 rounded-lg bg-red-50 dark:text-red-600"
+                role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+    </x-slot>
+    
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold mb-8">Vos demandes de prestations</h1>
-            <p class="text-lg mb-6">Regardez et gérez vos demande de prestations</p>
 
             <div class="bg-white shadow-md rounded-lg p-6">
                 @if(!$interventions->isEmpty())

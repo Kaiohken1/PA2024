@@ -94,6 +94,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/interventions/{id}', [InterventionController::class, 'plan'])->name('interventions.plan');
 
 
+    Route::get('/espace-client', function () {
+        return view('espace-client');
+    })->name('espace-client');
 
 });
 
