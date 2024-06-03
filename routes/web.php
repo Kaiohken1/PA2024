@@ -88,6 +88,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
     Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('interventions.show');
     Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
+    Route::get('/providers/availability', [ProviderController::class, 'availability'])->name('provider.availability');
+    Route::post('/providers/availability', [ProviderController::class, 'availabilityCreate'])->name('provider.availabilityCreate');
+    Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
+
+
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.index');
     Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');

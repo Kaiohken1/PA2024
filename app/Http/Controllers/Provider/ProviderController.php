@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
+use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
@@ -181,4 +182,51 @@ class ProviderController extends Controller
         $provider = Provider::findOrFail(Auth::user()->provider->id);
         return view('provider.calandar', ['provider' => $provider]);
     }
+
+    public function availability() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $absences = Absence::all(); 
+    
+        $datesInBase = [];
+    
+        foreach ($absences as $absence) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($absence->start)),
+                'to' => date("d-m-Y", strtotime($absence->end))
+            ];
+        }
+    
+        return view('provider.set-availability', ['provider' => $provider, 'datesInBase' => $datesInBase]);
+    }
+
+    public function availabilityCreate(Request $request) {
+        $validatedData = $request->validate([
+            'startDate' => ['required', 'date'], 
+            'endDate' => ['required', 'date', 'after_or_equal:startDate'],
+            'providerId' => ['required', 'exists:providers,id'],
+        ]);
+    
+        $startDate = date("Y-m-d", strtotime($validatedData['startDate']));
+        $endDate = date("Y-m-d", strtotime($validatedData['endDate']));
+    
+        $absence = new Absence();
+        $absence->start = $startDate;
+        $absence->end = $endDate;
+        $absence->provider_id = $validatedData['providerId'];
+        $absence->title = 'Absence';
+        $absence->save();
+    
+        return back()->with('success', 'Période enregistrée avec succès');
+    }
+
+    public function availabilityDestroy($id) {
+
+        $absence = Absence::findOrFail($id);
+
+        $absence->delete();
+
+        return back()->with('success', 'Période supprimée avec succès');
+
+    }
+    
 }

@@ -35,7 +35,11 @@
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
             locale: '{{ config('app.locale') }}',
-            events: JSON.parse(@this.interventions),
+            events: [
+            ...JSON.parse(@this.interventions),
+
+            ...JSON.parse(@this.absences),
+        ],
                 
         });
         calendar.render();

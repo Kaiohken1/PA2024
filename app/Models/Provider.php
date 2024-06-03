@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Absence;
 use App\Models\Service;
 use App\Models\Intervention;
 use App\Events\ProviderCreated;
@@ -24,6 +25,7 @@ class Provider extends Model
         'email', 
         'description',
         'avatar', 
+        'availability'
     ];
 
     protected $hidden = [
@@ -61,5 +63,9 @@ class Provider extends Model
 
     public function estimations() {
         return $this->hasMany(InterventionEstimation::class);
+    }
+
+    public function absences() : HasMany {
+        return $this->hasMany(Absence::class);
     }
 }
