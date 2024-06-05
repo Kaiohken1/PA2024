@@ -209,4 +209,11 @@ class InterventionController extends Controller
 
         return back();
     }
+
+
+    public function showProvider($id)
+    {
+        $intervention = Intervention::findOrfail($id);
+        return view('interventions.show-provider', ['intervention' => $intervention]);
+    }
 }

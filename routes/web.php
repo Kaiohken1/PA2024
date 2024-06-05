@@ -84,6 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
+    Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
+    Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
     Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('interventions.show');
@@ -91,6 +93,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/availability', [ProviderController::class, 'availability'])->name('provider.availability');
     Route::post('/providers/availability', [ProviderController::class, 'availabilityCreate'])->name('provider.availabilityCreate');
     Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
+    Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
+    Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
+
 
 
 

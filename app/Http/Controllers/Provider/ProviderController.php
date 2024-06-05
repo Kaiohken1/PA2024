@@ -228,5 +228,14 @@ class ProviderController extends Controller
         return back()->with('success', 'Période supprimée avec succès');
 
     }
+
+    public function interventionsIndex() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+
+        $interventions = Intervention::where('provider_id', $provider->id)
+                                        ->paginate(15);
+
+        return view('provider.interventions-index', ['provider' => $provider, 'interventions' => $interventions]);
+    }
     
 }

@@ -20,7 +20,7 @@ class Intervention extends Model
 
     protected $fillable = [
         'description',
-        'commentaire',
+        'comment',
         'appartement_id',
         'service_id',
         'statut_id',
@@ -28,6 +28,7 @@ class Intervention extends Model
         'planned_date',
         'provider_id',
         'planned_end_date',
+        'fiche',
     ];
 
 

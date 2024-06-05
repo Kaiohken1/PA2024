@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('price')->nullable();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete()->default(1);
             $table->text('comment')->nullable();
+            $table->text('fiche')->nullable();
             $table->integer('service_version');
             $table->dateTime('planned_date');
             $table->dateTime('planned_end_date');
