@@ -6,7 +6,10 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        <a href="/providers/dashboard">
+                        <img width="125" class="mb-1" src="{{asset('/logo/logo3.svg')}}">
+                        </a>
+
                     </a>
                 </div>
 
@@ -19,6 +22,14 @@
 
                     <x-nav-link :href="route('providers.proposals', Auth::user()->provider->id)" :active="request()->routeIs('providers.proposals')">
                         {{ __('Propositions') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('provider.interventionIndex', Auth::user()->provider->id)" :active="request()->routeIs('provider.interventionIndex')">
+                        {{ __('Mes Interventions') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('provider.availability', Auth::user()->provider->id)" :active="request()->routeIs('provider.availability')">
+                        {{ __('Absences') }}
                     </x-nav-link>
                 </div>
             </div>

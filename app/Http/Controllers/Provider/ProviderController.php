@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Provider;
 
+use Carbon\Carbon;
+use App\Models\Absence;
 use App\Models\Service;
 use App\Models\Provider;
 use App\Models\Intervention;
@@ -9,7 +11,6 @@ use Illuminate\Http\Request;
 use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
-use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
@@ -159,12 +160,56 @@ class ProviderController extends Controller
             ->with('success', 'Le prestataire a été validé avec succès');
     }
 
+    public function totalGains($id): float
+    {
+        $provider = Provider::findOrFail($id);
+        return $provider->interventions()->sum('price');
+    }
 
-    public function home() {
+    public function monthlyGains($id, int $month = null, int $year = null): float
+    {
+        $provider = Provider::findOrFail($id);
+    
+        $month = $month ?? Carbon::now()->month;
+        $year = $year ?? Carbon::now()->year;
+    
+        return $provider->interventions()
+                        ->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $month)
+                        ->sum('price');
+    }
+    
 
+
+    public function home()
+    {
         $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $totalGains = $this->totalGains($provider->id);
+        $monthlyGains = $this->monthlyGains($provider->id);
 
-        return view('provider.home', ['provider' => $provider]);
+        Carbon::setLocale('fr');
+        $currentMonthYear = Carbon::now()->translatedFormat('F Y');
+
+        // Obtenez les propositions d'interventions
+        $proposals = Intervention::query()
+                            ->where('service_id', $provider->services->first()->id)
+                            ->where('statut_id', 1)
+                            ->latest()
+                            ->take(5)
+                            ->get();
+
+        $absences = Absence::where('provider_id', $provider->id)
+                            ->take(5)
+                            ->get();
+
+        return view('provider.home', [
+            'provider' => $provider,
+            'totalGains' => $totalGains,
+            'monthlyGains' => $monthlyGains,
+            'currentMonthYear' => $currentMonthYear,
+            'proposals' => $proposals,
+            'absences' => $absences,
+        ]);
     }
 
     public function proposals() {
@@ -237,5 +282,5 @@ class ProviderController extends Controller
 
         return view('provider.interventions-index', ['provider' => $provider, 'interventions' => $interventions]);
     }
-    
+
 }

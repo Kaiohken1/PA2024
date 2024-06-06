@@ -68,4 +68,7 @@ class Provider extends Model
     public function absences() : HasMany {
         return $this->hasMany(Absence::class);
     }
+
+
+
 }
