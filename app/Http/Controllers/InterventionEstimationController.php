@@ -42,6 +42,8 @@ class InterventionEstimationController extends Controller
     {
         $validatedData = $request->validate([
             'estimate' => ['required', 'image'],
+            'end_time' => ['nullable'],
+            'price' => ['nullable', 'numeric'],
         ]);
 
         $estimation = InterventionEstimation::findOrFail($id);
@@ -51,11 +53,12 @@ class InterventionEstimationController extends Controller
         $doc = $request->file('estimate');
         $path = $doc->store('InterventionEstimates', 'public');
         $validatedData['estimate'] = $path;
+        $estimation->statut_id = 1;
 
         $estimation->update($validatedData);
 
 
-        return redirect()->back()->with('success', 'Devis modifié avec succès.');
+        return redirect()->back()->with('success', 'Devis renvoyé avec succès.');
     }
 
 

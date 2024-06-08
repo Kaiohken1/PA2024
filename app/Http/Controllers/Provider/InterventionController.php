@@ -8,10 +8,12 @@ use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
+use App\Models\InterventionEvent;
+use App\Models\InterventionRefusal;
 use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
-use App\Models\InterventionEvent;
 use Illuminate\Support\Facades\Auth;
+use App\Models\InterventionEstimation;
 
 class InterventionController extends Controller
 {
@@ -215,5 +217,37 @@ class InterventionController extends Controller
     {
         $intervention = Intervention::findOrfail($id);
         return view('interventions.show-provider', ['intervention' => $intervention]);
+    }
+
+    public function refusal($id, Request $request) {
+        $validatedData = $request->validate([
+            'refusal' => ['required', 'string', 'max:255'],
+        ]);
+
+        $estimation = InterventionEstimation::findOrFail($id);
+        $estimation->statut_id = 8;
+        $estimation->save();
+
+        $intervention = Intervention::findOrFail($estimation->intervention_id);
+
+        InterventionRefusal::create([
+            'intervention_id' => $intervention->id,
+            'provider_id' => $intervention->provider_id,
+            'statut_id' => 8,
+            'refusal_reason' => $validatedData['refusal'],
+            'estimate' => $estimation->estimate,
+            'price' => $intervention->price,
+            'planned_date' => $intervention->planned_date,
+            'planned_end_date' => $intervention->planned_end_date,
+        ]);
+
+        $intervention->provider_id = NULL;
+        $intervention->price = NULL;
+        $intervention->statut_id = 1;
+        
+        $intervention->save();
+
+        return redirect()->back()->with('success', 'Intervention refusée, un autre devis vous sera envoyé.');
+
     }
 }

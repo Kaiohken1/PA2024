@@ -166,9 +166,15 @@ class ProviderController extends Controller
 
         $intervention = Intervention::findOrFail($id);
 
-        $providers = $intervention->estimations->map(function ($estimation) {
+        $providers = $intervention->estimations
+        ->filter(function ($estimation) {
+            return $estimation->statut_id == 1;
+        })
+        ->map(function ($estimation) {
             return $estimation->provider;
-        })->unique();
+        })
+        ->unique();
+    
         
         return view('provider.availability', ['id' => $intervention->id, 'intervention' => $intervention,'providers' => $providers]);
     }

@@ -102,6 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.index');
     Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
     Route::post('/interventions/{id}', [InterventionController::class, 'plan'])->name('interventions.plan');
+    Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
 
 
     Route::get('/espace-client', function () {

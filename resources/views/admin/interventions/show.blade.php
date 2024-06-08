@@ -34,7 +34,27 @@
                     
                         <button type="submit">Rechercher</button>
                     </form>
-                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-slate-950 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="px-6 text-white">
+                    <h2 class="text-lg font-bold mt-5 border-b">Historique des refus</h2>
+                    @foreach($intervention->refusals as $refusals)
+                        @if($refusals->statut_id == 8)
+                            <div class="border-b border-gray-200 py-2">
+                                <p class="text-lg"><label class="pr-10">Refusé le</label> {{ $refusals->created_at->format('d/m/Y à H:i:s') }}</p>
+                                <p class="text-lg"><label class="pr-10">Raison</label> {{ $refusals->refusal_reason }}</p>
+                                <p class="text-lg"><label class="pr-10">Prestataire</label> {{ $refusals->provider->name}}</p>
+                                <p class="text-lg"><label class="pr-10">Montant</label> {{ $refusals->price ? $refusals->price . '€' : 'À définir' }}</p>
+                                <p class="text-lg"><label class="pr-10">Date et heure de fin prévue</label> {{ $refusals->end_time ? \Carbon\Carbon::parse($refusals->end_time)->format('d/m/Y à H:i:s') : 'À définir' }}</p>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>

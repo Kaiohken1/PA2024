@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
+use App\Models\InterventionEstimation;
 use App\Models\Provider;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -72,6 +73,12 @@ class InterventionController extends Controller
         ]);
 
         $intervention->update($validatedData);
+
+        $estimation = InterventionEstimation::findOrfail($intervention->estimations->where('provider_id', $validatedData['provider_id'])->first()->id);
+        
+        $estimation->statut_id = 9;
+
+        $estimation->save();
 
         return back()->with('succes', 'Proposition envoyée au client');
     }

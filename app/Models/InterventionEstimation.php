@@ -18,6 +18,7 @@ class InterventionEstimation extends Model
         'estimate',
         'end_time',
         'price',
+        'refusal_reason',
     ];
 
     public function intervention()

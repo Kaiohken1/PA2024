@@ -10,6 +10,7 @@ use App\Events\Reservation;
 use App\Models\Appartement;
 use Mpociot\Versionable\Version;
 use App\Models\InterventionEvent;
+use App\Models\InterventionRefusal;
 use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +30,7 @@ class Intervention extends Model
         'provider_id',
         'planned_end_date',
         'fiche',
+        'refusal_reason',
     ];
 
 
@@ -83,5 +85,9 @@ class Intervention extends Model
     public function estimations()
     {
         return $this->hasMany(InterventionEstimation::class);
+    }
+
+    public function refusals() {
+        return $this->hasMany(InterventionRefusal::class);
     }
 }

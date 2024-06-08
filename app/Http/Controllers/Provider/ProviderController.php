@@ -190,7 +190,6 @@ class ProviderController extends Controller
         Carbon::setLocale('fr');
         $currentMonthYear = Carbon::now()->translatedFormat('F Y');
 
-        // Obtenez les propositions d'interventions
         $proposals = Intervention::query()
                             ->where('service_id', $provider->services->first()->id)
                             ->where('statut_id', 1)

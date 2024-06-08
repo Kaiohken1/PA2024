@@ -39,25 +39,57 @@
                                 <p><strong>Tarif : </strong>{{$estimation->price}}€</p>
                                 <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($intervention->end_time)->format('d/m/Y à H:i:s')}}</p>
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
-                                <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                                </form>
 
-                                <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
-                                    @csrf
-                                    @method('PATCH')
-                                    <x-input-label>Devis</x-input-label>
-                                    <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
-                                    @error('estimate')
-                                        <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                                    @enderror
-        
-                                    <div class="mt-5">
-                                        <x-primary-button>Modifier</x-primary-button>
-                                    </div>
-                                </form>
+                                @if($estimation->statut_id != 8)
+                                    <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </form>
+
+                                    <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
+                                        @csrf
+                                        @method('PATCH')
+                                        <x-input-label>Devis</x-input-label>
+                                        <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                                        @error('estimate')
+                                            <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                                        @enderror
+            
+                                        <div class="mt-5">
+                                            <x-primary-button>Modifier</x-primary-button>
+                                        </div>
+                                    </form>
+                                @else
+                                    <p>Votre devis a été refusé par le client pour la raison suivante :</p>{{$intervention->refusals->where('provider_id',Auth::user()->provider->id)->last()->refusal_reason}}
+                                    <h2 class="mt-5 text-xl font-bold">Proposer un autre devis ?</h2>
+                                    <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <div>
+                                            <x-input-label for="end_time" :value="__('Date de fin')" />
+                                            <x-text-input id="end_time" class="block mt-1 w-full" type="datetime-local" name="end_time"/>
+                                            <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
+                                        </div>
+                                        <div>
+                                            <x-input-label for="price" :value="__('Tarif')" />
+                                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
+                                            <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                                        </div>
+
+                                        <x-input-label>Devis</x-input-label>
+                                        <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                                        @error('estimate')
+                                            <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                                        @enderror
+            
+                                        <div class="mt-5">
+                                            <x-primary-button>Modifier</x-primary-button>
+                                        </div>
+                                    </form>
+                                @endif
+
                             </div>
                         @endif                        
                     @empty
