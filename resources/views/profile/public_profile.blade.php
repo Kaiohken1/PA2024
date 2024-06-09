@@ -33,7 +33,7 @@
                 <h1 class="py-3 px-6 text-2xl font-extrabold">Avis des voyageurs</h1>
                 <div>
                     
-                    @foreach ($userAvis as $avis)
+                    @forelse ($userAvis as $avis)
                         <div class="px-6 flex flex-col border-b-2 border-grey overflow-x-auto mb-3">
                             <div class="flex flex-row">
                                 <div class="avatar">
@@ -73,7 +73,9 @@
                             </div>
                             <span class="py-3 text-left">{{ $avis->comment }}</span>
                         </div>
-                    @endforeach
+                    @empty
+                    <span class="px-6 text-left text-lg font-extrabold">Aucun commentaire</span>
+                    @endforelse
                 </div>
             </div>
         </div>

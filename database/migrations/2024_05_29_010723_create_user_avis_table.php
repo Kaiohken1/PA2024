@@ -19,6 +19,10 @@ return new class extends Migration
             $table->text('comment');
             $table->timestamps();
         });
+
+        Schema::table('user_avis', function (Blueprint $table) {
+            $table->unique(['sender_user_id', 'receiver_user_id']);
+        });
     }
 
     /**

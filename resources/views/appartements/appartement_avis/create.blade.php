@@ -62,7 +62,7 @@
                                 <input type="hidden" name="reservation_id" value="{{$reservation->id}}">
 
                                 <x-primary-button class="ms-3 mt-5 ml-0">
-                                    {{ __('Modifier le commentaire') }}
+                                    {{ __('Envoyer') }}
                                 </x-primary-button>
                                 </div>
                             </form>

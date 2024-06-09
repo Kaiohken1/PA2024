@@ -91,8 +91,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/provider/{id}', [UserController::class, 'validateProvider'])->name('providers.validate');
 });
 
-Route::prefix('users/{user}/show')->group(function () {
-Route::get('/', [UserController::class, 'show'])->name('users.show');
+Route::prefix('users/{user}')->group(function () {
+Route::get('/show', [UserController::class, 'show'])->name('users.show');
 Route::get('/avis/create', [UserAvisController::class, 'create'])->name('users.avis.create');
 Route::post('/avis/store', [UserAvisController::class, 'store'])->name('users.avis.store');
 Route::get('/avis/{avis}/edit', [UserAvisController::class, 'edit'])->name('users.avis.edit');

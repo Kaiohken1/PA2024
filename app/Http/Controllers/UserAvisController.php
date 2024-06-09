@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserAvis;
+use App\Models\Appartement;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 
 class UserAvisController extends Controller
@@ -40,13 +43,29 @@ class UserAvisController extends Controller
         $userAvis = new UserAvis($validateData);
 
         $userAvis->receiver_user_id = $receiver_user_id;
-        $userAvis->sender_user_id = Auth()->id();
+        $sender_user_id = Auth()->id();
+        $userAvis->sender_user_id = $sender_user_id;
 
-        $userAvis->save();
+        $receiver_reservation = Reservation::where('user_id', $receiver_user_id)->get();
+        $sender_appartement = Appartement::where('user_id', $sender_user_id)->get();
 
-        return redirect()->route('users.show', [
-            'user' => $receiver_user_id
-        ]);
+        if($sender_appartement->id == $receiver_reservation->appartement_id){
+            $userAvis->save();
+            return redirect()->route('users.show', ['user' => $receiver_user_id])
+            ->with('success', "Avis créé avec succès");
+        }
+        else{
+            return redirect()->route('users.show', ['user' => $receiver_user_id])
+            ->with('error', "Vous ne pouvez pas donner votre avis sur cet utilisateur");
+        }
+
+
+
+
+
+
+
+        
     }
 
 

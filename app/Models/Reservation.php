@@ -8,6 +8,7 @@ use App\Models\Appartement;
 use App\Models\AppartementAvis;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\Reservation as EventsReservation;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reservation extends Model
 {

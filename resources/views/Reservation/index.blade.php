@@ -61,7 +61,7 @@
                                                 ->exists())
                                                 <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
+                                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="return">
                                                     Avis
                                                 </button>
                                             </form>
