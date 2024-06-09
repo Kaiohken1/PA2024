@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
     Route::get('/calendar/{appartement_id}', [CalendarController::class, 'show'])->name('calendar.show');
 
+    Route::post('/update-event', [FermetureController::class, 'updateEvent'])->name('event.update');
+    Route::post('/add-event', [FermetureController::class, 'addEvent'])->name('event.add');
+
 
     Route::delete('/property/image/{id}', [AppartementController::class, 'destroyImg'])->name('property.destroyImg');
 

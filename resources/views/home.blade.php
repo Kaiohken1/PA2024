@@ -1,4 +1,8 @@
 <x-app-layout>
-    @livewire('calendar')
-    @stack('scripts')
+    
+    <div>
+        @livewire('calendar',['appartementId' => $appartement->id])
+    </div>
+    
 </x-app-layout>
+@stack('scripts')
