@@ -33,7 +33,7 @@
                     @if($intervention->description)<p><strong>Description:</strong> {{ $intervention->description }}</p>@endif
 
 
-                    @forelse ($intervention->estimations as $estimation)
+                    @forelse ($intervention->estimations->where('provider_id', Auth::user()->provider->id) as $estimation)
                         @if($estimation->provider_id === Auth::user()->provider->id)
                             <div class="mt-5">
                                 <p><strong>Tarif : </strong>{{$estimation->price}}€</p>

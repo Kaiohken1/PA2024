@@ -90,4 +90,9 @@ class Intervention extends Model
     public function refusals() {
         return $this->hasMany(InterventionRefusal::class);
     }
+
+    public function hidden()
+    {
+        return $this->belongsToMany(Provider::class, 'hidden_interventions');
+    }
 }

@@ -69,6 +69,7 @@ class Provider extends Model
         return $this->hasMany(Absence::class);
     }
 
-
-
+    public function hidden() {
+        return $this->belongsToMany(Intervention::class, 'hidden_interventions');
+    }
 }
