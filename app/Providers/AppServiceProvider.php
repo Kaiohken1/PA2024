@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Laravel\Cashier\Cashier;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
                 ->with('user', $user);
             }
         });
+
+        Cashier::calculateTaxes();
     }
 }

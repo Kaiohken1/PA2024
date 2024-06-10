@@ -36,7 +36,7 @@
                         <!-- Bouton pour ouvrir la modal -->
                         <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">Refuser le devis</button>    
 
-                        <form method="POST", action="{{route('interventions.plan', $intervention->id)}}">
+                        <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
                             @csrf
                                 
                             <button class="btn btn-warning mt-10 text-lg">Valider et payer</button>

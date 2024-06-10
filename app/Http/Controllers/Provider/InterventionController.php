@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Provider;
 
+use Stripe\Stripe;
 use App\Models\Service;
 use App\Models\Provider;
 use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
+use Stripe\Checkout\Session;
 use App\Models\ServiceParameter;
 use App\Models\InterventionEvent;
 use App\Models\InterventionRefusal;
@@ -194,7 +196,41 @@ class InterventionController extends Controller
         return view('interventions.client-show', ['intervention' => $intervention]);
     }
 
+    public function showPaymentPage($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+        return view('payment.page', compact('intervention'));
+    }
+
+
+    public function checkout($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Intervention #' . $intervention->id,
+                    ],
+                    'unit_amount' => $intervention->price * 100,
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('interventions.plan', $intervention->id),
+            'cancel_url' => url('/'),
+        ]);
+
+        return redirect()->away($session->url);
+    }
+
+
     public function plan($id) {
+
         $intervention = Intervention::findOrFail($id);
         $intervention->statut_id = 5;
 
@@ -209,7 +245,7 @@ class InterventionController extends Controller
 
         $event->save();
 
-        return back();
+        return view('interventions.client-show', ['intervention' => $intervention]);
     }
 
 
