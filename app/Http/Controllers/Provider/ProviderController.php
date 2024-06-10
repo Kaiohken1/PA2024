@@ -13,6 +13,7 @@ use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
+use App\Models\InterventionEvent;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -229,7 +230,13 @@ class ProviderController extends Controller
 
     public function availability() {
         $provider = Provider::findOrFail(Auth::user()->provider->id);
-        $absences = Absence::all(); 
+        $absences = Absence::query()
+                    ->where('provider_id', $provider->id)
+                    ->get();
+
+        $interventions = InterventionEvent::query()
+                        ->where('provider_id', $provider->id)
+                        ->get();
     
         $datesInBase = [];
     
@@ -237,6 +244,13 @@ class ProviderController extends Controller
             $datesInBase[] = [
                 'from' => date("d-m-Y", strtotime($absence->start)),
                 'to' => date("d-m-Y", strtotime($absence->end))
+            ];
+        }
+
+        foreach ($interventions as $intervention) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($intervention->start)),
+                'to' => date("d-m-Y", strtotime($intervention->end))
             ];
         }
     

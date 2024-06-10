@@ -21,4 +21,9 @@ class InterventionEvent extends Model
     public function provider() : BelongsTo {
         return $this->belongsTo(Provider::class);
     }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }
