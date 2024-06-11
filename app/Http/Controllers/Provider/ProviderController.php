@@ -164,22 +164,22 @@ class ProviderController extends Controller
     public function totalGains($id): float
     {
         $provider = Provider::findOrFail($id);
-        return $provider->interventions()->sum('price');
+        return $provider->interventions()
+                        ->whereIn('statut_id', [5, 3])
+                        ->sum('price');
     }
 
     public function monthlyGains($id, int $month = null, int $year = null): float
     {
         $provider = Provider::findOrFail($id);
-    
         $month = $month ?? Carbon::now()->month;
         $year = $year ?? Carbon::now()->year;
-    
         return $provider->interventions()
                         ->whereYear('created_at', $year)
                         ->whereMonth('created_at', $month)
+                        ->whereIn('statut_id', [5, 3])
                         ->sum('price');
     }
-    
 
 
     public function home()
