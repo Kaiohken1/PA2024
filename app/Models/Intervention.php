@@ -95,4 +95,21 @@ class Intervention extends Model
     {
         return $this->belongsToMany(Provider::class, 'hidden_interventions');
     }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                     ->orWhereHas('provider', function ($query) use ($value) {
+                         $query->where('name', 'like', "%{$value}%");
+                     })
+                     ->orWhereHas('user', function ($query) use ($value) {
+                         $query->where('name', 'like', "%{$value}%")
+                               ->orWhere('first_name', 'like', "%{$value}%")
+                               ->orWhereRaw("CONCAT(name, ' ', first_name) LIKE ?", ["%{$value}%"]);
+                     })
+                     ->orWhereHas('service', function ($query) use ($value) {
+                        $query->where('name', 'like', "%{$value}%");
+                    });
+    }
+    
 }
