@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
+use App\Models\Invoice;
 
 class InterventionController extends Controller
 {
@@ -229,7 +230,7 @@ class InterventionController extends Controller
     }
 
 
-    public function plan($id) {
+    public function plan(Request $request, $id) {
 
         $intervention = Intervention::findOrFail($id);
         $intervention->statut_id = 5;
@@ -245,6 +246,13 @@ class InterventionController extends Controller
 
         $event->save();
 
+        $invoice = new Invoice();
+        $invoice->intervention_id = $intervention->id;
+        $invoice->provider_id = $intervention->provider->id;
+        $invoice->user_id = $request->user()->id;
+        $invoice->price = $intervention->price;
+
+        $invoice->save();
         return view('interventions.client-show', ['intervention' => $intervention]);
     }
 

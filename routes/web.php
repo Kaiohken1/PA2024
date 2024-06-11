@@ -85,6 +85,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
     Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
+    Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
+
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
@@ -109,7 +111,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/espace-client', function () {
         return view('espace-client');
     })->name('espace-client');
-
 });
 
 

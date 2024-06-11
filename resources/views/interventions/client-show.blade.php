@@ -31,7 +31,12 @@
                     <a href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">
                         <button class="btn">Télécharger le devis</button>                                    
                     </a>
-                        @if($intervention->statut_id != 5)
+
+                    @if($intervention->statut_id = 5 || $intervention->statut_id = 3)
+                        <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
+                    @endif
+
+                        @if($intervention->statut_id != 5 && $intervention->estimations->where('statut_id', 9)->first())
 
                         <!-- Bouton pour ouvrir la modal -->
                         <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">Refuser le devis</button>    

@@ -59,4 +59,19 @@ class ContractController extends Controller
 
         return back()->with('success','Fiche enregistrée');
     }
+
+
+
+    public function generateInvoice($interventionId)
+    {        
+        $intervention = Intervention::findOrFail($interventionId);
+
+        $pdf = app('dompdf.wrapper');
+        
+        $pdf->loadView('invoices.invoice-model', compact('intervention'));
+        
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'facture_intervention_#' . $intervention->id . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
 }
