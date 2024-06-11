@@ -31,6 +31,10 @@ class InterventionTable extends Component
         $intervention->delete();
     }
 
+    public function updatedSearch() {
+        $this->resetPage();
+    }
+
     public function setSortBy($sortBy) {
 
         if($this->sortBy === $sortBy) {
