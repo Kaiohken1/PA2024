@@ -58,27 +58,31 @@ class Intervention extends Model
         return $this->belongsTo(Appartement::class);
     }
 
-    public function service() {
+    public function service()
+    {
         return $this->belongsTo(Service::class)
-                ->withTrashed();
-
+            ->withTrashed();
     }
 
-    public function services() {
+    public function services()
+    {
         return $this->belongsTo(Version::class, 'service_version');
     }
 
-    public function service_parameters() {
+    public function service_parameters()
+    {
         return $this->belongsToMany(ServiceParameter::class, 'service_parameters_values')
-                    ->withPivot(['value', 'service_parameter_id', 'parameter_version'])
-                    ->withTrashed();
+            ->withPivot(['value', 'service_parameter_id', 'parameter_version'])
+            ->withTrashed();
     }
 
-    public function statut() {
+    public function statut()
+    {
         return $this->belongsTo(Statut::class, 'statut_id');
     }
 
-    public function intervention_event() {
+    public function intervention_event()
+    {
         return $this->hasOne(InterventionEvent::class);
     }
 
@@ -87,7 +91,8 @@ class Intervention extends Model
         return $this->hasMany(InterventionEstimation::class);
     }
 
-    public function refusals() {
+    public function refusals()
+    {
         return $this->hasMany(InterventionRefusal::class);
     }
 
@@ -99,17 +104,16 @@ class Intervention extends Model
     public function scopeSearch($query, $value)
     {
         return $query->where('id', 'like', "%{$value}%")
-                     ->orWhereHas('provider', function ($query) use ($value) {
-                         $query->where('name', 'like', "%{$value}%");
-                     })
-                     ->orWhereHas('user', function ($query) use ($value) {
-                         $query->where('name', 'like', "%{$value}%")
-                               ->orWhere('first_name', 'like', "%{$value}%")
-                               ->orWhereRaw("CONCAT(name, ' ', first_name) LIKE ?", ["%{$value}%"]);
-                     })
-                     ->orWhereHas('service', function ($query) use ($value) {
-                        $query->where('name', 'like', "%{$value}%");
-                    });
+            ->orWhereHas('provider', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            })
+            ->orWhereHas('user', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%")
+                    ->orWhere('first_name', 'like', "%{$value}%")
+                    ->orWhereRaw("CONCAT(name, ' ', first_name) LIKE ?", ["%{$value}%"]);
+            })
+            ->orWhereHas('service', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            });
     }
-    
 }

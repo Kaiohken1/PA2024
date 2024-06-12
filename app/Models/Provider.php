@@ -72,4 +72,11 @@ class Provider extends Model
     public function hidden() {
         return $this->belongsToMany(Intervention::class, 'hidden_interventions');
     }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhere('name', 'like', "%{$value}%")
+                ->orWhere('email', 'like', "%{$value}%");
+    }
 }
