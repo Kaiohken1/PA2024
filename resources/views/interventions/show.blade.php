@@ -37,6 +37,7 @@
                         @if($estimation->provider_id === Auth::user()->provider->id)
                             <div class="mt-5">
                                 <p><strong>Tarif : </strong>{{$estimation->price}}€</p>
+                                <p><strong>Commission conciergie : </strong>{{$estimation->commission}}€</p>
                                 <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($intervention->end_time)->format('d/m/Y à H:i:s')}}</p>
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
 

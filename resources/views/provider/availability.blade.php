@@ -42,6 +42,7 @@
                                         @method('PATCH')
 
                                         <input type="hidden" name="price" value="{{$provider->estimations()->where('intervention_id', $intervention->id)->first()->price}}">
+                                        <input type="hidden" name="commission" value="{{$provider->estimations()->where('intervention_id', $intervention->id)->first()->commission}}">
                                         <input type="hidden" name="provider_id" value="{{$provider->id}}">
                                         <input type="hidden" name="planned_end_date" value="{{$provider->estimations()->where('intervention_id', $intervention->id)->first()->end_time}}">
 

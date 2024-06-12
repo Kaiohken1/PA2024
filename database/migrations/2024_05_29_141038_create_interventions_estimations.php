@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('estimate');
             $table->date('end_time');
             $table->integer('price');
+            $table->decimal('commission', 8, 2)->nullable();
             $table->timestamps();
         });
     }

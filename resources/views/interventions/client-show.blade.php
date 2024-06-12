@@ -32,9 +32,9 @@
                         <button class="btn">Télécharger le devis</button>                                    
                     </a>
 
-                    @if($intervention->statut_id = 5 || $intervention->statut_id = 3)
-                        <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
-                    @endif
+                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
+                            <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
+                        @endif
 
                         @if($intervention->statut_id != 5 && $intervention->estimations->where('statut_id', 9)->first())
 

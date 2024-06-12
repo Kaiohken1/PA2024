@@ -19,6 +19,7 @@ class InterventionEstimation extends Model
         'end_time',
         'price',
         'refusal_reason',
+        'commission',
     ];
 
     public function intervention()
@@ -35,5 +36,4 @@ class InterventionEstimation extends Model
     {
         return $this->belongsTo(Statut::class);
     }
-
 }

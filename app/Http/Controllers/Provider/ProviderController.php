@@ -164,9 +164,13 @@ class ProviderController extends Controller
     public function totalGains($id): float
     {
         $provider = Provider::findOrFail($id);
+
         return $provider->interventions()
                         ->whereIn('statut_id', [5, 3])
-                        ->sum('price');
+                        ->get()
+                        ->reduce(function ($carry, $intervention) {
+                            return $carry + ($intervention->price - $intervention->commission);
+                        }, 0);
     }
 
     public function monthlyGains($id, int $month = null, int $year = null): float
@@ -175,10 +179,13 @@ class ProviderController extends Controller
         $month = $month ?? Carbon::now()->month;
         $year = $year ?? Carbon::now()->year;
         return $provider->interventions()
-                        ->whereYear('created_at', $year)
-                        ->whereMonth('created_at', $month)
-                        ->whereIn('statut_id', [5, 3])
-                        ->sum('price');
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->whereIn('statut_id', [5, 3])
+                    ->get()
+                    ->reduce(function ($carry, $intervention) {
+                        return $carry + ($intervention->price - $intervention->commission);
+                    }, 0);
     }
 
 

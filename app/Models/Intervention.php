@@ -31,6 +31,7 @@ class Intervention extends Model
         'planned_end_date',
         'fiche',
         'refusal_reason',
+        'commission',
     ];
 
 

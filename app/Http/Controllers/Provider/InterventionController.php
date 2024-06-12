@@ -253,6 +253,8 @@ class InterventionController extends Controller
         $invoice->price = $intervention->price;
 
         $invoice->save();
+
+        $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);
         return view('interventions.client-show', ['intervention' => $intervention]);
     }
 
@@ -287,6 +289,7 @@ class InterventionController extends Controller
 
         $intervention->provider_id = NULL;
         $intervention->price = NULL;
+        $intervention->commission = NULL;
         $intervention->statut_id = 1;
         
         $intervention->save();

@@ -3,12 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CommissionTier;
 use Illuminate\Validation\Rule;
 use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
 
 class InterventionEstimationController extends Controller
 {
+    public static function calculateCommission($price)
+    {
+        $tier = CommissionTier::where('min_amount', '<=', $price)
+            ->where(function ($query) use ($price) {
+                $query->where('max_amount', '>=', $price)
+                    ->orWhereNull('max_amount');
+            })
+            ->first();
+
+        return $price * ($tier->percentage / 100);
+    }
+
+    
     public function store(Request $request) {
 
         $validatedData = $request->validate([
@@ -30,6 +44,8 @@ class InterventionEstimationController extends Controller
         $validatedData['estimate'] = $path;
 
         $validatedData['statut_id'] = 1;
+
+        $validatedData['commission'] = $this->calculateCommission($validatedData['price']);
 
         InterventionEstimation::create($validatedData);
 
@@ -54,6 +70,8 @@ class InterventionEstimationController extends Controller
         $path = $doc->store('InterventionEstimates', 'public');
         $validatedData['estimate'] = $path;
         $estimation->statut_id = 1;
+
+        $validatedData['commission'] = $this->calculateCommission($validatedData['price']);
 
         $estimation->update($validatedData);
 

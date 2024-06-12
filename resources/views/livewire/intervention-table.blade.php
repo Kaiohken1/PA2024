@@ -48,6 +48,7 @@
                                 <th scope="col" class="px-4 py-3">Prestataire</th>
                                 @include('livewire.includes.table-sort', ['name' => 'planned_date', 'displayName' => 'DATE PREVUE'])
                                 @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'PRIX'])
+                                <th scope="col" class="px-4 py-3">commission</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -71,7 +72,7 @@
                                     <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
                                     <td class="px-4 py-3">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="px-4 py-3">@if(!$intervention->services->getModel()->flexPrice){{$intervention->services->getModel()->price}}€@else{{__('Variable')}}@endif</td>
+                                    <td class="px-4 py-3">@if($intervention->price){{$intervention->price}}€@endif</td>
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.interventions.show', $intervention->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a>
                                         <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'intervention #{{$intervention->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$intervention->id}})" class="btn btn-error mr-3">X</button>

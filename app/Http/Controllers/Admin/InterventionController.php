@@ -68,6 +68,7 @@ class InterventionController extends Controller
 
         $validatedData = $request->validate([
             'price' => ['required', 'numeric'],
+            'commission' => ['required', 'numeric'],
             'provider_id' => ['required', 'exists:providers,id'],
             'planned_end_date' => ['required'],
         ]);
