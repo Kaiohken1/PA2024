@@ -23,7 +23,7 @@
 
                     <p class="text-lg"><label class="text-yellow-800 pr-10">Date et heure de fin</label> Le {{\Carbon\Carbon::parse($intervention->planned_end_date)->format('d/m/Y à H:i:s')}} </p>
 
-                    <p class="text-lg"><label class="text-yellow-800 pr-10">Montant à payer</label> @if($intervention->price) <strong>{{$intervention->price}}€</strong> @else À définir @endif</p>
+                    <p class="text-lg"><label class="text-yellow-800 pr-10">Montant à payer</label> @if($intervention->price) <strong>{{$intervention->price + ($intervention->price*0.20)}}€</strong> @else À définir @endif</p>
                 </div>
 
                 <div class="mt-4 flex flex-col">
@@ -32,7 +32,7 @@
                         <button class="btn">Télécharger le devis</button>                                    
                     </a>
 
-                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
+                        @if($intervention->statut_id == 5 || $intervention->statut_id = 3)
                             <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
                         @endif
 

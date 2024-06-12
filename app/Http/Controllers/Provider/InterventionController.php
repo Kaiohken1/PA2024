@@ -208,6 +208,11 @@ class InterventionController extends Controller
     {
         $intervention = Intervention::findOrFail($id);
 
+        $taxRate = 0.20;
+
+        $taxAmount = $intervention->price * $taxRate;
+        $totalAmount = $intervention->price + $taxAmount;
+
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -217,7 +222,7 @@ class InterventionController extends Controller
                     'product_data' => [
                         'name' => 'Intervention #' . $intervention->id,
                     ],
-                    'unit_amount' => $intervention->price * 100,
+                    'unit_amount' => $totalAmount * 100,
                 ],
                 'quantity' => 1,
             ]],

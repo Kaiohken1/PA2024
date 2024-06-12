@@ -101,7 +101,8 @@
           <th class="border px-4 py-2">#</th>
           <th class="border px-4 py-2">Service</th>
           <th class="border px-4 py-2">Effectué pour le</th>
-          <th class="border px-4 py-2 text-right">Prix</th>
+          <th class="border px-4 py-2 text-right">Prix HT</th>
+          <th class="border px-4 py-2 text-right">Prix TTC</th>
         </tr>
       </thead>
       <tbody>
@@ -110,6 +111,7 @@
           <td class="border px-4 py-2 text-center">{{$intervention->service->name}}</td>
           <td class="border px-4 py-2 text-center">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}} </td>
           <td class="border px-4 py-2 text-right">{{$intervention->price}}€</td>
+          <td class="border px-4 py-2 text-right">{{$intervention->price + ($intervention->price*0.20)}}€</td>
         </tr>
       </tbody>
     </table>
