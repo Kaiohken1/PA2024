@@ -96,7 +96,6 @@
             locale: "fr",
             disable: disabledDates,
             onChange: function(selectedDates, dateStr, instance) {
-                console.log(selectedDates);
                 var startDateFormatted = selectedDates[0] ? formatDate(selectedDates[0]) : "";
                 var endDateFormatted = selectedDates[1] ? formatDate(selectedDates[1]) : "";
                 document.getElementById("startDate").value = startDateFormatted;

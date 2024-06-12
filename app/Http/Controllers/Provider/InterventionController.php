@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Provider;
 
+use Carbon\Carbon;
 use Stripe\Stripe;
+use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Provider;
 use App\Models\Appartement;
@@ -16,7 +18,6 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
-use App\Models\Invoice;
 
 class InterventionController extends Controller
 {
@@ -82,6 +83,7 @@ class InterventionController extends Controller
             'tel.*.*' => ['regex:/[0-9]{10}/'],
             'description' => ['nullable', 'array'],
             'description.*' =>['nullable', 'string'],
+            'information' =>['nullable', 'string'],
             'date' => ['nullable', 'array'],
             'date.*' => ['array'],
             'date.*.*' => ['date'],
@@ -95,15 +97,21 @@ class InterventionController extends Controller
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
+        $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
+
+        dd($validatedData['planned_date']);
+
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);
             $price = $service->flexPrice = 1 ? null : $service->price;
             $validatedData['price'] = $price;
             $role = $user->roles->first()->nom;
-            foreach($validatedData['description'] as $key => $value) {
-                if($key == $id) {
-                    $description = $value;
+            if(isset($validatedData['description'])) {
+                foreach($validatedData['description'] as $key => $value) {
+                    if($key == $id) {
+                        $description = $value;
+                    }
                 }
             }
 
@@ -115,7 +123,8 @@ class InterventionController extends Controller
             $intervention->user()->associate($validatedData['user_id']);
             $intervention->service()->associate($id);
             $intervention->statut_id = 1;
-            $intervention->description = $description;
+            // $intervention->description = $description;
+            $intervention->description = $validatedData['information'];
             $intervention->service_version = $service->currentVersion()->version_id;
             $intervention->save();
 

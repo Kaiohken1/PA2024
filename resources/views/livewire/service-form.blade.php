@@ -105,16 +105,16 @@
                             @endswitch
                         @endforeach
                     </div>
-                    <div>
-                        <x-input-label for="planned_date" :value="__('Date prévue')"/>
-                        <input type="datetime-local" id="planned_date" name="planned_date"
-                            class="input input-bordered w-full max-w-xs" min="1" />
-                        <x-input-error class="mt-2" :messages="$errors->get('planned_date')" />
-                    </div>
-                    <div>
-                        <p>{{ __('Autre information dont vous souhaiteriez nous faire part (facultatif)') }}</p>
-                        <textarea name="description[{{ $service->id }}]" class="block mt-1 w-full"></textarea>
-                    </div>
+                        {{-- <div>
+                            <x-input-label for="planned_date" :value="__('Date prévue')"/>
+                            <input type="datetime-local" id="planned_date" name="planned_date"
+                                class="input input-bordered w-full max-w-xs" min="1" />
+                            <x-input-error class="mt-2" :messages="$errors->get('planned_date')" />
+                        </div>
+                        <div>
+                            <p>{{ __('Autre information dont vous souhaiteriez nous faire part (facultatif)') }}</p>
+                            <textarea name="description[{{ $service->id }}]" class="block mt-1 w-full"></textarea>
+                        </div> --}}
                 @endif
             @endforeach
         </div>

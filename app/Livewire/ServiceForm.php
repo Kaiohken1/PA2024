@@ -18,7 +18,9 @@ class ServiceForm extends Component
     public function mount()
     {
         $this->appartement = Appartement::findOrFail(request()->route('id'));
-        $this->categories = Category::all();
+        $this->categories = Category::whereHas('services', function($query) {
+            $query->where('active_flag', 1);
+        })->get();
         $this->updateServices();
     }
 
