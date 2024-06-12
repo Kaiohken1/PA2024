@@ -13,7 +13,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <input  
+                            <input 
                                 wire:model.live.debounce.300ms="search"
                                 type="text"
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-primary-500 block w-full pl-10 p-2"
@@ -33,6 +33,7 @@
                                 <option value="4">Refusée</option>
                             </select>
                         </div>
+                        <button wire:click="exportCsv" class="btn btn-warning">Exporter CSV</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
