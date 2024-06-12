@@ -6,6 +6,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 
 class ServiceController extends Controller
 {
@@ -15,7 +16,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'flexPrice', 'active_flag'])
+            ->select(['id', 'name', 'price', 'flexPrice', 'active_flag', 'category_id'])
             ->latest()
             ->paginate(10);
 
@@ -27,7 +28,8 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return view('services.create');
+        $categories = Category::all();
+        return view('services.create', ['categories' => $categories]);
     }
 
     /**
@@ -41,6 +43,7 @@ class ServiceController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'documentsId' => ['required', 'array'],
             'documentsId*' => ['exists:documents,id'],
+            'category_id' => ['required', 'exists:categories,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -94,7 +97,9 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        return view('services.edit', ['service' => $service]);
+        $categories = Category::all();
+
+        return view('services.edit', ['service' => $service, 'categories' => $categories]);
     }
 
     /**
@@ -108,6 +113,7 @@ class ServiceController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'documentsId' => ['array'],
             'documentsId*' => ['exists:documents,id'],
+            'category_id' => ['required', 'exists:categories,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;

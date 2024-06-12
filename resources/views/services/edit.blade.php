@@ -45,6 +45,17 @@
                             <x-input-label for="description" :value="__('Description du service')" class="text-white" />
                             <textarea id="description" name="description" class="textarea mb-5">{{ $service->description }}</textarea>
                         </div>
+
+                        <div>
+                            <select id="category_id"  name ="category_id"
+                            class="shadow-sm border-0 focus:outline-none p-3 block sm:text-sm border-gray-300 rounded-md mb-2">
+                            <option value="">Sélectionnez un type de catégorie</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @if($category->id === $service->category_id) selected @endif>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
                         @if ($errors->any())
                         <div class="text-red-500">

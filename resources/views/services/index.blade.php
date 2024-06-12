@@ -32,6 +32,7 @@
                             <th scope="col" class="px-6 py-3 text-center">Nom</th>
                             <th scope="col" class="px-6 py-3 text-center">Prix</th>
                             <th scope="col" class="px-6 py-3 text-center">Statut</th>
+                            <th scope="col" class="px-6 py-3 text-center">Catégorie</th>
                             <th scope="col" class="px-6 py-3 text-center">Action</th>
                         </tr>
                     </thead>
@@ -43,6 +44,7 @@
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
                                     {{$service->active_flag ? 'Activé' : 'Desactivé'}}
                                 </td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">{{ $service->category->name }}</td>
                                 <td class="flex justify-center mt-3 mb-3">
                                     <a href="{{ route('services.show', $service) }}">
                                     <button class="btn btn-info mr-3">Voir</button>
@@ -54,7 +56,7 @@
                                         @csrf
                                         @method('patch')
                                         <input type="hidden" name="active_flag" value="{{$service->active_flag}}">
-                                        @if($service->active_flag)                                        
+                                        @if($service->active_flag)
                                             <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir désactiver ce service ?')">Désactiver</button>
                                         @else
                                             <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir activer ce service ?')">Activer</button>
