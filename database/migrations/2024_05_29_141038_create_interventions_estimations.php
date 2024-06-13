@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Provider::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete()->default(1);
             $table->string('estimate');
-            $table->date('end_time');
+            $table->dateTime('end_time');
             $table->integer('price');
             $table->decimal('commission', 8, 2)->nullable();
             $table->timestamps();

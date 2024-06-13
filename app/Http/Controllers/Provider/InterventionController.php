@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Provider;
 
 use Carbon\Carbon;
 use Stripe\Stripe;
+use App\Models\Absence;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Provider;
@@ -149,7 +150,22 @@ class InterventionController extends Controller
     public function show($id)
     {
         $intervention = Intervention::findOrfail($id);
-        return view('interventions.show', ['intervention' => $intervention]);
+
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $absences = Absence::query()
+                    ->where('provider_id', $provider->id)
+                    ->get();
+    
+        $datesInBase = [];
+    
+        foreach ($absences as $absence) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($absence->start)),
+                'to' => date("d-m-Y", strtotime($absence->end))
+            ];
+        }
+
+        return view('interventions.show', ['intervention' => $intervention, 'datesInBase' => $datesInBase]);
     }
 
     /**

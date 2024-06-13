@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
 <x-provider-layout>
     @if (session('success'))
         <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600"
@@ -10,7 +14,7 @@
             {{ session('error') }}
         </div>
     @endif
-
+    
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -38,7 +42,7 @@
                             <div class="mt-5">
                                 <p><strong>Tarif : </strong>{{$estimation->price}}€</p>
                                 <p><strong>Commission conciergie : </strong>{{$estimation->commission}}€</p>
-                                <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($intervention->end_time)->format('d/m/Y à H:i:s')}}</p>
+                                <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y à H:i:s')}}</p>
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
 
                                 @if($estimation->statut_id != 8)
@@ -73,11 +77,16 @@
                                             <x-text-input id="end_time" class="block mt-1 w-full" type="datetime-local" name="end_time"/>
                                             <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
                                         </div>
-                                        <div>
-                                            <x-input-label for="price" :value="__('Tarif')" />
-                                            <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
-                                            <x-input-error :messages="$errors->get('price')" class="mt-2" />
-                                        </div>
+                                        @if($intervention->service->flexPrice)
+                                            <div>
+                                                <x-input-label for="price" :value="__('Tarif')" />
+                                                <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
+                                                <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                                            </div>
+                                        @else
+                                            <input type="hidden" value="{{$intervention->service->price}}" name="price">
+
+                                        @endif
 
                                         <x-input-label>Devis</x-input-label>
                                         <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
@@ -99,14 +108,18 @@
 
                             <div>
                                 <x-input-label for="end_time" :value="__('Date de fin')" />
-                                <x-text-input id="end_time" class="block mt-1 w-full" type="datetime-local" name="end_time"/>
+                                <input type="text" id="end_time" name="end_time" placeholder="Sélectionnez une date">
                                 <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
                             </div>
-                            <div>
-                                <x-input-label for="price" :value="__('Tarif')" />
-                                <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
-                                <x-input-error :messages="$errors->get('price')" class="mt-2" />
-                            </div>
+                            @if($intervention->service->flexPrice)
+                                <div>
+                                    <x-input-label for="price" :value="__('Tarif')" />
+                                    <input id="price" type="number" name="price" min=1/>
+                                    <x-input-error :messages="$errors->get('price')" class="mt-2" />
+                                </div>
+                            @else
+                                <input type="hidden" value="{{$intervention->service->price}}" name="price">
+                            @endif
 
                             <x-input-label>Devis</x-input-label>
                             <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
@@ -127,3 +140,17 @@
         </div>
     </div>
 </x-provider-layout>
+
+
+<script>
+    var minDate = <?php echo json_encode(\Carbon\Carbon::parse($intervention->planned_date)->format('d.m.Y')); ?>;  
+    var disabledDates = <?php echo json_encode($datesInBase); ?>;
+    flatpickr("#end_time", {
+        mode: "single",
+        enableTime: true,
+        dateFormat: "d-m-Y H:i",
+        minDate: minDate,
+        locale: "fr",
+        disable: disabledDates,
+    });
+</script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CommissionTier;
 use Illuminate\Validation\Rule;
+use App\Rules\CheckEventConflict;
 use App\Models\InterventionEstimation;
 use Illuminate\Support\Facades\Storage;
 
@@ -35,7 +36,9 @@ class InterventionEstimationController extends Controller
                 })
             ],
             'estimate' => ['required', 'image'],
-            'end_time' => ['required'],
+            'end_time' => ['required',
+                new CheckEventConflict($request->provider_id, $request->end_time)    
+            ],
             'price' => ['required', 'numeric'],
         ]);
 
@@ -44,6 +47,9 @@ class InterventionEstimationController extends Controller
         $validatedData['estimate'] = $path;
 
         $validatedData['statut_id'] = 1;
+
+        $validatedData['end_time'] = date("Y-m-d H:m:s", strtotime($validatedData['end_time']));
+
 
         $validatedData['commission'] = $this->calculateCommission($validatedData['price']);
 
@@ -58,7 +64,9 @@ class InterventionEstimationController extends Controller
     {
         $validatedData = $request->validate([
             'estimate' => ['required', 'image'],
-            'end_time' => ['nullable'],
+            'end_time' => ['nullable',
+            new CheckEventConflict($request->provider_id, $request->end_time)    
+            ],
             'price' => ['nullable', 'numeric'],
         ]);
 
@@ -70,6 +78,8 @@ class InterventionEstimationController extends Controller
         $path = $doc->store('InterventionEstimates', 'public');
         $validatedData['estimate'] = $path;
         $estimation->statut_id = 1;
+        $validatedData['end_time'] = date("Y-m-d H:m:s", strtotime($validatedData['end_time']));
+
 
         $validatedData['commission'] = $this->calculateCommission($validatedData['price']);
 
