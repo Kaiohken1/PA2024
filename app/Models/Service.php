@@ -22,6 +22,7 @@ class Service extends Model
         'flexPrice',
         'active_flag',
         'category_id',
+        'role_id',
     ];
 
     public function providers(): BelongsToMany
@@ -46,5 +47,10 @@ class Service extends Model
 
     public function category() {
         return $this->belongsTo(Category::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

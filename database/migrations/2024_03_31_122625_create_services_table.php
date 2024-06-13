@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use App\Models\Service;
 use App\Models\Category;
 use App\Models\Provider;
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->text('description');
             $table->boolean('active_flag')->default(false);
             $table->foreignIdFor(Category::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

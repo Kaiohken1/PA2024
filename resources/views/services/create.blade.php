@@ -44,6 +44,17 @@
                             </div>
 
                             <div>
+                                <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
+                                    <select name="role_id" id="role">
+                                        <option value="">Selectionez un rôle</option>
+                                        @foreach($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
+                            </div>
+
+                            <div>
                                 <x-input-label for="description" :value="__('Description du service')" class="text-white" />
                                 <textarea id="description" name="description" class="textarea mb-5"></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('description')" />

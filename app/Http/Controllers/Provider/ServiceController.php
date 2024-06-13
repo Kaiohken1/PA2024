@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Role;
 
 class ServiceController extends Controller
 {
@@ -29,11 +30,15 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('services.create', ['categories' => $categories]);
+        $roles = Role::query()
+                    ->where('nom', 'voyageur')
+                    ->orWhere('nom', 'bailleur')
+                    ->get();
+        return view('services.create', ['categories' => $categories, 'roles' => $roles]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage.-
      */
     public function store(Request $request)
     {
@@ -44,6 +49,7 @@ class ServiceController extends Controller
             'documentsId' => ['required', 'array'],
             'documentsId*' => ['exists:documents,id'],
             'category_id' => ['required', 'exists:categories,id'],
+            'role_id' => ['required', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -99,7 +105,12 @@ class ServiceController extends Controller
     {
         $categories = Category::all();
 
-        return view('services.edit', ['service' => $service, 'categories' => $categories]);
+        $roles = Role::query()
+        ->where('nom', 'voyageur')
+        ->orWhere('nom', 'bailleur')
+        ->get();
+
+        return view('services.edit', ['service' => $service, 'categories' => $categories, 'roles' => $roles]);
     }
 
     /**
@@ -114,6 +125,7 @@ class ServiceController extends Controller
             'documentsId' => ['array'],
             'documentsId*' => ['exists:documents,id'],
             'category_id' => ['required', 'exists:categories,id'],
+            'role_id' => ['required', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
