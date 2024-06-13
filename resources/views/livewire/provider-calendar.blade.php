@@ -1,5 +1,3 @@
-<!-- Ajoutez ces liens dans la section head de votre fichier Blade -->
-
 <style>
     #calendar-container {
         position: fixed;

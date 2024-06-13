@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Chat;
 use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
@@ -18,11 +19,11 @@ use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Admin\AvailabilityController;
 use App\Http\Controllers\Admin\SubscriptionsController;
+use App\Http\Controllers\InterventionEstimateController;
 use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\InterventionEstimateController;
-use App\Http\Controllers\InterventionEstimationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,14 +99,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
     Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
 
-
-
-
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.index');
     Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
     Route::get('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
     Route::post('/interventions/{id}/checkout', [InterventionController::class, 'checkout'])->name('interventions.checkout');
     Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
+
+    Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
 
     Route::get('/espace-client', function () {
