@@ -13,7 +13,7 @@ class ServiceForm extends Component
     public $categories;
     public $services = [];
     public $selectedCategory = null;
-    public $selectedServices = [];
+    public $selectedService = null;
 
     public function mount()
     {
@@ -30,9 +30,24 @@ class ServiceForm extends Component
             $this->services = Service::where('category_id', $this->selectedCategory)
                 ->where('active_flag', 1)
                 ->get();
+            $this->selectedService = null;
         } else {
             $this->services = [];
+            $this->selectedService = null;
         }
+    }
+
+    public function updateCat()
+    {
+        $this->selectedService = null;
+        $this->updateServices();
+        $this->dispatch('servicesUpdated', hasService: $this->selectedService);
+
+    }
+
+    public function updatedSelectedService()
+    {
+        $this->dispatch('servicesUpdated', hasService: $this->selectedService);
     }
 
     public function render()

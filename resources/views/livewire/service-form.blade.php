@@ -1,7 +1,7 @@
 <div>
     <div class="mb-4">
         <label for="category" class="block text-sm font-medium text-gray-700">{{ __('Sélectionnez une catégorie') }}</label>
-        <select id="category" wire:model.live="selectedCategory" wire:change="updateServices" class="block w-full mt-1">
+        <select id="category" wire:model.live="selectedCategory" wire:change="updateCat" class="block w-full mt-1">
             <option value="">{{ __('-- Sélectionnez une catégorie --') }}</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -12,14 +12,15 @@
     @if (!empty($services))
         <div class="mb-4">
             <label for="service" class="block text-sm font-medium text-gray-700">{{ __('Services disponibles') }}</label>
+                <select id="service" wire:model.live="selectedService">
+                    <option value="">-- Choisir un service --</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                    @endforeach
+                </select>
             @foreach ($services as $service)
-                <div>
-                    <input type="checkbox" class="service-checkbox" wire:model.live="selectedServices" value="{{ $service->id }}">
-                    <label>{{ $service->name }}</label>
-                    <p>{{ $service->description }}</p>
-                </div>
 
-                @if (in_array($service->id, $selectedServices))
+                @if ($selectedService == $service->id)
                     <input type="hidden" name="services[]" value="{{ $service->id }}">
                     <div id="service-form-{{ $service->id }}" class="mt-3 mb-3">
                         @foreach ($service->parameters as $parameter)

@@ -25,17 +25,19 @@
 
                 <livewire:service-form />
 
-                <div>
-                    <x-input-label for="planned_date" :value="__('Date prévue')"/>
-                    <input type="text" id="planned_date" name="planned_date" placeholder="Sélectionnez une date">
-                    <x-input-error class="mt-2" :messages="$errors->get('planned_date')" />
-                </div>
-                <div>
-                    <p>{{ __('Autre information dont vous souhaiteriez nous faire part (facultatif)') }}</p>
-                    <textarea name="information" class="block mt-1 w-full"></textarea>
+                <div id="additional-fields" style="display: none;">
+                    <div>
+                        <x-input-label for="planned_date" :value="__('Date prévue')"/>
+                        <input type="text" id="planned_date" name="planned_date" placeholder="Sélectionnez une date">
+                        <x-input-error class="mt-2" :messages="$errors->get('planned_date')" />
+                    </div>
+                    <div>
+                        <p>{{ __('Autre information dont vous souhaiteriez nous faire part (facultatif)') }}</p>
+                        <textarea name="information" class="block mt-1 w-full"></textarea>
+                    </div>
+                    <x-primary-button class="mt-4">{{ __('Demander une prestation') }}</x-primary-button>
                 </div>
 
-                <x-primary-button class="mt-4">{{ __('Demander une prestation') }}</x-primary-button>
             </form>
         @else
             <p>Aucun service n'est disponible actuellement</p>
@@ -50,5 +52,18 @@
             minDate: "today",
             locale: "fr",
         });
+
+        function isNotEmpty(value) {
+            return value && value.length > 0;
+        }
+
+
+        document.addEventListener('livewire:init', function () {
+        Livewire.on('servicesUpdated', (event) => {
+            console.log(event);
+            let additionalFields = document.getElementById('additional-fields');
+            additionalFields.style.display = isNotEmpty(event.hasService) ? 'block' : 'none';
+        });
+    });
     </script>
 </x-app-layout>

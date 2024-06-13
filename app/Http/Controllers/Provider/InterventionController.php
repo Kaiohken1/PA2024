@@ -99,9 +99,6 @@ class InterventionController extends Controller
 
         $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
 
-        dd($validatedData['planned_date']);
-
-
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);
             $price = $service->flexPrice = 1 ? null : $service->price;
