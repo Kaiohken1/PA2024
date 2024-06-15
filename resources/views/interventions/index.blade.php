@@ -41,7 +41,7 @@
                         </div>
                     @endforeach
                 @else
-                    <p>No service requests available.</p>
+                    <p>Aucune demande</p>
                 @endif
             </div>
         </div>

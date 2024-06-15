@@ -1,5 +1,5 @@
 <x-provider-layout>
-    <div class="py-12">
+    {{-- <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="overflow-x-auto">
@@ -44,6 +44,10 @@
                                             <a href="{{ route('interventions-provider.show', ['id' => $intervention->id]) }}">
                                                 <button class="btn btn-info mr-3">Voir</button>
                                             </a>
+                                            @if($intervention->statut_id == 5)
+                                                <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->user_id])}}"><button class="btn mt-3">Accèder au chat</button>
+                                            @endif
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -54,5 +58,8 @@
             </div>
             {{$interventions->links()}}
         </div>
-    </div>
-</x-provider-layout>
+    </div> --}}
+
+
+    <livewire:provider-interventions-table>
+    </x-provider-layout>
