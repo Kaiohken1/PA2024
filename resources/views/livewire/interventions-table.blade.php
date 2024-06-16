@@ -71,7 +71,15 @@
                                             {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s') }}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
-                                            @if($intervention->estimations->where('provider_id', Auth::user()->provider->id)->isNotEmpty())Devis envoyé@else{{ $intervention->statut->nom }}@endif
+                                            @if($intervention->estimations->where('provider_id', Auth::user()->provider->id)->isNotEmpty())
+                                                @if($intervention->estimations->where('provider_id', Auth::user()->provider->id)->first()->statut_id != 8)
+                                                    Devis envoyé
+                                                @else
+                                                    Devis refusé
+                                                @endif
+                                            @else
+                                                {{ $intervention->statut->nom }}
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
                                             <a href="{{ route('interventions.show', ['id' => $intervention->id]) }}">
