@@ -44,6 +44,7 @@
                     <p>Aucune demande</p>
                 @endif
             </div>
+            {{$interventions->links()}}
         </div>
     </div>
 </x-app-layout>

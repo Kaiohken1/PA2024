@@ -221,13 +221,8 @@ class ProviderController extends Controller
 
     public function proposals() {
         $provider = Provider::findOrFail(Auth::user()->provider->id);
-        $interventions = Intervention::query()
-                            ->where('service_id', $provider->services->first()->id)
-                            ->where('statut_id', 1)
-                            ->latest()
-                            ->paginate(15);
 
-        return view('provider.proposals', ['interventions' => $interventions]);
+        return view('provider.proposals');
     }
 
     public function calendar() {
