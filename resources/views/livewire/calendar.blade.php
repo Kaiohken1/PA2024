@@ -27,8 +27,7 @@
     }
 </style>
 
-
-<div>
+{{-- <div>
     <div id='calendar-container' wire:ignore>
         <div id='calendar'></div>
         <div id="reservation-details">
@@ -37,7 +36,21 @@
             <p id="reservationSummary"></p>
         </div>
     </div>
-</div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClosureModal">
+        Créer une fermeture
+    </button>
+</div> --}}
+
+@extends('layouts.app')
+
+@section('content')
+    <livewire:calendar-component />
+@endsection
+
+@push('scripts')
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js'></script>
+@endpush
+
 
 @push('scripts')
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js'></script>
@@ -75,6 +88,20 @@
         return date.toISOString().slice(0, 19).replace('T', ' ');
     }
 
+    // Function to adjust end date to 23:59
+    function adjustEndDate(date) {
+        let adjustedDate = new Date(date);
+        adjustedDate.setHours(23, 59, 59, 999); // set to 23:59:59
+        return adjustedDate.toISOString();
+    }
+
+    // Function to add one day to a date
+    function addOneDay(date) {
+        let newDate = new Date(date);
+        newDate.setDate(newDate.getDate() + 1);
+        return newDate;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const Calendar = FullCalendar.Calendar;
         const calendarEl = document.getElementById('calendar');
@@ -86,7 +113,7 @@
             id: event.id,
             title: 'Fermeture',
             start: event.start,
-            end: event.end ? new Date(new Date(event.end).getTime() + 86400000).toISOString().split('T')[0] : null,
+            end: event.end ? addOneDay(new Date(event.end)).toISOString() : null,
             allDay: true,
             className: 'fc-closure'
         }));
@@ -96,7 +123,7 @@
                 id: create_UUID(),
                 title: 'Reservation',
                 start: event.start_time,
-                end: event.end_time ? new Date(new Date(event.end_time).getTime() + 86400000).toISOString().split('T')[0] : null,
+                end: event.end_time ? addOneDay(new Date(event.end_time)).toISOString() : null,
                 allDay: true,
                 className: 'fc-reservation',
                 extendedProps: {
@@ -142,7 +169,7 @@
                 @this.eventChange({
                     id: eventObj.id,
                     start: formatDate(eventObj.start),
-                    end: eventObj.end ? formatDate(eventObj.end) : null
+                    end: eventObj.end ? formatDate(adjustEndDate(new Date(eventObj.end))) : null
                 });
             },
 
@@ -152,7 +179,7 @@
                 @this.eventChange({
                     id: eventObj.id,
                     start: formatDate(eventObj.start),
-                    end: eventObj.end ? formatDate(eventObj.end) : null
+                    end: eventObj.end ? formatDate(adjustEndDate(new Date(eventObj.end))) : null
                 });
             },
 
@@ -175,14 +202,14 @@
                         id: id,
                         title: title,
                         start: newStart.toISOString(),
-                        end: newEnd ? new Date(newEnd.getTime() + 86400000).toISOString().split('T')[0] : null,
+                        end: newEnd ? adjustEndDate(newEnd) : null,
                         allDay: arg.allDay
                     });
                     @this.eventAdd({
                         id: id,
                         title: title,
                         start: newStart.toISOString(),
-                        end: newEnd ? new Date(newEnd.getTime() + 86400000).toISOString().split('T')[0] : null,
+                        end: newEnd ? adjustEndDate(newEnd) : null,
                         allDay: true
                     });
                 }
@@ -191,37 +218,38 @@
         });
 
         calendar.render();
-    });
 
-    // Form submission handler
-    document.getElementById('editForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const eventId = document.getElementById('eventId').value;
-        const start = formatDate(new Date(document.getElementById('start').value));
-        const end = formatDate(new Date(document.getElementById('end').value));
+        // Handle create closure form submission
+        document.getElementById('createClosureForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('closureTitle').value;
+            const startDate = new Date(document.getElementById('closureStart').value);
+            const numberOfDays = parseInt(document.getElementById('closureDays').value);
+            const endDate = addOneDay(new Date(startDate));
+            endDate.setDate(startDate.getDate() + numberOfDays - 1);
 
-        fetch('/update-event', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                id: eventId,
-                start: start,
-                end: end,
+            const id = create_UUID();
+
+            calendar.addEvent({
+                id: id,
+                title: title,
+                start: startDate.toISOString(),
+                end: endDate.toISOString(),
+                allDay: true,
+                className: 'fc-closure'
+            });
+
+            $('#createClosureModal').modal('hide');
+
+            // You can replace the following part with an AJAX request to save the event in the database
+            @this.eventAdd({
+                id: id,
+                title: title,
+                start: startDate.toISOString(),
+                end: endDate.toISOString(),
                 allDay: true
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            const event = calendar.getEventById(eventId);
-            event.setStart(start);
-            event.setEnd(end ? new Date(new Date(end).getTime() + 86400000).toISOString().split('T')[0] : null);
-            event.setAllDay(true);
-            document.getElementById('detail-panel').style.display = 'none';
-        })
-        .catch(error => console.error('Error:', error));
+            });
+        });
     });
 </script>
 
