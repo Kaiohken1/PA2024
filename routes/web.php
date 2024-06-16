@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\RedirectAfterPayment;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
@@ -86,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('property/{id}/interventions', InterventionController::class);
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
     Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
+    Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
     Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
 
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
@@ -101,10 +103,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.index');
     Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
-    Route::get('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
+    Route::post('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
     Route::post('/interventions/{id}/checkout', [InterventionController::class, 'checkout'])->name('interventions.checkout');
     Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
-
+    Route::get('interventions/{id}/redirect/{token}', [InterventionController::class, 'redirect'])->name('interventions.redirect');
+    
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
 

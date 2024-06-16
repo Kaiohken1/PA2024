@@ -58,7 +58,7 @@
                     @endif
 
                     <div class="mt-8">
-                        <a href="{{route('contract.generate', Auth::user()->provider->id)}}"><strong><u>Télécharger le modèle de fiche d'intervention pour ce service</strong></u></a>
+                        <a href="{{route('contract.fiche', $intervention->id)}}"><strong><u>Télécharger le modèle de fiche d'intervention pour ce service</strong></u></a>
                     </div>
                 </div>
             </div>

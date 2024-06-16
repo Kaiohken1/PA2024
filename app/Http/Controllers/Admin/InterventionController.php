@@ -73,6 +73,8 @@ class InterventionController extends Controller
             'planned_end_date' => ['required'],
         ]);
 
+        $intervention->statut_id = 11;
+
         $intervention->update($validatedData);
 
         $estimation = InterventionEstimation::findOrfail($intervention->estimations->where('provider_id', $validatedData['provider_id'])->first()->id);

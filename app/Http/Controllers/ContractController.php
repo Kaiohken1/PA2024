@@ -74,4 +74,17 @@ class ContractController extends Controller
             echo $pdf->output();
         }, 'facture_intervention_#' . $intervention->id . '.pdf', ['Content-Type' => 'application/pdf']);
     }
+
+    public function generateFiche($interventionId)
+    {        
+        $intervention = Intervention::findOrFail($interventionId);
+
+        $pdf = app('dompdf.wrapper');
+        
+        $pdf->loadView('pdf-models.intervention-model', compact('intervention'));
+        
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'fiche_intervention_#' . $intervention->id . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
 }

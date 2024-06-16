@@ -92,7 +92,7 @@ class InterventionController extends Controller
             'checkbox.*' => ['array'],
             'services' => ['required', 'array'],
             'services.*' => ['exists:services,id'],
-            'planned_date' => ['required', 'date']
+            'planned_date' => ['required', 'date', 'after:now']
         ]);
 
         $user = Auth::user();
@@ -249,17 +249,26 @@ class InterventionController extends Controller
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => route('interventions.plan', $intervention->id),
+            'success_url' => route('interventions.redirect', ['id' => $intervention->id, 'token' => uniqid()]),
             'cancel_url' => url('/'),
         ]);
 
         return redirect()->away($session->url);
     }
 
+    public function redirect(Request $request, $id, $token)
+    {
+        $intervention = Intervention::findOrFail($id);
+        return view('interventions.redirect', ['intervention' => $intervention, 'token' => $token]);
+    }
+
 
     public function plan(Request $request, $id) {
 
         $intervention = Intervention::findOrFail($id);
+        if($intervention->intervention_event !== NULL) {
+            return view('interventions.client-show', ['intervention' => $intervention]);
+        }
         $intervention->statut_id = 5;
 
         $intervention->save();

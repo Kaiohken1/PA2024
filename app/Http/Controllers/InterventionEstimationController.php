@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CommissionTier;
+use App\Rules\CheckPlannedDate;
 use Illuminate\Validation\Rule;
 use App\Rules\CheckEventConflict;
 use App\Models\InterventionEstimation;
@@ -36,7 +37,11 @@ class InterventionEstimationController extends Controller
                 })
             ],
             'estimate' => ['required', 'image'],
-            'end_time' => ['required',
+            'end_time' => [
+                'required',
+                'date',
+                'after:planned_date',
+                new CheckPlannedDate($request->intervention_id),
                 new CheckEventConflict($request->provider_id, $request->end_time)    
             ],
             'price' => ['required', 'numeric'],
