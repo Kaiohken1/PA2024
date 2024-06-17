@@ -26,6 +26,7 @@
                             <select 
                                 wire:model.live="statut"
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
+                                <option value="">Tout</option>
                                 <option value="En attente">En attente</option>
                                 <option value="Validé">Validé</option>
                             </select>

@@ -43,9 +43,9 @@
                                 @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
                                 <th scope="col" class="px-4 py-3">Service</th>
                                 <th scope="col" class="px-4 py-3">Statut</th>
-                                @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DE DEMANDE'])
                                 <th scope="col" class="px-4 py-3">Client</th>
                                 <th scope="col" class="px-4 py-3">Prestataire</th>
+                                @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DEMANDE'])
                                 @include('livewire.includes.table-sort', ['name' => 'planned_date', 'displayName' => 'DATE PREVUE'])
                                 @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'PRIX'])
                                 @include('livewire.includes.table-sort', ['name' => 'commission', 'displayName' => 'COMMISSION'])
@@ -68,9 +68,9 @@
                                         {{ $intervention->statut->id == 5 ? 'text-yellow-500' : '' }} ">
                                         {{ $intervention->statut->nom }}
                                     </td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}
                                     <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
                                     <td class="px-4 py-3">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
                                     <td class="px-4 py-3">@if($intervention->price){{$intervention->price + ($intervention->price*0.20)}}€@endif</td>
                                     <td class="px-4 py-3">@if($intervention->estimations->where('statut_id', 9)->first()){{$intervention->estimations->first()->commission}}€@endif</td>
