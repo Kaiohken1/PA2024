@@ -37,7 +37,9 @@
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @livewire('notifications')
+                    <livewire:megaphone></livewire:megaphone>
+
+                    {{-- @livewire('notifications') --}}
 
                     {{-- @if (isset($notifications))
                         <x-dropdown align="right" width="48">

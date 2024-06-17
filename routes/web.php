@@ -128,7 +128,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
-    Route::resource('/intverventions', AdminInterventionController::class)->names('admin.interventions');
+    Route::resource('/interventions', AdminInterventionController::class)->names('admin.interventions');
     Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\Intervention as EventsIntervention;
 use App\Models\User;
 use App\Models\Statut;
 use App\Models\Service;
@@ -32,6 +33,10 @@ class Intervention extends Model
         'fiche',
         'refusal_reason',
         'commission',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => EventsIntervention::class,
     ];
 
 

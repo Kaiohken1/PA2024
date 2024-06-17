@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\EstimationCreated;
 use App\Models\Statut;
 use App\Models\Provider;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,10 @@ class InterventionEstimation extends Model
         'price',
         'refusal_reason',
         'commission',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => EstimationCreated::class,
     ];
 
     public function intervention()

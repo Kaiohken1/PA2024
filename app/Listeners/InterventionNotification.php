@@ -3,16 +3,14 @@
 namespace App\Listeners;
 
 use App\Models\User;
-use App\Events\ProviderCreated;
-use App\Notifications\NewProvider;
-use Illuminate\Support\Facades\Log;
+use App\Events\Intervention;
 use MBarlow\Megaphone\Types\General;
 use MBarlow\Megaphone\Types\Important;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 
-class SendProviderCreatedNotifications
+class InterventionNotification
 {
     /**
      * Create the event listener.
@@ -25,17 +23,17 @@ class SendProviderCreatedNotifications
     /**
      * Handle the event.
      */
-    public function handle(ProviderCreated $event): void
+    public function handle(Intervention $event): void
     {
         $admins = User::whereHas('roles', function ($query) {
             $query->where('nom', 'admin');
         })->get();
 
         $notification = new General(
-            'Nouvelle demande de prestataire',
-            'Vous avez reçu une inscription de prestataire',
-            url('/admin/providers/' . $event->provider->id),
-            'Voir le Prestataire'
+            'Nouvelle demande d\'intervention de prestataire',
+            'Vous avez reçu une demande d\'intervention prestataire',
+            url('/admin/interventions/' . $event->intervention->id),
+            'Voir la demande'
         );
 
         Notification::send($admins, $notification);    

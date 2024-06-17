@@ -17,13 +17,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Cashier\Billable;
+use MBarlow\Megaphone\HasMegaphone;
 
 class User extends Authenticatable
 {
 
    
 
-    use HasApiTokens, HasFactory, Notifiable, Billable;
+    use HasApiTokens, HasFactory, Notifiable, Billable, HasMegaphone;
 
     /**
      * The attributes that are mass assignable.

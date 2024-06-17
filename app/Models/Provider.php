@@ -7,8 +7,10 @@ use App\Models\Absence;
 use App\Models\Service;
 use App\Models\Intervention;
 use App\Events\ProviderCreated;
+use MBarlow\Megaphone\HasMegaphone;
 use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Provider extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasMegaphone;
 
     protected $fillable = [
         'name',

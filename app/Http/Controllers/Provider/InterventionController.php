@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Provider;
 
+use App\Events\InterventionPaid;
 use Carbon\Carbon;
 use Stripe\Stripe;
 use App\Models\Absence;
@@ -290,9 +291,11 @@ class InterventionController extends Controller
 
         $invoice->save();
 
+        event(new InterventionPaid($intervention));
+
         $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);
-        return view('interventions.client-show', ['intervention' => $intervention]);
-    }
+        return redirect()->route('interventions.clientShow', ['id' => $intervention->id]);
+        }
 
 
     public function showProvider($id)

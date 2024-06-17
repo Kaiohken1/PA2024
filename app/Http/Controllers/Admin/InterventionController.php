@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\InterventionDevisSend;
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
 use App\Models\InterventionEstimation;
@@ -82,6 +83,8 @@ class InterventionController extends Controller
         $estimation->statut_id = 9;
 
         $estimation->save();
+
+        event(new InterventionDevisSend($intervention));
 
         return back()->with('succes', 'Proposition envoyée au client');
     }
