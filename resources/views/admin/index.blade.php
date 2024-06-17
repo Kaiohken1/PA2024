@@ -35,14 +35,6 @@
                 </div>
             </a>
         </div>
-        <div class="max-w-xs mx-auto bg-grey-100 border overflow-hidden shadow-sm sm:rounded-lg">
-            <a href="{{route('intverventions.index')}}" class="block hover:bg-gray-950">
-                <div class="flex justify-center items-center h-40 pr-2 pl-2">
-                    <x-presta-logo class="h-24 w-24"/>
-                    <p class="block text-center text-white py-2">Gestion des Interventions</p>
-                </div>
-            </a>
-        </div>
 
         <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <a href="{{ route('tags.index') }}" class="block hover:bg-gray-200">
@@ -52,5 +44,16 @@
                 </div>
             </a>
         </div>
+
+        <div class="max-w-xs mx-auto bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <a href="{{ route('ticket-categories.index') }}" class="block hover:bg-gray-200">
+                <div class="flex justify-center items-center h-40 pr-2 pl-2">
+                    <x-presta-logo class="h-24 w-24"/>
+                    <p class="block text-center py-2">Gestion des Catégories de ticket</p>
+                </div>
+            </a>
+        </div>
+
+        
     </div>
 </x-admin-layout>

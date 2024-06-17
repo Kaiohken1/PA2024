@@ -99,4 +99,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserAvis::class, 'receiver_user_id');
     }
+
+    public function attributedTickets(): HasMany {
+        return $this->hasMany(Ticket::class, 'attributed_user_id');
+    }
+
+    public function askedTickets(): HasMany {
+        return $this->hasMany(Ticket::class, 'asker_user_id');
+    }
 }

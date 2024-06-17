@@ -26,6 +26,10 @@
                         {{ __('Presta') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('ticket.create')">
+                        {{ __('Besoin d\'aide') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 
