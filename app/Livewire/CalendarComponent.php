@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
-use Livewire\Component;
 use Carbon\Carbon;
+use Livewire\Component;
 use App\Models\Fermeture;
 use App\Models\Reservation;
+use Illuminate\Support\Facades\Request;
 
 class CalendarComponent extends Component
 {
     public $closureTitle;
     public $closureStart;
     public $closureDays;
+    public $appartement_id;
 
     protected $rules = [
         'closureTitle' => 'required|string|max:255',
@@ -19,12 +21,22 @@ class CalendarComponent extends Component
         'closureDays' => 'required|integer|min:1',
     ];
 
+    public function mount()
+    {
+        // Récupérer l'ID de l'appartement à partir de l'URL
+        $this->appartement_id = Request::query('appartement_id');
+    }
+
     public function render()
     {
-        $fermetures = Fermeture::all(); // Retrieve closures from the database
-        $reservations = Reservation::with('user')->get(); // Retrieve reservations from the database
+        $fermetures = Fermeture::where('appartement_id', $this->appartement_id)->get();
+        $reservations = Reservation::with('user')->where('appartement_id', $this->appartement_id)->get();
 
-        return view('livewire.calendar-component', compact('fermetures', 'reservations'));
+        return view('livewire.calendar-component', [
+            'fermetures' => $fermetures,
+            'reservations' => $reservations,
+            'appartement_id' => $this->appartement_id,
+        ]);
     }
 
     public function createClosure()
@@ -39,6 +51,7 @@ class CalendarComponent extends Component
             'title' => $this->closureTitle,
             'start' => $startDate,
             'end' => $endDate,
+            'appartement_id' => $this->appartement_id, 
         ]);
 
         // Trigger the event to update the calendar
@@ -53,3 +66,4 @@ class CalendarComponent extends Component
         $this->dispatchBrowserEvent('close-modal');
     }
 }
+

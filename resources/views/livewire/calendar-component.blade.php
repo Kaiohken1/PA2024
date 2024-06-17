@@ -1,33 +1,34 @@
-<div>
-    <style>
-        #calendar-container {
-            position: relative;
-            display: flex;
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-        }
-        #calendar {
-            flex: 70%;
-            margin-right: 10px;
-            padding: 10px;
-            border-right: 1px solid #ccc;
-            height: 700px;
-        }
-        #reservation-details {
-            flex: 30%;
-            margin-left: 10px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-        .fc-reservation {
-            background-color: green !important;
-            color: white !important;
-        }
-    </style>
+<style>
+    #calendar-container {
+        position: relative;
+        display: flex;
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+    }
+    #calendar {
+        flex: 70%;
+        margin-right: 10px;
+        padding: 10px;
+        border-right: 1px solid #ccc;
+        height: 700px;
+    }
+    #reservation-details {
+        flex: 30%;
+        margin-left: 10px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+    .fc-reservation {
+        background-color: green !important;
+        color: white !important;
+    }
+</style>
 
+
+<div>
     <div id='calendar-container' wire:ignore>
         <div id='calendar'></div>
         <div id="reservation-details">
@@ -36,138 +37,204 @@
             <p id="reservationSummary"></p>
         </div>
     </div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClosureModal">
-        Créer une fermeture
-    </button>
+</div>
 
-    <!-- Modal for creating closure -->
-    <div class="modal fade" id="createClosureModal" tabindex="-1" role="dialog" aria-labelledby="createClosureModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createClosureModalLabel">Créer une fermeture</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form wire:submit.prevent="createClosure">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="closureTitle">Titre</label>
-                            <input type="text" class="form-control" id="closureTitle" wire:model="closureTitle" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="closureStart">Date de début</label>
-                            <input type="date" class="form-control" id="closureStart" wire:model="closureStart" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="closureDays">Nombre de jours</label>
-                            <input type="number" class="form-control" id="closureDays" wire:model="closureDays" min="1" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Créer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+@push('scripts')
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js'></script>
+<script>
+    // Function to create a unique identifier
+    function create_UUID() {
+        let dt = new Date().getTime();
+        const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            let r = (dt + Math.random() * 16) % 16 | 0;
+            dt = Math.floor(dt / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    }
 
-    @push('scripts')
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js'></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const Calendar = FullCalendar.Calendar;
-            const calendarEl = document.getElementById('calendar');
-            const fermetures = @json($fermetures);
-            const reservations = @json($reservations);
+    // Function to check for date conflicts
+    function isDateConflict(newStart, newEnd, events) {
+        for (let event of events) {
+            let existingStart = new Date(event.start);
+            let existingEnd = new Date(event.end);
 
-            // Function to create a unique identifier
-            function create_UUID() {
-                let dt = new Date().getTime();
-                const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                    let r = (dt + Math.random() * 16) % 16 | 0;
-                    dt = Math.floor(dt / 16);
-                    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-                });
-                return uuid;
+            if (
+                (newStart <= existingEnd && newStart >= existingStart) ||
+                (newEnd <= existingEnd && newEnd >= existingStart) ||
+                (newStart <= existingStart && newEnd >= existingEnd)
+            ) {
+                return true;
             }
+        }
+        return false;
+    }
 
-            // Function to add one day to a date
-            function addOneDay(date) {
-                let newDate = new Date(date);
-                newDate.setDate(newDate.getDate() + 1);
-                return newDate;
-            }
+    // Function to format dates
+    function formatDate(date) {
+        return date.toISOString().slice(0, 19).replace('T', ' ');
+    }
 
-            // Mapping events to FullCalendar format
-            const events = fermetures.map(event => ({
-                id: event.id,
-                title: 'Fermeture',
-                start: event.start,
-                end: event.end ? addOneDay(new Date(event.end)).toISOString() : null,
+    document.addEventListener('DOMContentLoaded', function () {
+        const Calendar = FullCalendar.Calendar;
+        const calendarEl = document.getElementById('calendar');
+        const fermetures = @json($fermetures);
+        const reservations = @json($reservations);
+        const appartement_id = @json($appartement_id);
+
+        // Mapping events to FullCalendar format
+        function addOneDay(date) {
+            let newDate = new Date(date);
+            newDate.setDate(newDate.getDate() + 1);
+            return newDate;
+        }
+
+        const events = fermetures.map(event => ({
+            id: event.id,
+            title: 'Fermeture',
+            start: event.start,
+            end: event.end ? addOneDay(new Date(event.end)).toISOString() : null,
+            allDay: true,
+            className: 'fc-closure'
+        }));
+
+        reservations.forEach(event => {
+            events.push({
+                id: create_UUID(),
+                title: 'Reservation',
+                start: event.start_time,
+                end: event.end_time ? addOneDay(new Date(event.end_time)).toISOString() : null,
                 allDay: true,
-                className: 'fc-closure'
-            }));
-
-            reservations.forEach(event => {
-                events.push({
-                    id: create_UUID(),
-                    title: 'Reservation',
-                    start: event.start_time,
-                    end: event.end_time ? addOneDay(new Date(event.end_time)).toISOString() : null,
-                    allDay: true,
-                    className: 'fc-reservation',
-                    extendedProps: {
-                        name: event.user.name,
-                        surname: event.user.surname,
-                        summary: event.summary 
-                    }
-                });
-            });
-
-            // Initializing FullCalendar
-            const calendar = new Calendar(calendarEl, {
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                },
-                locale: '{{ config('app.locale') }}',
-                timeZone: 'local', // Ensure the timezone is set correctly
-                buttonText: {
-                    today: 'Aujourd’hui',
-                    month: 'Mois',
-                    week: 'Semaine',
-                    day: 'Jour',
-                    list: 'Liste'
-                },
-                events: events,
-                editable: false,
-                selectable: true,
-
-                // Event click handler to show reservation details
-                eventClick: function(info) {
-                    const eventObj = info.event;
-                    if (eventObj.extendedProps.name && eventObj.extendedProps.surname && eventObj.extendedProps.summary) {
-                        document.getElementById('reservationName').innerText = "Name: " + eventObj.extendedProps.name + " " + eventObj.extendedProps.surname;
-                        document.getElementById('reservationSummary').innerText = "Summary: " + eventObj.extendedProps.summary;
-                    }
+                className: 'fc-reservation',
+                extendedProps: {
+                    name: event.user.name,
+                    surname: event.user.surname,
+                    summary: event.summary 
                 }
             });
-
-            calendar.render();
-
-            window.livewire.on('closureAdded', () => {
-                // Reload the calendar events
-                calendar.refetchEvents();
-            });
-
-            window.addEventListener('close-modal', event => {
-                $('#createClosureModal').modal('hide');
-            });
         });
-    </script>
-    @endpush
-</div>
+
+        // Initializing FullCalendar
+        const calendar = new Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            locale: '{{ config('app.locale') }}',
+            timeZone: 'local', // Ensure the timezone is set correctly
+            buttonText: {
+                today: 'Aujourd’hui',
+                month: 'Mois',
+                week: 'Semaine',
+                day: 'Jour',
+                list: 'Liste'
+            },
+            events: events,
+            editable: true,
+            selectable: true,
+
+            // Event click handler to show reservation details
+            eventClick: function(info) {
+                const eventObj = info.event;
+                if (eventObj.extendedProps.name && eventObj.extendedProps.surname && eventObj.extendedProps.summary) {
+                    document.getElementById('reservationName').innerText = "Name: " + eventObj.extendedProps.name + " " + eventObj.extendedProps.surname;
+                    document.getElementById('reservationSummary').innerText = "Summary: " + eventObj.extendedProps.summary;
+                }
+            },
+
+            // Event resize handler
+            eventResize: function(info) {
+                const eventObj = info.event;
+                @this.eventChange({
+                    id: eventObj.id,
+                    start: formatDate(eventObj.start),
+                    end: eventObj.end ? formatDate(eventObj.end) : null,
+                    appartement_id: appartement_id
+                });
+            },
+
+            // Event drop handler
+            eventDrop: function(info) {
+                const eventObj = info.event;
+                @this.eventChange({
+                    id: eventObj.id,
+                    start: formatDate(eventObj.start),
+                    end: eventObj.end ? formatDate(eventObj.end) : null,
+                    appartement_id: appartement_id
+                });
+            },
+
+            // Event select handler
+            select: function(arg) {
+                const title = prompt('Titre :');
+                const id = create_UUID();
+
+                const newStart = new Date(arg.start);
+                const newEnd = new Date(arg.end);
+
+                if (isDateConflict(newStart, newEnd, reservations)) {
+                    alert('La fermeture chevauche une réservation existante.');
+                    calendar.unselect();
+                    return;
+                }
+
+                if (title) {
+                    calendar.addEvent({
+                        id: id,
+                        title: title,
+                        start: newStart.toISOString(),
+                        end: newEnd ? new Date(newEnd.getTime() + 86400000).toISOString().split('T')[0] : null,
+                        allDay: arg.allDay
+                    });
+                    @this.eventAdd({
+                        id: id,
+                        title: title,
+                        start: newStart.toISOString(),
+                        end: newEnd ? new Date(newEnd.getTime() + 86400000).toISOString().split('T')[0] : null,
+                        allDay: true,
+                        appartement_id: appartement_id
+                    });
+                }
+                calendar.unselect();
+            }
+        });
+
+        calendar.render();
+    });
+
+    // Form submission handler
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const eventId = document.getElementById('eventId').value;
+        const start = formatDate(new Date(document.getElementById('start').value));
+        const end = formatDate(new Date(document.getElementById('end').value));
+
+        fetch('/update-event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                id: eventId,
+                start: start,
+                end: end,
+                allDay: true,
+                appartement_id: appartement_id
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const event = calendar.getEventById(eventId);
+            event.setStart(start);
+            event.setEnd(end ? new Date(new Date(end).getTime() + 86400000).toISOString().split('T')[0] : null);
+            event.setAllDay(true);
+            document.getElementById('detail-panel').style.display = 'none';
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.css' rel='stylesheet' />
+@endpush
