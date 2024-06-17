@@ -6,6 +6,7 @@ use App\Events\InterventionDevisSend;
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
 use App\Models\InterventionEstimation;
+use App\Models\InterventionRefusal;
 use App\Models\Provider;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -49,7 +50,11 @@ class InterventionController extends Controller
     public function show($id)
     {
         $intervention = Intervention::findOrfail($id);
-        return view('admin.interventions.show', ['intervention' => $intervention]);
+        $refusals = InterventionRefusal::query()
+                    ->where('intervention_id', $intervention->id)
+                    ->paginate(5);
+
+        return view('admin.interventions.show', ['intervention' => $intervention, 'refusals' => $refusals]);
     }
 
     /**

@@ -61,13 +61,13 @@
         </div>
     </div>
 
-    @if(!$intervention->refusals->isEmpty())
+    @if($refusals->isNotEmpty())
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-slate-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-white">
                         <h2 class="text-lg font-bold mt-5 border-b border-gray-200">Historique des refus</h2>
-                        @foreach($intervention->refusals as $refusals)
+                        @foreach($refusals as $refusals)
                             @if($refusals->statut_id == 8)
                                 <div class="border-b border-gray-200 py-2">
                                     <p class="text-lg"><label class="pr-10 font-semibold">Refusé le :</label> {{ $refusals->created_at->format('d/m/Y à H:i:s') }}</p>

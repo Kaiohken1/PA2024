@@ -53,4 +53,13 @@ class Service extends Model
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhere('name', 'like', "%{$value}%")
+                ->orWhereHas('category', function ($query) use ($value) {
+                    $query->where('name', 'like', "%{$value}%");
+                });
+    }
 }

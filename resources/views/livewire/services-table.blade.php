@@ -1,6 +1,6 @@
 <div>
     <section class="mt-10">
-        <div class="mx-auto max-w-screen-2xl px-4 lg:px-12">
+        <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
             <div class="bg-gray-900 text-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden border border-gray-700">
                 <div class="flex items-center justify-between p-4 border-b border-gray-700">
                     <div class="flex">
@@ -27,13 +27,10 @@
                                 wire:model.live="statut"
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                                 <option value="">Tout</option>
-                                <option value="1">En attente</option>
-                                <option value="5">Payée</option>
-                                <option value="3">Terminée</option>
-                                <option value="4">Refusée</option>
+                                <option value="1">Activé</option>
+                                <option value="0">Désactivé</option>
                             </select>
                         </div>
-                        <button wire:click="exportCsv" class="btn btn-warning">Exporter CSV</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -41,42 +38,48 @@
                         <thead class="text-xs text-white uppercase bg-gray-700 dark:bg-gray-700">
                             <tr>
                                 @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
-                                <th scope="col" class="px-4 py-3">Service</th>
+                                <th scope="col" class="px-4 py-3">Nom</th>
                                 <th scope="col" class="px-4 py-3">Statut</th>
-                                @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DE DEMANDE'])
-                                <th scope="col" class="px-4 py-3">Client</th>
-                                <th scope="col" class="px-4 py-3">Prestataire</th>
-                                @include('livewire.includes.table-sort', ['name' => 'planned_date', 'displayName' => 'DATE PREVUE'])
+                                <th scope="col" class="px-4 py-3">Catégorie</th>
                                 @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'PRIX'])
-                                @include('livewire.includes.table-sort', ['name' => 'commission', 'displayName' => 'COMMISSION'])
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($interventions as $intervention)
-                                <tr wire:key="{{$intervention->id}}" class="border-b border-gray-700 dark:border-gray-700">
+                            @foreach($services as $service)
+                                <tr wire:key="{{$service->id}}" class="border-b border-gray-700 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-white whitespace-nowrap dark:text-white">
-                                    {{$intervention->id}}</th>
-                                    <td class="px-4 py-3">{{$intervention->services->getModel()->name}}</td>
-                                    <td class="px-4 py-3 
-                                        {{ $intervention->statut->id == 1 ? 'text-yellow-500' : '' }}
-                                        {{ $intervention->statut->id == 3 ? 'text-green-500' : '' }}
-                                        {{ $intervention->statut->id == 4 ? 'text-red-500' : '' }}
-                                        {{ $intervention->statut->id == 5 ? 'text-yellow-500' : '' }} ">
-                                        {{ $intervention->statut->nom }}
+                                    {{$service->id}}</th>
+                                    <td class="px-4 py-3">{{$service->name}}</td>
+                                    <td class="px-4 py-3                                        
+                                        {{ $service->active_flag ? 'text-green-500' : 'text-red-500' }}">
+                                         @if($service->active_flag)Activé @else Désactivé @endif
                                     </td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}
-                                    <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
-                                    <td class="px-4 py-3">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="px-4 py-3">@if($intervention->price){{$intervention->price + ($intervention->price*0.20)}}€@endif</td>
-                                    <td class="px-4 py-3">@if($intervention->estimations->where('statut_id', 9)->first()){{$intervention->estimations->first()->commission}}€@endif</td>
-                                    <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.interventions.show', $intervention->id) }}">
-                                        <button class="btn btn-info mr-3">Voir</button></a>
-                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'intervention #{{$intervention->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$intervention->id}})" class="btn btn-error mr-3">X</button>
+                                    <td class="px-4 py-3">{{$service->category->name}}</td>
+                                    <td class="px-4 py-3">@if($service->price){{$service->price}}€@else Variable @endif</td>
+                                    <td class="px-4 py-3 flex items-center justify-end">
+                                        
+                                        <a href="{{ route('services.show', $service->id) }}">
+                                            <a href="{{ route('services.show', $service) }}">
+                                                <button class="btn btn-info mr-3">Voir</button>
+                                                </a>
+                                                <a href="{{ route('services.edit', $service) }}">
+                                                    <button class="btn btn-success mr-3">Editer</button>
+                                                </a>
+                                                <form method="POST" action="{{ route('services.updateActive', $service->id) }}">
+                                                    @csrf
+                                                    @method('patch')
+                                                    <input type="hidden" name="active_flag" value="{{$service->active_flag}}">
+                                                    @if($service->active_flag)
+                                                        <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir désactiver ce service ?')">Désactiver</button>
+                                                    @else
+                                                        <button type="submit" class="btn btn-active btn-accent mr-3" onclick="return confirm('Êtes-vous sûr de vouloir activer ce service ?')">Activer</button>
+                                                    @endif
+                                                </form>
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer le service {{$service->name}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$service->id}})" class="btn btn-error mr-3">X</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -99,7 +102,7 @@
                             </select>
                         </div>
                     </div>
-                    {{$interventions->links()}}
+                    {{$services->links()}}
                 </div>
             </div>
         </div>
