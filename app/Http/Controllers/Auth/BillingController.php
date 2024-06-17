@@ -11,10 +11,12 @@ class BillingController extends Controller
 {
     public function update(Request $request): RedirectResponse
     {
+
         $validated = $request->validate([
             'adresse' => ['required', 'string', 'max:255'],
             'code_postal' => ['required', 'string', 'max:255'],
             'ville' => ['required', 'string', 'max:255'],
+            'display_city' => ['required', 'boolean']
         ]);
 
         $request->user()->update($validated);

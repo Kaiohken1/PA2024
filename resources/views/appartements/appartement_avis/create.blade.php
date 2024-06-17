@@ -54,7 +54,7 @@
 
                                 <div>
                                     <x-input-label for="comment" :value="__('Commentaire')" />
-                                    <x-text-input id="comment" class="block mt-1 w-full" type="text" name="comment" />
+                                    <x-text-input id="comment" class="form-input block mt-1 w-full" type="text" name="comment" />
                                     <x-input-error :messages="$errors->get('comment')" class="mt-2" />
                                 </div>
 
@@ -62,7 +62,7 @@
                                 <input type="hidden" name="reservation_id" value="{{$reservation->id}}">
 
                                 <x-primary-button class="ms-3 mt-5 ml-0">
-                                    {{ __('Modifier le commentaire') }}
+                                    {{ __('Envoyer') }}
                                 </x-primary-button>
                                 </div>
                             </form>

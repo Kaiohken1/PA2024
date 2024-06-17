@@ -1,8 +1,7 @@
 <form method="post" action="{{ route('property.index') }}">
 @csrf
-<div class="flex justify-center py-9">
-<div class="grid grid-cols-8 gap-6 w-9/12">
-<div class="flex flex-col">
+<div class=" w-36 ">
+
 
 <select name="sort_type" onchange="this.form.submit()" class="select select-bordered w-full max-w-xs">
     <option value="price_asc">prix croissant</option>
@@ -13,7 +12,6 @@
     <option value="guest_count_desc">voyageurs décroissant</option>
   </select>
 
-</div>
-</div>
+
 </div>
 

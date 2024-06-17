@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\UserAvis;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -37,9 +38,14 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $userAvis = UserAvis::where('receiver_user_id', $id)->get();
+        return view('profile.public_profile', [
+            'user' => $user,
+            'userAvis' => $userAvis
+        ]);
     }
 
     /**

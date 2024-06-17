@@ -99,7 +99,7 @@ class AppartementAvisController extends Controller
         $avis->update($validateData);
 
         return redirect()->route('property.show', $appartement_id)
-            ->with('success', "Tag mis à jour avec succès");
+            ->with('success', "Avis mis à jour avec succès");
     }
 
     /**

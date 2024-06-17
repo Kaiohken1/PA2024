@@ -24,18 +24,17 @@
 
 
                     @foreach ( $appartementAvis as $avis)
-
              <div class="px-6 flex flex-col border-b-2 border-grey overflow-x-auto mb-3">
              <div class="flex flex-row ">
 
                                 <div class="avatar">
                                     <div class="w-12 rounded-full">
-                                        <a href="profile">
+                                        <a href="{{route('users.show', ['user' => $avis->reservation->user->id])}}">
                                         <img src="{{ $avis->reservation->user->avatar != NULL ? Storage::url($avis->reservation->user->avatar) : 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?w=300&ssl=1'}}" />
                                         </a>
                                     </div>
                                 </div>
-                                <a href="profile" class="h-1/2">
+                                <a href="{{route('users.show', ['user' => $avis->reservation->user->id])}}" class="h-1/2">
                                     <span class="text-lg font-extrabold px-2 text-left">{{ $avis->reservation->user->first_name}} {{ $avis->reservation->user->name }}</span>
                                 </a>
                                 </div>

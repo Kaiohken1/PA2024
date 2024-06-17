@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserAvisController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\EstimationController;
@@ -12,6 +14,8 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\AppartementAvisController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\TicketCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,8 +91,18 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
-    Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::patch('/provider/{id}', [UserController::class, 'validateProvider'])->name('providers.validate');
+    Route::resource('ticket-categories', TicketCategoryController::class);
 });
+
+Route::prefix('users/{user}')->group(function () {
+Route::get('/show', [UserController::class, 'show'])->name('users.show');
+Route::get('/avis/create', [UserAvisController::class, 'create'])->name('users.avis.create');
+Route::post('/avis/store', [UserAvisController::class, 'store'])->name('users.avis.store');
+Route::get('/avis/{avis}/edit', [UserAvisController::class, 'edit'])->name('users.avis.edit');
+Route::delete('/avis/{avis}', [UserAvisController::class, 'destroy'])->name('users.avis.destroy');
+});
+
 
 Route::get('/admin', function () {
     return view('admin.index');
@@ -106,6 +120,11 @@ Route::prefix('estimation')->group(function () {
 
 
 Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+
+Route::resource('tickets', TicketController::class);
+
+
+
 
 
 

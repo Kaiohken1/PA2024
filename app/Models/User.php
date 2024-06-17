@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Tag;
+use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
 use Laravel\Sanctum\HasApiTokens;
@@ -35,7 +36,9 @@ class User extends Authenticatable
         'adresse',
         'code_postal',
         'ville',
-        'iban'
+        'iban',
+        'display_city',
+        'bio'
     ];
 
     /**
@@ -85,5 +88,23 @@ class User extends Authenticatable
 
     public function tags():HasMany {
         return $this->hasMany(Tag::class);
+    }
+    
+    public function sentAvis()
+    {
+        return $this->hasMany(UserAvis::class, 'sender_user_id');
+    }
+
+    public function receivedAvis()
+    {
+        return $this->hasMany(UserAvis::class, 'receiver_user_id');
+    }
+
+    public function attributedTickets(): HasMany {
+        return $this->hasMany(Ticket::class, 'attributed_user_id');
+    }
+
+    public function askedTickets(): HasMany {
+        return $this->hasMany(Ticket::class, 'asker_user_id');
     }
 }

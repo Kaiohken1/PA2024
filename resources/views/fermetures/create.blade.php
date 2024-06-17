@@ -16,11 +16,11 @@
                     @csrf
 
                     <x-input-label for="start_time" :value="__('Date de début')" />
-                    <x-text-input id="start_time" class="block mt-1 w-full" type="date" name="start_time"/>
+                    <x-text-input id="start_time" class="form-input block mt-1 w-full" type="date" name="start_time"/>
                     <x-input-error :messages="$errors->get('start_time')" class="mt-2" />
 
                     <x-input-label for="end_time" :value="__('Date de fin')" />
-                    <x-text-input id="end_time" class="block mt-1 w-full" type="date" name="end_time"/>
+                    <x-text-input id="end_time" class="form-input block mt-1 w-full" type="date" name="end_time"/>
                     <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
 
                     <x-primary-button class="ms-3 mt-5 ml-0">
