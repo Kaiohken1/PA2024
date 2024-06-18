@@ -2,12 +2,13 @@
 
 namespace App\Livewire;
 
-use App\Models\Intervention;
-use App\Models\Message;
-use App\Models\Provider;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
 use Livewire\Component;
+use App\Models\Provider;
+use App\Models\Intervention;
+use Illuminate\Support\Facades\Auth;
+use MBarlow\Megaphone\Types\General;
 
 class Chat extends Component
 {
@@ -16,19 +17,30 @@ class Chat extends Component
 
 
     public $message = '';
+    
 
     public function render()
     {
         return view('livewire.chat', [
-            'messages' => Message::where('from_user_id', auth()->id())
-                        ->orWhere('from_user_id', $this->user->id)
-                        ->orWhere('to_user_id', auth()->id())
-                        ->orWhere('to_user_id', $this->user->id)
-                        ->get(),
+            'messages' => Message::where(function ($query) {
+                        $query->where('from_user_id', auth()->id())
+                              ->orWhere('from_user_id', $this->user->id)
+                              ->orWhere('to_user_id', auth()->id())
+                              ->orWhere('to_user_id', $this->user->id);
+                    })
+                    ->where('intervention_id', $this->intervention->id)
+                    ->get(),
         ]);
     }
 
     public function sendMessage() {
+
+        $this->validate([
+            'message' => 'required|string|max:255',
+        ], [
+            'message.required' => 'Le message ne peut pas être vide.',
+            'message.max' => 'Le message ne peut pas dépasser 255 caractères.',
+        ]);
 
         Message::create([
             'from_user_id' => auth()->id(),
@@ -36,6 +48,15 @@ class Chat extends Component
             'message' => $this->message,
             'intervention_id' => $this->intervention->id,
         ]);
+
+        $notification = new General(
+            'Nouveau message - Intervention #' . $this->intervention->id,
+            'Un nouveau message a été envoyé',
+            url('/interventions/' . $this->intervention->id . '/chat/' . $this->user->id),
+            'Voir la conversation'
+        );
+
+        $this->user->notify($notification);
 
         $this->reset('message');
     }

@@ -34,7 +34,7 @@
 
                         @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
                             <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
-                            <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => Auth::user()->id])}}"><button class="btn mt-3">Accèder au chat</button></a>
+                            <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->provider->user->id])}}"><button class="btn mt-3">Accèder au chat</button></a>
                         @endif
 
                         @if($intervention->statut_id != 5 && $intervention->estimations->where('statut_id', 9)->first())

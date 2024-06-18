@@ -72,6 +72,10 @@ class User extends Authenticatable
         return $this->roles->contains('nom', 'admin');
     }
 
+    public function isProvider() {
+        return $this->roles->contains('nom', 'provider');
+    }
+
     public function getImageUrl() {
         if($this->avatar) {
             return Storage::url($this->avatar);
