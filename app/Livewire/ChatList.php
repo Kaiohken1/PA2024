@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Message;
+use Illuminate\Http\Request;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\DatabaseNotification;
@@ -10,8 +11,6 @@ use Illuminate\Notifications\DatabaseNotification;
 class ChatList extends Component
 {
     public $conversations;
-
-    protected $listeners = ['messageSent' => 'refreshConversations'];
 
     public function mount()
     {
@@ -43,11 +42,6 @@ class ChatList extends Component
                     'notifs' => $notifs,
                 ];
             });
-    }
-
-    public function refreshConversations()
-    {
-        $this->loadConversations();
     }
 
     public function render()

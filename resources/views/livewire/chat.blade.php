@@ -1,9 +1,17 @@
 <div class="flex h">
-    <div class="w-1/4 bg-white p-0 m-0 border-r  overflow-y-auto">
+    <!-- Masquer chat-list sur les écrans non-téléphone -->
+    <div class="w-1/4 bg-white p-0 m-0 border-r overflow-y-auto hidden sm:block">
         @livewire('chat-list')
     </div>
-    <div class="w-3/4 p-0 m-0 flex flex-col">
-        <h1 class="text-xl font-bold bg-white flex justify-center">@if($user->provider) {{$user->provider->name}} @else{{$user->name}} {{$user->first_name}}@endif - #{{$intervention->id}}</h1>
+    <div class="w-full sm:w-3/4 p-0 m-0 flex flex-col">
+        <h1 class="text-xl font-bold bg-white flex justify-center">
+            @if($user->provider) 
+                {{$user->provider->name}} 
+            @else
+                {{$user->name}} {{$user->first_name}}
+            @endif 
+            - #{{$intervention->id}}
+        </h1>
         <div class="flex-grow overflow-y-auto p-6 bg-white shadow-sm sm:rounded-lg">
             <div wire:poll>
                 @foreach ($messages as $message)

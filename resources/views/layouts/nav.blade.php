@@ -22,6 +22,19 @@
                     <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation')">
                         {{ __('Espace Client') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('interventions.chat', [
+                        'intervention' => App\Models\Intervention::latest()
+                            ->where('statut_id', 5)
+                            ->where('user_id', Auth::user()->id)
+                            ->first()->id,
+                        'user' => App\Models\Intervention::latest()
+                            ->where('statut_id', 5)
+                            ->where('user_id', Auth::user()->id)
+                            ->first()->provider->user->id,
+                    ])" :active="request()->routeIs('interventions.chat')">
+                        {{ __('Messagerie') }}                    
+                    </x-nav-link>
                 </div>
             </div>
 

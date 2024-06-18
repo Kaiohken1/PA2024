@@ -31,6 +31,20 @@
                     <x-nav-link :href="route('provider.availability', Auth::user()->provider->id)" :active="request()->routeIs('provider.availability')">
                         {{ __('Absences') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('interventions.chat', [
+                        'intervention' => App\Models\Intervention::latest()
+                            ->where('statut_id', 5)
+                            ->where('provider_id', Auth::user()->provider->id)
+                            ->first()->id,
+                        'user' => App\Models\Intervention::latest()
+                            ->where('statut_id', 5)
+                            ->where('provider_id', Auth::user()->provider->id)
+                            ->first()->user_id
+                    ])" :active="request()->routeIs('interventions.chat')">
+                        {{ __('Messagerie') }}                    
+                    </x-nav-link>
+                    
                 </div>
             </div>
 

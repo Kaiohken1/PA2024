@@ -7,6 +7,7 @@ use App\Models\Message;
 use Livewire\Component;
 use App\Models\Provider;
 use App\Models\Intervention;
+use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 use MBarlow\Megaphone\Types\General;
 
@@ -15,12 +16,20 @@ class Chat extends Component
     public User $user;
     public Intervention $intervention;
 
+    private $layout;
+
 
     public $message = '';
     
-
     public function render()
     {
+        if (Auth::user()->provider) {
+            $this->layout = 'layouts.provider';
+        } else {
+            $this->layout = 'layouts.app'; 
+        }
+
+        
         return view('livewire.chat', [
             'messages' => Message::where(function ($query) {
                         $query->where('from_user_id', auth()->id())
@@ -30,7 +39,8 @@ class Chat extends Component
                     })
                     ->where('intervention_id', $this->intervention->id)
                     ->get(),
-        ]);
+                ])
+                ->layout($this->layout);
     }
 
     public function sendMessage() {

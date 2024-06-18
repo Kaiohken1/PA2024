@@ -1,7 +1,7 @@
-<div wire:poll.1000ms="refreshConversations" >
+<div>
     <ul>
         @foreach ($conversations as $conversation)
-            <li class="p-2 border-b relative">
+            <li class="p-2 border-b relative {{ request()->route('intervention')->id == $conversation['intervention']->id ? 'bg-gray-200' : '' }}">
                 <a href="{{ route('interventions.chat', ['intervention' => $conversation['intervention']->id, 'user' => $conversation['user']->id]) }}" class="flex items-center">
                     <img src="{{ $conversation['user']->getImageUrl() }}" alt="Photo" class="w-10 h-10 rounded-full mr-3">
                     <div>
