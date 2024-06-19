@@ -17,8 +17,6 @@ class Chat extends Component
     public Intervention $intervention;
 
     private $layout;
-
-
     public $message = '';
     
     public function render()
@@ -29,7 +27,8 @@ class Chat extends Component
             $this->layout = 'layouts.app'; 
         }
 
-        
+        $this->dispatch('messageReceived');
+
         return view('livewire.chat', [
             'messages' => Message::where(function ($query) {
                         $query->where('from_user_id', auth()->id())
@@ -67,6 +66,8 @@ class Chat extends Component
         );
 
         $this->user->notify($notification);
+
+        $this->dispatch('messageReceived');
 
         $this->reset('message');
     }

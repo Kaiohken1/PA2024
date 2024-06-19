@@ -1,5 +1,4 @@
 <div class="flex h">
-    <!-- Masquer chat-list sur les écrans non-téléphone -->
     <div class="w-1/4 bg-white p-0 m-0 border-r overflow-y-auto hidden sm:block">
         @livewire('chat-list')
     </div>
@@ -12,7 +11,10 @@
             @endif 
             - #{{$intervention->id}}
         </h1>
-        <div class="flex-grow overflow-y-auto p-6 bg-white shadow-sm sm:rounded-lg">
+        <div class="overcontainer p-6 bg-white shadow-sm sm:rounded-lg"
+             x-data="{ scroll: () => { $el.scrollTo(0, $el.scrollHeight); }}"
+             x-intersect="scroll()"
+             id="conversation">
             <div wire:poll>
                 @foreach ($messages as $message)
                     <div class="chat @if($message->from_user_id == auth()->id()) chat-end @else chat-start @endif">

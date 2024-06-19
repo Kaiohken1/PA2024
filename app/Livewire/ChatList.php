@@ -3,14 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Message;
-use Illuminate\Http\Request;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 use Illuminate\Notifications\DatabaseNotification;
 
 class ChatList extends Component
 {
     public $conversations;
+    public $totalNotifs;
 
     public function mount()
     {
@@ -19,18 +19,22 @@ class ChatList extends Component
 
     public function loadConversations()
     {
+        $userId = Auth::id();
+
         $this->conversations = Message::with(['fromUser', 'toUser', 'intervention'])
-            ->where('from_user_id', Auth::id())
-            ->orWhere('to_user_id', Auth::id())
+            ->where(function ($query) use ($userId) {
+                $query->where('from_user_id', $userId)
+                      ->orWhere('to_user_id', $userId);
+            })
             ->orderBy('created_at', 'desc')
             ->get()
             ->unique('intervention_id')
-            ->map(function ($message) {
-                $user = $message->from_user_id == Auth::id() ? $message->toUser : $message->fromUser;
+            ->map(function ($message) use ($userId) {
+                $user = $message->from_user_id == $userId ? $message->toUser : $message->fromUser;
                 $userName = $user->provider ? $user->provider->name : '';
 
-                $notifs = DatabaseNotification::where('notifiable_id', Auth::id())
-                    ->where('data->title', 'like', '%Intervention #'.$message->intervention->id.'%')                    
+                $notifs = DatabaseNotification::where('notifiable_id', $userId)
+                    ->where('data->title', 'like', '%Intervention #'.$message->intervention->id.'%')
                     ->whereNull('read_at')
                     ->count();
 
@@ -41,7 +45,17 @@ class ChatList extends Component
                     'last_message' => $message,
                     'notifs' => $notifs,
                 ];
-            });
+            }); 
+    }
+
+    public function markAsRead($interventionId)
+    {
+        $userId = Auth::id();
+
+        DatabaseNotification::where('notifiable_id', $userId)
+            ->where('data->title', 'like', '%Intervention #'.$interventionId.'%')
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
     }
 
     public function render()
@@ -49,3 +63,4 @@ class ChatList extends Component
         return view('livewire.chat-list');
     }
 }
+

@@ -34,7 +34,7 @@
             </div>
             <div class="bg-white shadow-lg rounded-lg p-6">
                 <div class="stat-title text-gray-700">Total Interventions</div>
-                <div class="stat-value text-amber-600 text-3xl font-bold">{{ $provider->interventions()->count() }}</div>
+                <div class="stat-value text-amber-600 text-3xl font-bold">{{ $provider->interventions()->where('statut_id', 3)->count() }}</div>
                 <div class="stat-desc text-gray-500">Interventions effectuées</div>
             </div>
         </div>

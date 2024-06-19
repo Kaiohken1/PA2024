@@ -2,11 +2,12 @@
 
 use App\Livewire\Chat;
 use App\Livewire\DynamicInput;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\RedirectAfterPayment;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ProfileController;
-use App\Livewire\RedirectAfterPayment;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FermetureController;
@@ -109,6 +110,15 @@ Route::middleware('auth')->group(function () {
     Route::get('interventions/{id}/redirect/{token}', [InterventionController::class, 'redirect'])->name('interventions.redirect');
     
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
+
+    Route::get('/messagerie', function() {
+        if(Auth::user()->provider) {
+            return view('provider.messagerie');
+        } else {
+            return view('interventions.messagerie');
+        }
+    })->name('interventions.messagerie');
+
 
 
     Route::get('/espace-client', function () {

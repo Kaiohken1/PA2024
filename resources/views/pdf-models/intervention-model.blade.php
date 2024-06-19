@@ -46,7 +46,6 @@
     .mb-6 {
         margin-bottom: 24px;
     }
-
     .ml {
         margin-left:25em;
     }
@@ -65,71 +64,78 @@
     .justify-end {
         justify-content: flex-end;
     }
-
     .text-center {
         text-align: center;
     }
-
     .signature-box {
-    width: 150px;
-    height: 50px;
-    background-color: white;
-    margin-top: 16px;
-    border: 1px solid black;
-}
-
+        width: 150px;
+        height: 45px;
+        background-color: white;
+        margin-top: 16px;
+        border: 1px solid black;
+    }
+    .section-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .section-content {
+        border: 1px solid #eeb90c;
+        padding: 16px;
+        min-height: 65px;
+    }
 </style>
 </head>
 <body>
 
-  <div>
+<div>
     <table class="w-full mb-6 container">
-      <tr>
-        <td valign="top"><img width="150" class="mb-1" src="{{ 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(public_path('logo/logo3.svg'))) }}"></td>        <td class="text-right">
-          <h3 class="text-xl">Paris CareTaker Services</h3>
-          <pre>
-            23 rue Montrogueil
-            75002, Paris
-            0612345678
-          </pre>
-        </td>
-      </tr>
+        <tr>
+            <td valign="top">
+                <img width="150" class="mb-1" src="{{ 'data:image/svg+xml;base64,' . base64_encode(file_get_contents(public_path('logo/logo3.svg'))) }}">
+            </td>
+            <td class="text-right">
+                <h3 class="text-xl">Paris CareTaker Services</h3>
+                <pre>
+                    23 rue Montrogueil
+                    75002, Paris
+                    0612345678
+                </pre>
+            </td>
+        </tr>
     </table>
 
     <!-- Facture Information -->
     <div class="mb-6">
-      <p class="text-xl">FICHE D'INTERVENTION</p>
-      <p><span  class="text-lg">INTERVENTION EFFECUTEE PAR :</span> {{$intervention->provider->name}}</p>
-      <p><span  class="text-lg">À L'INTENTION DE :</span> {{$intervention->user->name}} {{$intervention->user->first_name}}</p>
-
+        <p class="text-xl">FICHE D'INTERVENTION</p>
+        <p><span class="text-lg">INTERVENTION EFFECTUÉE PAR :</span> {{$intervention->provider->name}}</p>
+        <p><span class="text-lg">À L'INTENTION DE :</span> {{$intervention->user->name}} {{$intervention->user->first_name}}</p>
+        <p><span class="text-lg">SERVICE :</span> {{$intervention->service->name}}</p>
+        <p><span class="text-lg">DEBUT D'INTERVENTION :</span> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</p>
+        <p><span class="text-lg">FIN D'INTERVENTION :</span> </p>
     </div>
 
-    <table class="w-full bg-white border">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="border px-4 py-2">#</th>
-          <th class="border px-4 py-2">Service</th>
-          <th class="border px-4 py-2">Effectué pour le</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="bg-white">
-          <th scope="row" class="border px-4 py-2">{{$intervention->id}}</th>
-          <td class="border px-4 py-2 text-center">{{$intervention->service->name}}</td>
-          <td class="border px-4 py-2 text-center">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}} </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="container">
+        <div class="section">
+            <div class="section-title">Observations</div>
+            <div class="section-content">{{ $intervention->observations }}</div>
+        </div>
+        <div class="section">
+            <div class="section-title">Description</div>
+            <div class="section-content"></div>
+        </div>
+    </div>
+</div>
 
-  <div class="flex justify-end">
-    <img width="300" class="mb-1 ml" src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('logo/signature.png'))) }}">  
+<div class="flex justify-end">
+    <img width="300" class="ml" src="{{ 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('logo/signature.png'))) }}">  
 </div>
 
 <div class="flex justify-end">
     <div class="signature-box"></div>
-    <p>Signé le : </p>
-    <p>Fait à  :</p>
+    <div>
+        <p>Date et lieu de signature : </p>
+    </div>
 </div>
 
 </body>
