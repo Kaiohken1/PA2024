@@ -307,7 +307,6 @@ $appartements = $appartements->each(function ($appartement) {
         }  
     
         $appartement->update($validatedData);
-
         if(isset($validatedData['tag_id'])){
             $appartement->tags()->sync($validatedData['tag_id']);
         } else {

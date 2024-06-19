@@ -71,10 +71,10 @@
                                     </button>
                                 </td>
                                 @else
-                                <td class="py-3 px-6 text-center">ffff</td>
+                                <td class="py-3 px-6 text-center"></td>
                                 @endif
                             @else
-                            <td class="py-3 px-6 text-center">uuuuu</td>
+                            <td class="py-3 px-6 text-center"></td>
                             @endif
                         @endif
                     </tr>

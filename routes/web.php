@@ -79,6 +79,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     });
 
+    Route::resource('tickets', TicketController::class);
+
 });
 
 
@@ -121,7 +123,7 @@ Route::prefix('estimation')->group(function () {
 
 Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
-Route::resource('tickets', TicketController::class);
+
 
 
 

@@ -51,7 +51,75 @@ class TicketController extends Controller
         $ticket->asker_user_id = auth()->id();
         $ticket->save();
 
-        return redirect()->route('tickets.index')->with('status', 'Ticket created successfully!');
+        return redirect()->route('tickets.index')->with('status', 'Ticket créer avec succès');
+    }
+
+    public function show(string $id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        
+
+        return view('ticket.show', [
+            'ticket' => $ticket
+        ]);  
+
+    }
+
+    public function edit(string $id)
+    {
+        $ticketCategories = TicketCategory::all();
+        $ticket = Ticket::findOrFail($id);
+        
+
+        return view('ticket.edit', [
+            'ticketCategories' => $ticketCategories,
+            'ticket' => $ticket
+        ]);  
+
+    }
+
+    public function update(string $id, Request $request)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $validateData = $request->validate([
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category_id' => 'required|numeric'
+        ]);
+
+
+        if ($ticket->attributed_role_id == null and $ticket->attributed_user_id == null){
+            $ticket->update($validateData);
+            return redirect()->route('tickets.index')
+            ->with('status', 'Ticket mis à jour avec succès');
+        } else{
+            return redirect()->route('tickets.index')
+            ->with('error', 'La mis à jour du ticket n\'est plus possible');
+        }
+
+        
+
+    }
+
+    public function destroy(string $id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+        if ($ticket->attributed_role_id == null and $ticket->attributed_user_id == null){
+            $ticket->delete();
+            return redirect()->route('tickets.index')
+            ->with('status', 'Ticket supprimé avec succès');
+        } else{
+            return redirect()->route('tickets.index')
+        ->with('status', 'La suppression du ticket n\'est plus possible');
+        }
+
+
+        
+        
+
+        
+
     }
 
     public function apiIndexAttributor(Request $request)
@@ -70,6 +138,12 @@ class TicketController extends Controller
                             ->get();
                             
         Log::info('Tickets sent', ['tickets' => $tickets]);
+
+        foreach ($tickets as $ticket){
+            $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+            Log::info('updated', ['validate' => $ticket->formatted_date]);
+        }
+        
         return response()->json($tickets);
     }
 
@@ -90,6 +164,11 @@ class TicketController extends Controller
     Log::info('Ticket sent', ['ticket' => $ticket]);
     Log::info('Roles sent', ['roles' => $roles]);
 
+    
+        $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+        Log::info('updated', ['validate' => $ticket->formatted_date]);
+   
+
     return response()->json([
         'ticket' => $ticket,
         'roles' => $roles
@@ -103,15 +182,18 @@ public function apiUpdateAttributor(string $ticket_id, Request $request)
     if (!($user->roles->contains('nom', 'admin'))) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
+    
 
     $ticket = Ticket::findOrfail($ticket_id);
     $validateData = $request->validate([
         'attributed_role_id' => ['required', 'numeric'],
         'priority' => ['required', 'numeric']
     ]);
+    $validateData['attributed_user_id'] = null;
     Log::info('updated', ['request' => $request->all()]);
-    Log::info('updated', ['validate' => $validateData]);
+    
     $ticket->update($validateData);
+    Log::info('updated', ['validate' => $validateData]);
 
 }
 
@@ -137,7 +219,10 @@ public function apiIndexRoles(Request $request)
         ->where('attributed_user_id', null)
         ->get();
 
-        
+        foreach ($tickets as $ticket){
+            $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+            Log::info('updated', ['validate' => $ticket->formatted_date]);
+        }
                             
         
         return response()->json($tickets);
@@ -157,6 +242,10 @@ public function apiIndexRoles(Request $request)
                         ->findOrFail($ticket_id);
                         
     Log::info('Ticket sent', ['FEURFEUR TICKET' => $ticket]);
+
+    
+    $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+    Log::info('updated', ['validate' => $ticket->formatted_date]);
 
     return response()->json([
         'ticket' => $ticket
@@ -192,7 +281,7 @@ public function apiIndexHelper(Request $request)
         foreach ($user->roles as $role){
            array_push($user_roles_id, $role->id);
         }
-        
+
 
         $tickets = Ticket::query()
         ->with('attributedUser')
@@ -203,6 +292,10 @@ public function apiIndexHelper(Request $request)
         ->get();
         Log::info('FEURFEUR', [$tickets]);
         
+        foreach ($tickets as $ticket){
+            $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+            Log::info('updated', ['validate' => $ticket->formatted_date]);
+        }
                             
         
         return response()->json($tickets);
@@ -220,6 +313,10 @@ public function apiIndexHelper(Request $request)
                         ->with('attributedRole')
                         ->with('ticketCategory')
                         ->findOrFail($ticket_id);
+    
+    
+        $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+        Log::info('updated', ['validate' => $ticket->formatted_date]);
                         
 
     return response()->json([
@@ -299,7 +396,12 @@ public function apiIndexAdminHistory(Request $request)
         ->whereIn('status', ['Résolu', 'Rejeté'])
         ->get();
         
-        Log::info('updated', ['validate' => $tickets]);    
+        Log::info('updated', ['validate' => $tickets]);
+        
+        foreach ($tickets as $ticket){
+            $ticket->formatted_date = Carbon::parse($ticket->created_at)->format('d/m/Y');
+            Log::info('updated', ['validate' => $ticket->formatted_date]);
+        }
         
         return response()->json($tickets);
     }
@@ -318,7 +420,7 @@ public function apiIndexAdminHistory(Request $request)
         ->get();
 
     $role_counts = $tickets->groupBy(function($ticket) {
-        return $ticket->attributedRole ? $ticket->attributedRole->nom : 'non_attribué'; //exclure les tickets non attribué
+        return $ticket->attributedRole ? $ticket->attributedRole->nom : 'Non attribué'; //exclure les tickets non attribué
     })->map->count(); //utilisation de count de map pour avoir le compte pour chaque élément
 
     $status_counts = $tickets->groupBy('status')->map->count();
