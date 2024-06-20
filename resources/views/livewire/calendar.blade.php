@@ -99,6 +99,23 @@
             locale: '{{ config('app.locale') }}',
             allDayDefault: true,
             editable: true,
+            
+            eventOverlap: function(stillEvent, movingEvent) {
+                return false;
+            },
+
+            eventAllow: function(dropInfo, draggedEvent) {
+                const today = new Date().setHours(0, 0, 0, 0);
+                const start = dropInfo.start.setHours(0, 0, 0, 0);
+                const end = dropInfo.end ? dropInfo.end.setHours(0, 0, 0, 0) : start;
+                
+                if (start < today || end < today) {
+                    return false;
+                }
+                
+                return true;
+            },
+            
             events: [
                 ...JSON.parse(@this.fermetures),
                 ...JSON.parse(@this.reservations),
@@ -112,29 +129,45 @@
             },
 
             dateClick: function(info) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const clickedDate = new Date(info.date);
+                clickedDate.setHours(0, 0, 0, 0);
+
+                if (clickedDate < today) {
+                    return;
+                }
+
                 openClosureModal(info.dateStr);
             },
 
             eventDrop: function(info) {
-                if(info.event.extendedProps.type === 'closure') {                    
-                    const event = info.event;
-                    Livewire.dispatch('updateClosure', {
-                        id: event.id,
-                        start: event.start.toISOString().split('T')[0],
-                        end: event.end ? event.end.toISOString().split('T')[0] : event.start.toISOString().split('T')[0],
-                    });
+                if (info.event.extendedProps.type !== 'closure') {
+                    info.revert();
+                    return;
                 }
+
+                const event = info.event;
+                Livewire.dispatch('updateClosure', {
+                    id: event.id,
+                    start: event.start.toISOString().split('T')[0],
+                    end: event.end ? event.end.toISOString().split('T')[0] : event.start.toISOString().split('T')[0],
+                });
             },
 
             eventResize: function(info) {
-                if(info.event.extendedProps.type === 'closure') {                    
-                    const event = info.event;
-                    Livewire.dispatch('updateClosure', {
-                        id: event.id,
-                        start: event.start.toISOString().split('T')[0],
-                        end: event.end ? event.end.toISOString().split('T')[0] : event.start.toISOString().split('T')[0],
-                    });
+                if (info.event.extendedProps.type !== 'closure') {
+                    info.revert();
+                    return;
                 }
+
+                const event = info.event;
+                Livewire.dispatch('updateClosure', {
+                    id: event.id,
+                    start: event.start.toISOString().split('T')[0],
+                    end: event.end ? event.end.toISOString().split('T')[0] : event.start.toISOString().split('T')[0],
+                });
             },
         });
         calendar.render();
