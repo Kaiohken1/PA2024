@@ -79,6 +79,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     });
 
+    Route::resource('tickets', TicketController::class);
+
 });
 
 
@@ -92,7 +94,6 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
     Route::patch('/provider/{id}', [UserController::class, 'validateProvider'])->name('providers.validate');
-    Route::resource('ticket-categories', TicketCategoryController::class);
 });
 
 Route::prefix('users/{user}')->group(function () {
@@ -121,7 +122,7 @@ Route::prefix('estimation')->group(function () {
 
 Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
-Route::resource('tickets', TicketController::class);
+
 
 
 

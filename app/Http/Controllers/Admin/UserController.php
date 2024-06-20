@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserAvis;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -53,7 +55,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $roles = Role::all();
+
+        return view('admin.users.edit', [
+            'user' => $user, 
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -61,7 +68,19 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validateData = $request->validate([
+            'roles_id' => ['array']
+        ]);
+        
+        if(!isset($validatedData['roles_id'])){
+            $user->roles()->sync($validateData['roles_id']);
+            
+        } else {
+                $user->roles()->sync(2);
+        }
+    
+        return redirect(route('admin.users.index'))
+            ->with('success', 'Utilisateur mis à jour avec succès');
     }
 
     /**

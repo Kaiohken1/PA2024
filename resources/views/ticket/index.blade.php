@@ -13,40 +13,58 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <table class="w-full text-sm text-left text-white">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <table class="w-full text-sm text-left">
                     <thead class="border-b">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Catégorie
+                            Objet
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Objet
+                                Catégorie
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
                                 Date
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Action
+                                Actions
                             </th>
-                        </tr>
                     </thead>
-                    <tbody class="bg-gray-800">
+                    <tbody class="bg-white">
                         @foreach ($tickets as $ticket)
                             <tr class="border-b">
-                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
-                                    {{ $ticket->ticketCategory->category }}
-                                </td>
+
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
                                     {{ $ticket->subject }}
                                 </td>
+                                <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
+                                    {{ $ticket->attributedRole->nom }}
+                                </td>
+                                
                                 <td class="px-6 py-4 text-center">
                                     {{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y H:i') }}
                                 </td>
 
-                                <td class="px-6 py-4 text-center">
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex justify-center space-x-2">
+                                        <button class="btn btn-outline btn-sm">
+                                            <a href="{{ route('tickets.show', ['ticket' => $ticket->id]) }}">Détail</a>
+                                        </button>
+                                        @if ($ticket->attributed_user_id == null)
+                                            
+                                        <button class="btn btn-outline btn-sm">
+                                            <a href="{{ route('tickets.edit', ['ticket' => $ticket->id]) }}">Modifier</a>
+                                        </button>
 
+                                        <form action="{{ route('tickets.destroy', ['ticket' => $ticket->id]) }}" method="post" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="submit" class="btn btn-outline btn-sm" value="Supprimer">
+                                        </form>
+                                        @endif
+                                    </div>
                                 </td>
+
     
                                 
                             </tr>

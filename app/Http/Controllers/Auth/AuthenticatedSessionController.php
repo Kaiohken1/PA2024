@@ -60,7 +60,7 @@ class AuthenticatedSessionController extends Controller
         $user = User::where('id', $user->id)->with('roles')->first();
         Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
 
-        if (!$user->roles->contains('nom', 'PCS')) {
+        if (!($user->roles->contains('nom', 'PCS') or ($user->roles->contains('nom', 'admin')))) {
             Log::warning('Unauthorized role', ['user_id' => $user->id]);
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -72,8 +72,8 @@ class AuthenticatedSessionController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => [
+                'first_name' => $user->first_name,
                 'name' => $user->name,
-                'avatar' => $user->getImageUrl(),
                 'email' => $user->email,
                 'roles' => $user->roles
             ]

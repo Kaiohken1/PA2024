@@ -53,16 +53,20 @@
                                     @endforeach
                                 </td>
                                 
-                                <td class="px-6 py-4 text-center">
-                                    @if(!$user->isAdmin())
+                                <td class="py-3 px-6 text-center">
+                                    <div class="flex justify-center space-x-2">        
+                                        <button class="btn btn-outline bg-white btn-sm">
+                                            <a href="{{ route('admin.users.edit', $user) }}">Modifier</a>
+                                        </button>
+
+                                        @if(!$user->isAdmin())
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}">
                                             @csrf
                                             @method('delete')
-                                            <button type="submit" class="text-red-500 hover:text-red-700">Supprimer</button>
+                                            <button type="submit" class="btn btn-outline bg-white btn-sm">Supprimer</button>
                                         </form>
-                                    @else
-                                        <span class="text-gray-500">Non autorisé</span>
-                                    @endcan
+                                        @endif
+                                    </div>
                                 </td>
                                 
                             </tr>
