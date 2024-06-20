@@ -38,7 +38,7 @@
                                     {{ $ticket->subject }}
                                 </td>
                                 <td class="px-6 py-4 font-medium whitespace-nowrap text-center">
-                                    {{ $ticket->ticketCategory->category }}
+                                    {{ $ticket->attributedRole->nom }}
                                 </td>
                                 
                                 <td class="px-6 py-4 text-center">
@@ -50,7 +50,7 @@
                                         <button class="btn btn-outline btn-sm">
                                             <a href="{{ route('tickets.show', ['ticket' => $ticket->id]) }}">Détail</a>
                                         </button>
-                                        @if ($ticket->attributed_role_id == null and $ticket->attributed_user_id == null)
+                                        @if ($ticket->attributed_user_id == null)
                                             
                                         <button class="btn btn-outline btn-sm">
                                             <a href="{{ route('tickets.edit', ['ticket' => $ticket->id]) }}">Modifier</a>

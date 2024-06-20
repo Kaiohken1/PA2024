@@ -19,6 +19,6 @@ class Role extends Model
     }
 
     public function ticket(): HasMany {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'attributed_role_id');
     }
 }

@@ -13,8 +13,6 @@ class Ticket extends Model
     protected $fillable = [
         'subject',
         'description',
-        'category_id',
-        'category',
         'attributed_user',
         'attributed_user_id',
         'priority',
@@ -33,9 +31,5 @@ class Ticket extends Model
 
     public function attributedRole(): BelongsTo {
         return $this->belongsTo(Role::class, 'attributed_role_id');
-    }
-
-    public function ticketCategory(): BelongsTo {
-        return $this->belongsTo(TicketCategory::class, 'category_id');
     }
 }

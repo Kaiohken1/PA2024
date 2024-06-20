@@ -16,7 +16,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h2 class="text-2xl font-bold mb-4">Ticket numéro {{ $ticket->id }}</h2>
-                    <p><strong>Objet:</strong> {{ $ticket->subject }}€</p>
+                    <p><strong>Objet:</strong> {{ $ticket->subject }}</p>
+                    <p><strong>Catégorie:</strong> {{ $ticket->attributedRole->nom }}</p>
                     <p><strong>Description:</strong> {{ $ticket->description }}</p>
                     <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y H:i:s') }}</p>
                     

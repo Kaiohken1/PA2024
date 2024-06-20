@@ -21,9 +21,9 @@
 
                         <div>
                             <x-input-label for="category" :value="__('Catégorie')" />
-                            <select class="select select-bordered w-full max-w-xs chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm" name="category_id" id=category>
-                                @foreach($ticketCategories as $ticketCategory)
-                                    <option value="{{$ticketCategory->id}}">{{$ticketCategory->category}}</option>
+                            <select class="select select-bordered w-full max-w-xs chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm" name="attributed_role_id" id=attributed_role_id>
+                                @foreach($roles as $role)
+                                    <option value="{{$role->id}}">{{$role->nom}}</option>
                                 @endforeach
                             </select>
                         </div>
