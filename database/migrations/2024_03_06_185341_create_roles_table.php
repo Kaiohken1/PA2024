@@ -22,7 +22,8 @@ return new class extends Migration
             ['nom' => 'admin'],
             ['nom' => 'voyageur'],
             ['nom' => 'bailleur'],
-            ['nom' => 'prestataire']
+            ['nom' => 'prestataire'],
+            ['nom' => 'PCS'],
         ]);
     }
 
