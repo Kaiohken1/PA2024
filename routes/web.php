@@ -1,23 +1,34 @@
 <?php
 
+use App\Livewire\Chat;
 use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\RedirectAfterPayment;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\UserAvisController;
 use App\Http\Controllers\FermetureController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\DocumentsTypeController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\AppartementAvisController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
+use App\Http\Controllers\Admin\AvailabilityController;
+use App\Http\Controllers\Admin\SubscriptionsController;
+use App\Http\Controllers\InterventionEstimateController;
 use App\Http\Controllers\Provider\InterventionController;
+use App\Http\Controllers\InterventionEstimationController;
+use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 
 /*
@@ -31,13 +42,11 @@ use App\Http\Controllers\Admin\InterventionController as AdminInterventionContro
 |
 */
 
-Route::get('/test', function () {
-    return view('welcome');
-});
+Route::get('/test/{id}', function () {
+    return view('test');
+})->name('test');
 
 Route::match(['get', 'post'], '/', [AppartementController::class, 'index'])->name('property.index');
-
-Route::get('/dynamic-inputs', DynamicInput::class)->name('dynamic-inputs');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -48,7 +57,6 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('property', AppartementController::class)->except(['index']);
-    Route::resource('fermeture', FermetureController::class)->except(['index']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
     Route::get('/calendar/{appartement_id}', [CalendarController::class, 'show'])->name('calendar.show');
 
@@ -67,26 +75,78 @@ Route::middleware('auth')->group(function () {
     Route::patch('/reservation/validate/{id}', [ReservationController::class, 'validate'])->name('reservation.validate');
     Route::patch('/reservation/refused/{id}', [ReservationController::class, 'refused'])->name('reservation.refused');
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
-   
+    
+    Route::post('/estimate', [InterventionEstimationController::class, 'store'])->name('estimate.store');
+    Route::patch('/estimate/{id}', [InterventionEstimationController::class, 'update'])->name('estimate.update');
+    Route::delete('/estimate/{id}', [InterventionEstimationController::class, 'destroy'])->name('estimate.destroy');
+
+
 
     Route::prefix('property/{appartement}/edit')->group(function () {
-        Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
-        Route::delete('/fermetures/{fermeture}', [FermetureController::class, 'destroy'])->name('fermeture.destroy');
-        Route::patch('/fermetures/{fermeture}', [FermetureController::class, 'update'])->name('fermeture.update');
-        Route::get('/fermetures/create', [FermetureController::class, 'create'])->name('fermeture.create');
-        Route::post('/fermetures', [FermetureController::class, 'store'])->name('fermeture.store');
-
-
-     
-
-       
+        Route::resource('fermeture', FermetureController::class);
+        // Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
+        // Route::delete('/fermetures/{fermeture}', [FermetureController::class, 'destroy'])->name('fermeture.destroy');
+        // Route::patch('/fermetures/{fermeture}', [FermetureController::class, 'update'])->name('fermeture.update');
+        // Route::get('/fermetures/create', [FermetureController::class, 'create'])->name('fermeture.create');
+        // Route::post('/fermetures', [FermetureController::class, 'store'])->name('fermeture.store');
     });
 
     Route::resource('notifcations', NotificationsController::class);
-    Route::post('/reservation/{id}/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
     Route::resource('property/{id}/interventions', InterventionController::class);
+    Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
+    Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
+    Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
+    Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
+
+    Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
+    Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
+    Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
+    Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('proposals.show');
+    Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
+    Route::get('/providers/availability', [ProviderController::class, 'availability'])->name('provider.availability');
+    Route::post('/providers/availability', [ProviderController::class, 'availabilityCreate'])->name('provider.availabilityCreate');
+    Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
+    Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
+    Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
+
+    Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
+    Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+    Route::post('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
+    Route::post('/interventions/{id}/checkout', [InterventionController::class, 'checkout'])->name('interventions.checkout');
+    Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
+    Route::get('interventions/{id}/redirect/{token}', [InterventionController::class, 'redirect'])->name('interventions.redirect');
+    
+    Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
+
+    Route::get('/messagerie', function() {
+        if(Auth::user()->provider) {
+            return view('provider.messagerie');
+        } else {
+            return view('interventions.messagerie');
+        }
+    })->name('interventions.messagerie');
+
+
+
+    Route::get('/espace-client', function () {
+        return view('espace-client');
+    })->name('espace-client');
+    Route::prefix('property/{appartement}/')->group(function () {
+        Route::resource('avis', AppartementAvisController::class)->except('create', 'edit');
+        Route::post('avis/{avis}/edit', [AppartementAvisController::class, 'edit'])->name('avis.edit');
+
+    });
+
+    Route::prefix('/reservation/{id}')->group(function () {
+        Route::match(['get', 'post'], '/avis', [AppartementAvisController::class, 'create'])->name('avis.create');
+        Route::post('/cancel', [ReservationController::class, 'destroy'])->name('reservation.cancel');
+    });
+
+    Route::resource('tickets', TicketController::class);
 
 });
+
+
 
 
 Route::prefix('admin')->middleware(['admin'])->group(function () {
@@ -96,18 +156,33 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::put('users/{user}', [UserController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
-    Route::patch('/provider/{id}', [ProviderController::class, 'validateProvider'])->name('providers.validate');
+    Route::patch('/providers/{id}/validate', [AdminProviderController::class, 'validateProvider'])->name('admin.providers.validate');
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
-    Route::resource('/intverventions', AdminInterventionController::class);
+    Route::resource('/interventions', AdminInterventionController::class)->names('admin.interventions');
     Route::patch('/services/{service}/parameter/{id}', [ServiceController::class, 'updateParameter'])->name('services.updateParameter');
     Route::patch('/services/{service}/document/{id}', [ServiceController::class, 'updateDocument'])->name('services.updateDocument');
     Route::resource('/documents', DocumentController::class);
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
-    
-    
+    Route::resource('/subscriptions', SubscriptionsController::class);
+    Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
+    Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
+
+    Route::get('/intervention/{id}/providers', [AdminProviderController::class, 'availableProviders'])->name('providers.available');;
+
+    Route::get('/providers/available', [AvailabilityController::class, 'availableProviders']);
+
 });
+
+Route::prefix('users/{user}')->group(function () {
+Route::get('/show', [UserController::class, 'show'])->name('users.show');
+Route::get('/avis/create', [UserAvisController::class, 'create'])->name('users.avis.create');
+Route::post('/avis/store', [UserAvisController::class, 'store'])->name('users.avis.store');
+Route::get('/avis/{avis}/edit', [UserAvisController::class, 'edit'])->name('users.avis.edit');
+Route::delete('/avis/{avis}', [UserAvisController::class, 'destroy'])->name('users.avis.destroy');
+});
+
 
 Route::get('/admin', function () {
     return view('admin.index');
@@ -124,6 +199,11 @@ Route::prefix('estimation')->group(function () {
 
 
 Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+
+
+
+
+
 
 
 

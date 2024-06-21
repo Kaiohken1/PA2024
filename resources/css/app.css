@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.h {
+    height: 92vh;
+}
+
+.overcontainer {
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+  }

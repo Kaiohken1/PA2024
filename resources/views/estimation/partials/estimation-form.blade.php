@@ -4,7 +4,7 @@
 
     <div>
         <x-input-label for="surface" :value="__('Surface (Au mètre carré)')" />
-        <x-text-input id="surface" class="block mt-1 w-full" type="number" name="surface" min="1" />
+        <x-text-input id="surface" class="form-input block mt-1 w-full" type="number" name="surface" min="1" />
         <x-input-error :messages="$errors->get('surface')" class="mt-2" />
     </div>
 
@@ -22,7 +22,7 @@
 
     <div>
         <x-input-label for="roomCount" :value="__('Nombre de pièces')" />
-        <x-text-input id="roomCount" class="block mt-1 w-full" type="number" name="roomCount" min="1" />
+        <x-text-input id="roomCount" class="form-input block mt-1 w-full " type="number" name="roomCount" min="1" />
         <x-input-error :messages="$errors->get('roomCount')" class="mt-2" />
     </div>
 
@@ -39,7 +39,7 @@
     
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez des tags</label>
-        <select class="chosen-select" multiple name="tag_id[]" id=tag_id>
+        <select class="form-input chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm" multiple name="tag_id[]" id=tag_id>
             @foreach($tags as $tag)
                 <option value="{{$tag->id}}">{{$tag->name}}</option>
             @endforeach
@@ -48,7 +48,7 @@
 
     <div>
         <x-input-label for="guestCount" :value="__('Nombre de personnes')" />
-        <x-text-input id="guestCount" class="block mt-1 w-full" type="number" name="guestCount" min="1" />
+        <x-text-input id="guestCount" class="form-input block mt-1 w-full" type="number" name="guestCount" min="1" />
         <x-input-error :messages="$errors->get('guestCount')" class="mt-2" />
     </div>
 

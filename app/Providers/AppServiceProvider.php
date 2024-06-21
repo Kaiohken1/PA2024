@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Laravel\Cashier\Cashier;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('notifications', $notifications)
                 ->with('user', $user);
             }
+        
+        Carbon::setLocale('fr');
         });
+
+        Cashier::calculateTaxes();
     }
 }

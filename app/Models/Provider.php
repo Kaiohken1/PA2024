@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
-use App\Events\ProviderCreated;
 use App\Models\User;
+use App\Models\Absence;
 use App\Models\Service;
+use App\Models\Intervention;
+use App\Events\ProviderCreated;
+use MBarlow\Megaphone\HasMegaphone;
+use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Provider extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasMegaphone;
 
     protected $fillable = [
         'name',
@@ -22,6 +27,7 @@ class Provider extends Model
         'email', 
         'description',
         'avatar', 
+        'availability'
     ];
 
     protected $hidden = [
@@ -47,5 +53,32 @@ class Provider extends Model
         return $this->belongsToMany(Document::class, 'providers_documents')
                     ->withPivot(['document'])
                     ->withTimestamps();
+    }
+
+    public function interventions() : HasMany {
+        return $this->hasMany(Intervention::class);
+    }
+
+    public function intervention_events() : HasMany {
+        return $this->hasMany(InterventionEvent::class);
+    }
+
+    public function estimations() {
+        return $this->hasMany(InterventionEstimation::class);
+    }
+
+    public function absences() : HasMany {
+        return $this->hasMany(Absence::class);
+    }
+
+    public function hidden() {
+        return $this->belongsToMany(Intervention::class, 'hidden_interventions');
+    }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhere('name', 'like', "%{$value}%")
+                ->orWhere('email', 'like', "%{$value}%");
     }
 }

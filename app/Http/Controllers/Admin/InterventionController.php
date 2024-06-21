@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\InterventionDevisSend;
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
+use App\Models\InterventionEstimation;
+use App\Models\InterventionRefusal;
+use App\Models\Provider;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -46,7 +50,11 @@ class InterventionController extends Controller
     public function show($id)
     {
         $intervention = Intervention::findOrfail($id);
-        return view('admin.interventions.show', ['intervention' => $intervention]);
+        $refusals = InterventionRefusal::query()
+                    ->where('intervention_id', $intervention->id)
+                    ->paginate(5);
+
+        return view('admin.interventions.show', ['intervention' => $intervention, 'refusals' => $refusals]);
     }
 
     /**
@@ -60,9 +68,30 @@ class InterventionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Intervention $intervention)
+    public function update(Request $request, $id)
     {
-        //
+        $intervention = Intervention::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'price' => ['required', 'numeric'],
+            'commission' => ['required', 'numeric'],
+            'provider_id' => ['required', 'exists:providers,id'],
+            'planned_end_date' => ['required'],
+        ]);
+
+        $intervention->statut_id = 10;
+
+        $intervention->update($validatedData);
+
+        $estimation = InterventionEstimation::findOrfail($intervention->estimations->where('provider_id', $validatedData['provider_id'])->first()->id);
+        
+        $estimation->statut_id = 9;
+
+        $estimation->save();
+
+        event(new InterventionDevisSend($intervention));
+
+        return back()->with('succes', 'Proposition envoyée au client');
     }
 
     /**

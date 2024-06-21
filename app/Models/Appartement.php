@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Tag;
 use App\Models\User;
 use App\Models\Reservation;
-use App\Models\Tag;
+use App\Models\AppartementAvis;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,7 +24,10 @@ class Appartement extends Model
         'roomCount',
         'description',
         'price',
-        'image'
+        'image',
+        'property_type',
+        'city',
+        'location_type'
     ];
 
     protected $hidden = [
@@ -48,5 +52,9 @@ class Appartement extends Model
 
     public function fermetures(): HasMany {
         return $this->hasMany(Fermeture::class);
+    }
+
+    public function avis(): HasMany {
+        return $this->hasMany(AppartementAvis::class);
     }
 }

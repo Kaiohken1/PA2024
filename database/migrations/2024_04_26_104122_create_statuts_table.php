@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('statuts', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->timestamps();
         });
 
         DB::table('statuts')->insert([
@@ -23,6 +22,13 @@ return new class extends Migration
             ['nom' => 'En cours'],
             ['nom' => 'Terminée'],
             ['nom' => 'Annulée'],
+            ['nom' => 'Payée'],
+            ['nom' => 'Aceptée'],
+            ['nom' => 'Refusée'],
+            ['nom' => 'Envoyée'],
+            ['nom' => 'Attribuée'],
+            ['nom' => 'Devis envoyé'],
+
         ]);
     }
 

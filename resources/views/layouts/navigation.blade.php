@@ -43,7 +43,7 @@
                         </x-slot>
                         <x-slot name="content">
                             @foreach ($notifications as $notification)
-                                <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
+                                <a href="{{ route('admin.providers.show', $notification->data['prestataire_id']) }}"
                                     class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
                                     {{ $notification->data['message'] }}
                                 </a>

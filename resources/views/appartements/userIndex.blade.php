@@ -24,6 +24,10 @@
                     <a href="{{ route('reservation.showAll', $appartement) }}" class="mr-2">
                         <x-primary-button>Réservations</x-primary-button>
                     </a>
+
+                <a href="{{ route('interventions.create', $appartement) }}" class="mr-2">
+                    <x-primary-button>Interventions</x-primary-button>
+                </a>
                     <!-- Ajout du bouton pour le calendrier -->
                     <a href="{{ route('calendar.show', $appartement->id) }}" class="mr-2">
                         <x-primary-button>Calendrier</x-primary-button>

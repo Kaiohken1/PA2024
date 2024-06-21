@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Provider;
 
+use Carbon\Carbon;
+use App\Models\Absence;
 use App\Models\Service;
 use App\Models\Provider;
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Models\ProviderDocument;
 use App\Notifications\NewProvider;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\InterventionEstimation;
+use App\Models\InterventionEvent;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -50,12 +56,12 @@ class ProviderController extends Controller
             'name' => ['required'],
             'address' => ['required', 'max:255'],
             'phone' => ['required', 'numeric'],
-            'email' => ['required'],
+            'email' => ['required', 'unique:providers'],
             'description' => ['required', 'max:255'],
             'avatar' => ['image'],
             'service_id' => ['required', 'exists:services,id'],
             'provider_description' => ['max:255'],
-            'documents' => ['array'],
+            'documents' => ['required', 'array'],
             'documents.*' => ['mimes:jpg,png,pdf'],
             'bareme' => ['mimes:jpg,png,pdf']
         ]);
@@ -154,4 +160,142 @@ class ProviderController extends Controller
         return redirect()->route('providers.index')
             ->with('success', 'Le prestataire a été validé avec succès');
     }
+
+    public function totalGains($id): float
+    {
+        $provider = Provider::findOrFail($id);
+
+        return $provider->interventions()
+                        ->whereIn('statut_id', [5, 3])
+                        ->get()
+                        ->reduce(function ($carry, $intervention) {
+                            return $carry + ($intervention->price - $intervention->commission);
+                        }, 0);
+    }
+
+    public function monthlyGains($id, int $month = null, int $year = null): float
+    {
+        $provider = Provider::findOrFail($id);
+        $month = $month ?? Carbon::now()->month;
+        $year = $year ?? Carbon::now()->year;
+        return $provider->interventions()
+                    ->whereYear('created_at', $year)
+                    ->whereMonth('created_at', $month)
+                    ->whereIn('statut_id', [5, 3])
+                    ->get()
+                    ->reduce(function ($carry, $intervention) {
+                        return $carry + ($intervention->price - $intervention->commission);
+                    }, 0);
+    }
+
+
+    public function home()
+    {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $totalGains = $this->totalGains($provider->id);
+        $monthlyGains = $this->monthlyGains($provider->id);
+
+        Carbon::setLocale('fr');
+        $currentMonthYear = Carbon::now()->translatedFormat('F Y');
+
+        $proposals = Intervention::query()
+                            ->where('service_id', $provider->services->first()->id)
+                            ->where('statut_id', 1)
+                            ->latest()
+                            ->take(5)
+                            ->get();
+
+        $absences = Absence::where('provider_id', $provider->id)
+                            ->take(5)
+                            ->get();
+
+        return view('provider.home', [
+            'provider' => $provider,
+            'totalGains' => $totalGains,
+            'monthlyGains' => $monthlyGains,
+            'currentMonthYear' => $currentMonthYear,
+            'proposals' => $proposals,
+            'absences' => $absences,
+        ]);
+    }
+
+    public function proposals() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+
+        return view('provider.proposals');
+    }
+
+    public function calendar() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        return view('provider.calandar', ['provider' => $provider]);
+    }
+
+    public function availability() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $absences = Absence::query()
+                    ->where('provider_id', $provider->id)
+                    ->get();
+
+        $interventions = InterventionEvent::query()
+                        ->where('provider_id', $provider->id)
+                        ->get();
+    
+        $datesInBase = [];
+    
+        foreach ($absences as $absence) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($absence->start)),
+                'to' => date("d-m-Y", strtotime($absence->end))
+            ];
+        }
+
+        foreach ($interventions as $intervention) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($intervention->start)),
+                'to' => date("d-m-Y", strtotime($intervention->end))
+            ];
+        }
+    
+        return view('provider.set-availability', ['provider' => $provider, 'datesInBase' => $datesInBase]);
+    }
+
+    public function availabilityCreate(Request $request) {
+        $validatedData = $request->validate([
+            'startDate' => ['required', 'date'], 
+            'endDate' => ['required', 'date', 'after_or_equal:startDate'],
+            'providerId' => ['required', 'exists:providers,id'],
+        ]);
+    
+        $startDate = date("Y-m-d", strtotime($validatedData['startDate']));
+        $endDate = date("Y-m-d", strtotime($validatedData['endDate']));
+    
+        $absence = new Absence();
+        $absence->start = $startDate;
+        $absence->end = $endDate;
+        $absence->provider_id = $validatedData['providerId'];
+        $absence->title = 'Absence';
+        $absence->save();
+    
+        return back()->with('success', 'Période enregistrée avec succès');
+    }
+
+    public function availabilityDestroy($id) {
+
+        $absence = Absence::findOrFail($id);
+
+        $absence->delete();
+
+        return back()->with('success', 'Période supprimée avec succès');
+
+    }
+
+    public function interventionsIndex() {
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+
+        $interventions = Intervention::where('provider_id', $provider->id)
+                                        ->paginate(15);
+
+        return view('provider.interventions-index', ['provider' => $provider, 'interventions' => $interventions]);
+    }
+
 }

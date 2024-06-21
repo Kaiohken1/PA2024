@@ -50,11 +50,27 @@
                                     @if (\Carbon\Carbon::now()->subHours(48)->isBefore($reservation->start_time)) 
                                         <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST">
                                             @csrf
-                         <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
+                                            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
                                                 Annuler
                                             </button>
-                     </form>
+                                        </form>
                                     @endif
+                                    @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time))
+                                        @if (!\App\Models\AppartementAvis::where('user_id', auth()->user()->id)
+                                                ->where('appartement_id', $reservation->appartement_id)
+                                                ->exists())
+                                                <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="return">
+                                                    Avis
+                                                </button>
+                                            </form>
+
+                                        @endif 
+                                    @endif
+
+
+                                    
                                 </td>
                             </tr>
                         </tbody>

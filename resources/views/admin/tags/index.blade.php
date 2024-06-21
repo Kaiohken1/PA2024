@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
 <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Gestion des tags') }}
@@ -27,4 +27,4 @@
                 <p class="col-span-2">Il n'y a pas encore de tag </p>
             @endforelse
     </div>
-</x-app-layout>
+</x-admin-layout>

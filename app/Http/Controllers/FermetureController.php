@@ -21,7 +21,7 @@ class FermetureController extends Controller
         $appartement_id = $appartement->id;
 
         $intervalle = Reservation::where("appartement_id", $appartement_id)
-            ->select("start","end")
+            ->select("start_time","end_time")
             ->get();
 
 
@@ -38,13 +38,12 @@ class FermetureController extends Controller
     {
 
         $intervalle = Reservation::where("appartement_id", $appartement)
-            ->select("start","end")
+            ->select("start_time","end_time")
             ->get();
 
         $fermeture = Fermeture::where("appartement_id", $appartement)
             ->select("start","end")
             ->get();
-
 
         return view('fermetures.create', ['appartement'=>$appartement,
                                                 'intervalles'=>$intervalle,
@@ -56,12 +55,14 @@ class FermetureController extends Controller
      */
     public function store(Request $request, $appartement)
     {
-        $validator = Validator::make($request->all(), [
-            'start' => ['required', 'date', 'after_or_equal:today'],
-            'end' => ['required', 'date', 'after:start'],
+
+        $validatedData = $request->validate([
+            'start' => ['required'],
+            'end' => ['required'],
         ]);
 
-        $validatedData = $validator->validated();
+        
+
 
         $fermeture = new Fermeture();
         $fermeture->start_time = $validatedData['start'];
