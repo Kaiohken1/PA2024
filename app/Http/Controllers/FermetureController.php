@@ -35,14 +35,15 @@ class FermetureController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create($appartement)
+    public function create($appartementId)
     {
+        $appartement = Appartement::findOrFail($appartementId);
 
-        $intervalle = Reservation::where("appartement_id", $appartement)
+        $intervalle = Reservation::where("appartement_id", $appartement->id)
             ->select("start_time","end_time")
             ->get();
 
-        $fermeture = Fermeture::where("appartement_id", $appartement)
+        $fermeture = Fermeture::where("appartement_id", $appartement->id)
             ->select("start","end")
             ->get();
 

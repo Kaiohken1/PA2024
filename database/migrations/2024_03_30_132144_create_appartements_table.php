@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('availability')->default(true);
             $table->string('image')->nullable();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->json('recurringClosures')->nullable();
             $table->timestamps();
         });
     }

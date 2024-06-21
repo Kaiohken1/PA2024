@@ -15,7 +15,7 @@
                     <h1 class="text-2xl font-semibold mb-4">Choisir une période de fermeture</h1>
                     <div class="overflow-x-auto">
                         <h2 class="text-xl font-semibold mb-4">Ajouter une période de fermeture</h2>
-                        <form action="{{ route('fermeture.store', $appartement) }}" method="POST">
+                        <form action="{{ route('fermeture.store', $appartement->id) }}" method="POST">
                             @csrf
                             <div class="mb-4">
                                 <label for="period_comment" class="block text-sm font-medium text-gray-700">Raison</label>
@@ -37,7 +37,7 @@
                         </form>
 
                         <h2 class="text-xl font-semibold mb-4">Ajouter un jour de fermeture exceptionnelle</h2>
-                        <form action="{{ route('fermeture.store', $appartement) }}" method="POST">
+                        <form action="{{ route('fermeture.store', $appartement->id) }}" method="POST">
                             @csrf
                             <div class="mb-4">
                                 <label for="single_comment" class="block text-sm font-medium text-gray-700">Raison</label>
@@ -59,7 +59,7 @@
                         </form>
 
                         <h2 class="text-xl font-semibold mb-4">Ajouter une fermeture récurrente</h2>
-                        <form action="{{ route('fermeture.storeRecurring', $appartement) }}" method="POST">
+                        <form action="{{ route('fermeture.storeRecurring', $appartement->id) }}" method="POST">
                             @csrf
                             @method('patch')
                             <div class="mb-4">
@@ -70,10 +70,12 @@
                             </div>
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700">Sélectionnez les jours de la semaine</label>
+                                <label class="block text-sm font-medium text-gray-700">Vos fermetures récurentes sont actualisées tous les mois</label>
                                 <div class="mt-2 space-y-2">
                                     @foreach(['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] as $index => $day)
                                         <label class="flex items-center">
-                                            <input type="checkbox" name="days[]" value="{{ $index }}" class="checkbox checkbox-warning">
+                                            <input type="checkbox" name="days[]" value="{{ $index }}" class="checkbox checkbox-warning"
+                                            @if(in_array($index, $appartement->recurringClosures)) checked @endif>
                                             <span class="ml-2">{{ $day }}</span>
                                         </label>
                                     @endforeach
