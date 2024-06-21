@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appartement;
+use Carbon\Carbon;
 use App\Models\Fermeture;
+use App\Models\Appartement;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -57,22 +58,41 @@ class FermetureController extends Controller
     {
 
         $validatedData = $request->validate([
-            'start' => ['required'],
-            'end' => ['required'],
+            'comment' => ['required', 'string', 'max:140'],
+            'start_time' => ['required'],
+            'end_time' => ['required'],
         ]);
 
-        
-
+        $validatedData['start_time'] = date('Y-m-d', strtotime($validatedData['start_time']));
+        $validatedData['end_time'] = date('Y-m-d', strtotime($validatedData['end_time']));
 
         $fermeture = new Fermeture();
-        $fermeture->start_time = $validatedData['start'];
-        $fermeture->end_time = $validatedData['end'];
+        $fermeture->comment = $validatedData['comment'];
+        $fermeture->start = $validatedData['start_time'];
+        $fermeture->end = $validatedData['end_time'];
         $fermeture->appartement_id = $appartement;
         $fermeture->save();
 
         $appartement = Appartement::findOrFail($appartement);
 
         return redirect()->route('fermeture.index', ['appartement' => $appartement])->with('success', "Réservation bien prise en compte");
+    }
+
+    public function storeRecurring(Request $request, Appartement $appartement)
+    {
+        $validatedData = $request->validate([
+            'comment' => ['required', 'string', 'max:140'],
+            'days' => ['required', 'array'],
+            'days.*' => ['integer', 'between:0,7'],
+        ]);
+
+        
+
+        $appartement->recurringClosures = $validatedData['days'];
+        $appartement->save();
+
+        return redirect()->route('fermeture.index', ['appartement' => $appartement])
+                         ->with('success', "Fermeture récurrente bien prise en compte");
     }
 
     /**
@@ -125,5 +145,49 @@ class FermetureController extends Controller
 
         return redirect()->route('fermeture.index', $appartement)
             ->with('success', 'Reservation deleted successfully');
+    }
+
+
+    public function generateRecurring(Appartement $appartement)
+    {
+        $recurringClosures = $appartement->getRecurringClosures();
+        $today = Carbon::today();
+        $endDate = $today->copy()->addWeeks(4);
+
+        $daysMap = [
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday'
+        ];
+
+        while ($today->lte($endDate)) {
+            foreach ($recurringClosures as $dayOfWeek) {
+                if (!array_key_exists($dayOfWeek, $daysMap)) {
+                    continue; // Si l'indice n'est pas valide, passer au suivant
+                }
+
+                $closureDate = $today->copy()->next($daysMap[$dayOfWeek]);
+
+                $existingFermeture = Fermeture::where('appartement_id', $appartement->id)
+                    ->whereDate('start', $closureDate)
+                    ->whereDate('end', $closureDate)
+                    ->first();
+
+                if (!$existingFermeture) {
+                    Fermeture::create([
+                        'comment' => 'Fermeture récurrente',
+                        'start' => $closureDate->format('Y-m-d'),
+                        'end' => $closureDate->format('Y-m-d'),
+                        'appartement_id' => $appartement->id,
+                    ]);
+                }
+            }
+
+            $today->addWeek();
+        }
     }
 }

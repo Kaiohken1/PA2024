@@ -27,7 +27,12 @@ class Appartement extends Model
         'image',
         'property_type',
         'city',
-        'location_type'
+        'location_type',
+        'recurringClosures',
+    ];
+
+    protected $casts = [
+        'recurringClosures' => 'array', 
     ];
 
     protected $hidden = [
@@ -56,5 +61,10 @@ class Appartement extends Model
 
     public function avis(): HasMany {
         return $this->hasMany(AppartementAvis::class);
+    }
+
+    public function getRecurringClosures()
+    {
+        return $this->recurringClosures ?? [];
     }
 }

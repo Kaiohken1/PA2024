@@ -52,7 +52,8 @@
                                 <label for="start_time" class="block text-gray-700 text-sm font-bold mb-2">Date de début :</label>
                                 <input type="date" name="start_time" id="start_time"
                                     min="{{ \Carbon\Carbon::now()->toDateString() }}"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    placeholder="Arrivée" readonly>
                                 @error('start_time')
                                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                                 @enderror
@@ -62,7 +63,7 @@
                                 <label for="end_time" class="block text-gray-700 text-sm font-bold mb-2">Date de fin :</label>
                                 <input type="text" name="end_time" id="end_time"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Sélectionnez la date de fin" readonly>
+                                    placeholder="Départ" readonly>
                             </div>
 
                             <div class="mb-4">
@@ -75,9 +76,9 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-4" id="total_price_container" style="display: none;">
-                                <p>Total : <span id="total_price">0 €</span></p>
-                                <input type="hidden" name="prix" id="prix">
+                            <div class="mb-4" id="total_price_container">
+                                <p>Total : <span id="total_price">{{$appartement->price}}€</span></p>
+                                <input type="hidden" name="prix" id="prix" value="{{$appartement->price}}">
                             </div>
 
                             <div class="mb-4">
@@ -110,32 +111,6 @@
         document.getElementById("end_time").addEventListener('focus', function(event) {
             event.target.showPicker();
         });
-
-        function updateTotalPrice() {
-            var startTime = new Date(document.getElementById('start_time').value);
-            var endTime = new Date(document.getElementById('end_time').value);
-            var numberOfPersons = parseInt(document.getElementById('nombre_de_personne').value);
-            var pricePerNight = parseFloat("{{ $appartement->price }}");
-
-            if (!isNaN(startTime) && !isNaN(endTime) && startTime < endTime && numberOfPersons > 0 && !isNaN(
-                    pricePerNight)) {
-                var numberOfNights = Math.ceil((endTime - startTime) / (1000 * 3600 * 24));
-
-                var totalPrice = numberOfNights * pricePerNight;
-
-                if (numberOfPersons > 1) {
-                    totalPrice += (numberOfPersons - 1) * 0.1 * pricePerNight * numberOfNights;
-                }
-
-                document.getElementById('total_price').innerText = totalPrice.toFixed(2) + ' €';
-                document.getElementById('prix').value = totalPrice;
-                document.getElementById('total_price_container').style.display = 'block';
-            } else {
-                document.getElementById('total_price').innerText = '0€';
-                document.getElementById('prix').value = '';
-                document.getElementById('total_price_container').style.display = 'none';
-            }
-        }
 
         document.getElementById('start_time').addEventListener('change', disableReservedDates);
         document.getElementById('end_time').addEventListener('change', disableReservedDates);
@@ -180,7 +155,7 @@
 
     flatpickr("#start_time", {
     mode: "range",
-    dateFormat: "Y-m-d",
+    dateFormat: "d-m-Y",
     minDate: "today",
     disable: [
         function(date) {
@@ -204,7 +179,7 @@ function formatDate(date, endOfDay = false) {
     var year = date.getFullYear();
     var month = (date.getMonth() + 1).toString().padStart(2, "0");
     var day = date.getDate().toString().padStart(2, "0");
-    return year + "-" + month + "-" + day;
+    return day + "-" + month + "-" + year;
 }
 
 </script>

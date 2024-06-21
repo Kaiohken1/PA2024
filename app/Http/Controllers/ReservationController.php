@@ -68,17 +68,19 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'start_time' => ['required', 'date', 'after_or_equal:today'],
-            'end_time' => ['required', 'date', 'after:start_time'],
+            'start_time' => ['required'],
+            'end_time' => ['required'],
             'nombre_de_personne' => ['required', 'numeric'],
             'appartement_id' => ['required', 'exists:appartements,id'],
             'prix' => ['required', 'numeric'],
         ]);
 
-        // Stocker les données validées dans la session
         $request->session()->put('validatedData', $validatedData);
 
-        // Création de la session Stripe
+        $validatedData['start_time'] = date('Y-m-d', strtotime($validatedData['start_time']));
+        $validatedData['end_time'] = date('Y-m-d', strtotime($validatedData['end_time']));
+
+
         Stripe::setApiKey(env('STRIPE_API_KEY'));
         $session = Session::create([
             'payment_method_types' => ['card'],
@@ -202,8 +204,8 @@ class ReservationController extends Controller
         $reservation = new Reservation();
         $reservation->appartement_id = $validatedData['appartement_id'];
         $reservation->user_id = Auth::id();
-        $reservation->start_time = $validatedData['start_time'];
-        $reservation->end_time = $validatedData['end_time'];
+        $reservation->start_time = date('Y-m-d', strtotime($validatedData['start_time']));
+        $reservation->end_time = date('Y-m-d', strtotime($validatedData['end_time']));
         $reservation->nombre_de_personne = $validatedData['nombre_de_personne'];
         $reservation->prix = $validatedData['prix'];
         $reservation->save();

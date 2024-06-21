@@ -16,6 +16,11 @@ class Fermeture extends Model
         'title',
         'comment',
         'appartement_id',
+        'daysWeek'
+    ];
+
+    protected $casts = [
+        'daysWeek' => 'array',
     ];
 
     public function appartement(): BelongsTo {
