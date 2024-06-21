@@ -2,14 +2,22 @@
 
 namespace App\Providers;
 
-use App\Events\ProviderCreated;
 use App\Events\Reservation;
-use App\Listeners\ReservationNotifcation;
-use App\Listeners\SendProviderCreatedNotifications;
+use App\Events\Intervention;
+use App\Events\ProviderCreated;
+use App\Events\InterventionDevisSend;
+use App\Events\InterventionPaid;
+use App\Events\EstimationCreated;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use App\Listeners\ReservationNotifcation;
+use App\Listeners\InterventionNotification;
+use App\Listeners\SendProviderCreatedNotifications;
+use App\Listeners\InterventionDevisSendNotification;
+use App\Listeners\InterventionPaidNotification;
+use App\Listeners\EstimationCreatedNotification;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,6 +36,20 @@ class EventServiceProvider extends ServiceProvider
         Reservation::class => [
             ReservationNotifcation::class,
         ],
+        Intervention::class => [
+            InterventionNotification::class,
+        ],
+        InterventionDevisSend::class => [
+            InterventionDevisSendNotification::class,
+        ],
+
+        InterventionPaid::class => [
+            InterventionPaidNotification::class,
+        ],
+
+        EstimationCreated::class=> [
+            EstimationCreatedNotification::class,
+        ]
     ];
 
     /**

@@ -26,7 +26,6 @@ class ReservationController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
             
-
         // Passer les réservations à la vue
         return view('Reservation.index', ['reservations' => $reservations]);
     }

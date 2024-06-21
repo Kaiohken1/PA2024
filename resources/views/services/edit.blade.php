@@ -3,6 +3,18 @@
         <h2 class="font-semibold text-xl  leading-tight text-white">
             {{ __('Editer le service')  }} {{$service->name}}
         </h2>
+
+        @if (session('success'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600"
+                role="alert">
+                {{ session('success') }}
+            </div>
+        @elseif (session('error'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-red-800 rounded-lg bg-red-50 dark:text-red-600"
+                role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
     </x-slot>
 
     <div class="py-12">
@@ -30,9 +42,31 @@
                         </div>
 
                         <div>
+                            <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
+                                <select name="role_id" id="role">
+                                    <option value="">Selectionez un rôle</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" @if($role->id === $service->role_id) selected @endif>{{ $role->nom }}</option>
+                                    @endforeach
+                                </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
+                        </div>
+
+                        <div>
                             <x-input-label for="description" :value="__('Description du service')" class="text-white" />
                             <textarea id="description" name="description" class="textarea mb-5">{{ $service->description }}</textarea>
                         </div>
+
+                        <div>
+                            <select id="category_id"  name ="category_id"
+                            class="shadow-sm border-0 focus:outline-none p-3 block sm:text-sm border-gray-300 rounded-md mb-2">
+                            <option value="">Sélectionnez un type de catégorie</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @if($category->id === $service->category_id) selected @endif>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
                         @if ($errors->any())
                         <div class="text-red-500">

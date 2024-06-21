@@ -21,6 +21,8 @@ class Service extends Model
         'description',
         'flexPrice',
         'active_flag',
+        'category_id',
+        'role_id',
     ];
 
     public function providers(): BelongsToMany
@@ -30,11 +32,34 @@ class Service extends Model
                     ->withTimestamps();
     }
 
+    public function provider(): BelongsToMany
+    {
+        return $this->belongsToMany(Provider::class, 'provider_services');
+    }
+
     public function parameters(): HasMany {
         return $this->hasMany(ServiceParameter::class);
     }
 
     public function documents() : BelongsToMany {
         return $this->BelongsToMany(Document::class, 'services_documents');
+    }
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhere('name', 'like', "%{$value}%")
+                ->orWhereHas('category', function ($query) use ($value) {
+                    $query->where('name', 'like', "%{$value}%");
+                });
     }
 }

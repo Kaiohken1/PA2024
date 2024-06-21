@@ -6,6 +6,8 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\ServiceParameter;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Role;
 
 class ServiceController extends Controller
 {
@@ -15,7 +17,7 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::query()
-            ->select(['id', 'name', 'price', 'flexPrice', 'active_flag'])
+            ->select(['id', 'name', 'price', 'flexPrice', 'active_flag', 'category_id'])
             ->latest()
             ->paginate(10);
 
@@ -27,11 +29,16 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        return view('services.create');
+        $categories = Category::all();
+        $roles = Role::query()
+                    ->where('nom', 'voyageur')
+                    ->orWhere('nom', 'bailleur')
+                    ->get();
+        return view('services.create', ['categories' => $categories, 'roles' => $roles]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage.-
      */
     public function store(Request $request)
     {
@@ -39,8 +46,10 @@ class ServiceController extends Controller
             'name' => ['required', 'string', 'unique:services'],
             'price' => ['numeric'],
             'description' => ['required', 'string', 'max:255'],
-            'documentsId' => ['array'],
+            'documentsId' => ['required', 'array'],
             'documentsId*' => ['exists:documents,id'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'role_id' => ['required', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -65,8 +74,8 @@ class ServiceController extends Controller
         if($request->has('documentsId')) {
             foreach ($request->documentsId as $documentId) {
                 $service->documents()->attach($documentId);
-            }        
-        }           
+            }
+        }
 
         foreach ($dynamicInputs as $inputId => $input) {
             $serviceParameter = new ServiceParameter();
@@ -94,7 +103,14 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        return view('services.edit', ['service' => $service]);
+        $categories = Category::all();
+
+        $roles = Role::query()
+        ->where('nom', 'voyageur')
+        ->orWhere('nom', 'bailleur')
+        ->get();
+
+        return view('services.edit', ['service' => $service, 'categories' => $categories, 'roles' => $roles]);
     }
 
     /**
@@ -108,6 +124,8 @@ class ServiceController extends Controller
             'description' => ['required', 'string', 'max:255'],
             'documentsId' => ['array'],
             'documentsId*' => ['exists:documents,id'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'role_id' => ['required', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -136,7 +154,7 @@ class ServiceController extends Controller
         if($request->has('documentsId')) {
             foreach ($request->documentsId as $documentId) {
                 $service->documents()->attach($documentId);
-            }        
+            }
         }
 
         foreach ($dynamicInputs as $inputId => $input) {
@@ -213,19 +231,25 @@ class ServiceController extends Controller
 
     public function destroyDocument(Service $service, $id)
     {
+        if ($service->documents()->count() <= 1) {
+            return redirect()->route('services.edit', $service)
+                ->with('error', "Pour pouvoir supprimer ce document, veuillez en rajouter un autre");
+        }
+
         $service->documents()->detach($id);
 
         return redirect()->route('services.edit', $service)
             ->with('success', "Document supprimé avec succès");
     }
 
+
     public function updateDocument(Service $service, $id, Request $request) {
         $validatedData = $request->validate([
             'new_document_id' => ['required', 'exists:documents,id'],
         ]);
-    
+
         $service->documents()->updateExistingPivot($id, ['document_id' => $validatedData['new_document_id']]);
-        
+
         return redirect()->route('services.edit', $service)
             ->with('success', "Document modifié avec succès");
     }
@@ -234,7 +258,7 @@ class ServiceController extends Controller
         $service = Service::findOrfail($id);
         $service->active_flag = $service->active_flag ? 0 : 1;
         $service->save();
-    
+
         return redirect()->back()->with('success', 'Statut du service ' . $service->name . " modifié avec succès");
     }
 }

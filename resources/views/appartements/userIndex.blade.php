@@ -23,6 +23,10 @@
                 <a href="{{ route('reservation.showAll', $appartement) }}" class="mr-2">
                     <x-primary-button>Réservations</x-primary-button>
                 </a>
+
+                <a href="{{ route('interventions.create', $appartement) }}" class="mr-2">
+                    <x-primary-button>Interventions</x-primary-button>
+                </a>
             </div>
             @empty
         </div>

@@ -20,11 +20,15 @@
                     <x-nav-link :href="route('admin')">
                         {{ __('Appartements') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('providers.index')">
+                    <x-nav-link :href="route('admin.providers.index')">
                         {{ __('Prestataires') }}
                     </x-nav-link>
                     <x-nav-link :href="route('services.index')">
                         {{ __('Services') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('admin.interventions.index')">
+                        {{ __('Interventions') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -32,7 +36,7 @@
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @if(isset($notifications))
+                    {{-- @if(isset($notifications))
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button
@@ -44,7 +48,7 @@
                         </x-slot>
                         <x-slot name="content">
                             @foreach ($notifications as $notification)
-                                <a href="{{ route('providers.show', $notification->data['prestataire_id']) }}"
+                                <a href="{{ route('admin.providers.show', $notification->data['prestataire_id']) }}"
                                     class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
                                     {{ $notification->data['message'] }}
                                 </a>
@@ -52,7 +56,9 @@
                             @endforeach
                         </x-slot>
                     </x-dropdown>
-                    @endif
+                    @endif --}}
+                    <livewire:megaphone></livewire:megaphone>
+
 
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">

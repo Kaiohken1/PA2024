@@ -21,58 +21,98 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-grey-800 border shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    <form action="{{ route('services.store') }}" method="post">
-                        @csrf
-                        <div>
-                            <x-input-label for="name" :value="__('Nom du service')" class="text-white" />
-                            <input id="name" name="name" type="text"
-                                class="input input-bordered w-full max-w-xs" />
-                            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                        </div>
+                    @if(!App\Models\Document::all()->isEmpty())
+                        <form action="{{ route('services.store') }}" method="post">
+                            @csrf
+                            <div>
+                                <x-input-label for="name" :value="__('Nom du service')" class="text-white" />
+                                <input id="name" name="name" type="text"
+                                    class="input input-bordered w-full max-w-xs" />
+                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="price" :value="__('Prix du service')" class="text-white" />
-                            <input type="number" id="price" name="price"
-                                class="input input-bordered w-full max-w-xs" min="1" />
-                            <x-input-error class="mt-2" :messages="$errors->get('price')" />
-                        </div>
+                            <div>
+                                <x-input-label for="price" :value="__('Prix du service')" class="text-white" />
+                                <input type="number" id="price" name="price"
+                                    class="input input-bordered w-full max-w-xs" min="1" />
+                                <x-input-error class="mt-2" :messages="$errors->get('price')" />
+                            </div>
 
-                        <div>
-                            <x-input-label for="flexPrice" :value="__('Tarif évolutif')" class="text-white" />
-                            <input type="checkbox" id="flexPrice" name="flexPrice">
-                        </div>
+                            <div>
+                                <x-input-label for="flexPrice" :value="__('Tarif évolutif')" class="text-white" />
+                                <input type="checkbox" id="flexPrice" name="flexPrice">
+                            </div>
 
-                        <div>
-                            <x-input-label for="description" :value="__('Description du service')" class="text-white" />
-                            <textarea id="description" name="description" class="textarea mb-5"></textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                        </div>
+                            <div>
+                                <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
+                                    <select name="role_id" id="role">
+                                        <option value="">Selectionez un rôle</option>
+                                        @foreach($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->nom }}</option>
+                                        @endforeach
+                                    </select>
+                                <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
+                            </div>
 
-                        <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
-                        @if ($errors->any())
+                            <div>
+                                <x-input-label for="description" :value="__('Description du service')" class="text-white" />
+                                <textarea id="description" name="description" class="textarea mb-5"></textarea>
+                                <x-input-error class="mt-2" :messages="$errors->get('description')" />
+                            </div>
+
+                            <div>
+                                <select id="category_id"  name ="category_id"
+                                class="shadow-sm border-0 focus:outline-none p-3 block sm:text-sm border-gray-300 rounded-md mb-2">
+                                <option value="">Sélectionnez un type de catégorie</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>
+
+                            <livewire:dynamic-input />
+
+                            @if ($errors->any())
+                                <div class="text-red-500">
+                                    <ul>
+                                        @foreach ($errors->keys() as $errorKey)
+                                            @if (Str::startsWith($errorKey, 'input_'))
+                                                @foreach ($errors->get($errorKey) as $errorMessage)
+                                                    <li>{{ $errorMessage }}</li>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <h1 class="text-white text-2xl font-bold">Ajouter des documents requis pour l'inscription au service</h1>
+
+                            <livewire:dynamic-select />
+
+                            @if ($errors->any())
                             <div class="text-red-500">
                                 <ul>
                                     @foreach ($errors->keys() as $errorKey)
-                                        @if (Str::startsWith($errorKey, 'input_'))
+                                        @if (Str::startsWith($errorKey, 'documentsId'))
                                             @foreach ($errors->get($errorKey) as $errorMessage)
-                                                <li>{{ $errorMessage }}</li>
+                                                <li>{{ __('Document requis') }}</li>
                                             @endforeach
                                         @endif
                                     @endforeach
                                 </ul>
                             </div>
-                        @endif
-                        <livewire:dynamic-input />
+                            @endif
 
-                        <h1 class="text-white text-2xl font-bold">Ajouter des documents requis pour l'inscription au service</h1>
-
-                        <livewire:dynamic-select />
-
-
-                        <div class="flex items-center gap-4 mt-5">
-                            <button class="btn btn-active btn-neutral">Valider</button>
-                        </div>
-                    </form>
+                            <div class="flex items-center gap-4 mt-5">
+                                <button class="btn btn-active btn-neutral">Valider</button>
+                            </div>
+                        </form>
+                    @else
+                        <p class="text-white">Avant de pouvoir créer un nouveau service, <a href="{{route('documents.create')}}" class="underline">merci de définir au moins un type de document qui sera requis pour les inscriptions de prestataires</a></p>
+                    @endif
                 </div>
             </div>
         </div>

@@ -18,12 +18,13 @@
                     <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
                         {{ __('Louer mon logement') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservation')" :active="request()->routeIs('reservation')">
-                        {{ __('Mes réservations') }}
+                    
+                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation')">
+                        {{ __('Espace Client') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('providers.create')" :active="request()->routeIs('providers.create')">
-                        {{ __('Presta') }}
+                    <x-nav-link :href="route('interventions.messagerie')" :active="request()->routeIs('interventions.messagerie') || request()->routeIs('interventions.chat')">
+                        {{ __('Messagerie') }}                    
                     </x-nav-link>
 
                     <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('ticket.create')">
@@ -36,7 +37,10 @@
             <!-- Settings Dropdown -->
             @auth
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    @if (isset($notifications))
+                    <livewire:megaphone></livewire:megaphone>
+                    {{-- @livewire('notifications') --}}
+
+                    {{-- @if (isset($notifications))
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button
@@ -56,7 +60,7 @@
                                 @endforeach
                             </x-slot>
                         </x-dropdown>
-                    @endif
+                    @endif --}}
 
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">

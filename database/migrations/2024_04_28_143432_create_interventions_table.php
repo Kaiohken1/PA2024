@@ -27,10 +27,13 @@ return new class extends Migration
             $table->enum('user_type', ['voyageur', 'bailleur']);
             $table->text("description")->nullable();
             $table->integer('price')->nullable();
+            $table->decimal('commission', 8, 2)->nullable();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete()->default(1);
             $table->text('comment')->nullable();
+            $table->text('fiche')->nullable();
             $table->integer('service_version');
-            $table->dateTime('planned_date');
+            $table->dateTime('planned_date')->nullable();
+            $table->dateTime('planned_end_date')->nullable();;
             $table->timestamps();
         });
     }

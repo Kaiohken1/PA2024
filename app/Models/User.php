@@ -7,20 +7,25 @@ use App\Models\Tag;
 use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
+use App\Models\Subscription;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Laravel\Cashier\Billable;
+use MBarlow\Megaphone\HasMegaphone;
 
 class User extends Authenticatable
 {
 
    
 
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, Billable, HasMegaphone;
 
     /**
      * The attributes that are mass assignable.
@@ -70,6 +75,10 @@ class User extends Authenticatable
         return $this->roles->contains('nom', 'admin');
     }
 
+    public function isProvider() {
+        return $this->roles->contains('nom', 'provider');
+    }
+
     public function getImageUrl() {
         if($this->avatar) {
             return Storage::url($this->avatar);
@@ -88,6 +97,17 @@ class User extends Authenticatable
 
     public function tags():HasMany {
         return $this->hasMany(Tag::class);
+    }
+
+    public function provider() : HasOne {
+        return $this->hasOne(Provider::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->belongsToMany(Subscription::class)
+                    ->withPivot('free_service_count', 'last_free_service_date')
+                    ->withTimestamps();
     }
     
     public function sentAvis()

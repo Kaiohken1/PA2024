@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers\Provider;
 
+use App\Events\InterventionPaid;
+use Carbon\Carbon;
+use Stripe\Stripe;
+use App\Models\Absence;
+use App\Models\Invoice;
 use App\Models\Service;
+use App\Models\Provider;
 use App\Models\Appartement;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Stripe\Checkout\Session;
 use App\Models\ServiceParameter;
+use App\Models\InterventionEvent;
+use App\Models\InterventionRefusal;
+use App\Http\Controllers\Controller;
+use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
+use App\Models\InterventionEstimation;
 
 class InterventionController extends Controller
 {
@@ -18,13 +29,10 @@ class InterventionController extends Controller
     public function index()
     {
         $interventions = Intervention::query()
-            ->select('id', 'description', 'statut', 'appartement_id', 'provider_id', 'service_id')
-            ->latest()
-            ->paginate(10);
+                        ->where('user_id', Auth::user()->id)
+                        ->paginate(10);
 
-        return view('interventions.index', [
-            'interventions' => $interventions,
-        ]);
+        return view('interventions.index', ['interventions' => $interventions]);
     }
 
     /**
@@ -75,7 +83,9 @@ class InterventionController extends Controller
             'tel' => ['nullable', 'array'],
             'tel.*' => ['array'],
             'tel.*.*' => ['regex:/[0-9]{10}/'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'array'],
+            'description.*' =>['nullable', 'string'],
+            'information' =>['nullable', 'string'],
             'date' => ['nullable', 'array'],
             'date.*' => ['array'],
             'date.*.*' => ['date'],
@@ -83,18 +93,26 @@ class InterventionController extends Controller
             'checkbox.*' => ['array'],
             'services' => ['required', 'array'],
             'services.*' => ['exists:services,id'],
-            'planned_date' => ['required', 'date']
+            'planned_date' => ['required', 'date', 'after:now']
         ]);
 
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
+        $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);
             $price = $service->flexPrice = 1 ? null : $service->price;
             $validatedData['price'] = $price;
             $role = $user->roles->first()->nom;
+            if(isset($validatedData['description'])) {
+                foreach($validatedData['description'] as $key => $value) {
+                    if($key == $id) {
+                        $description = $value;
+                    }
+                }
+            }
 
             if ($role) {
                 $validatedData['user_type'] = $role;
@@ -104,6 +122,8 @@ class InterventionController extends Controller
             $intervention->user()->associate($validatedData['user_id']);
             $intervention->service()->associate($id);
             $intervention->statut_id = 1;
+            // $intervention->description = $description;
+            $intervention->description = $validatedData['information'];
             $intervention->service_version = $service->currentVersion()->version_id;
             $intervention->save();
 
@@ -128,9 +148,25 @@ class InterventionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Intervention $intervention)
+    public function show($id)
     {
-        return view('interventions.show', compact('intervention'));
+        $intervention = Intervention::findOrfail($id);
+
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
+        $absences = Absence::query()
+                    ->where('provider_id', $provider->id)
+                    ->get();
+    
+        $datesInBase = [];
+    
+        foreach ($absences as $absence) {
+            $datesInBase[] = [
+                'from' => date("d-m-Y", strtotime($absence->start)),
+                'to' => date("d-m-Y", strtotime($absence->end))
+            ];
+        }
+
+        return view('interventions.show', ['intervention' => $intervention, 'datesInBase' => $datesInBase]);
     }
 
     /**
@@ -170,5 +206,134 @@ class InterventionController extends Controller
 
         return redirect()->route('interventions.index')
             ->with('success', 'Intervention deleted successfully.');
+    }
+
+
+    public function attribuate(Intervention $intervention, Provider $provider) {
+        $intervention->update(['provider_id'], $provider->id);
+    }
+
+
+    public function clientShow($id)
+    {
+        $intervention = Intervention::findOrfail($id);
+        return view('interventions.client-show', ['intervention' => $intervention]);
+    }
+
+    public function showPaymentPage($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+        return view('payment.page', compact('intervention'));
+    }
+
+
+    public function checkout($id)
+    {
+        $intervention = Intervention::findOrFail($id);
+
+        $taxRate = 0.20;
+
+        $taxAmount = $intervention->price * $taxRate;
+        $totalAmount = $intervention->price + $taxAmount;
+
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'eur',
+                    'product_data' => [
+                        'name' => 'Intervention #' . $intervention->id,
+                    ],
+                    'unit_amount' => $totalAmount * 100,
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('interventions.redirect', ['id' => $intervention->id, 'token' => uniqid()]),
+            'cancel_url' => url('/'),
+        ]);
+
+        return redirect()->away($session->url);
+    }
+
+    public function redirect(Request $request, $id, $token)
+    {
+        $intervention = Intervention::findOrFail($id);
+        return view('interventions.redirect', ['intervention' => $intervention, 'token' => $token]);
+    }
+
+
+    public function plan(Request $request, $id) {
+
+        $intervention = Intervention::findOrFail($id);
+        if($intervention->intervention_event !== NULL) {
+            return view('interventions.client-show', ['intervention' => $intervention]);
+        }
+        $intervention->statut_id = 5;
+
+        $intervention->save();
+
+        $event = new InterventionEvent();
+        $event->intervention_id = $intervention->id;
+        $event->provider_id = $intervention->provider->id;
+        $event->title = $intervention->service->name;
+        $event->start = $intervention->planned_date;
+        $event->end = $intervention->planned_end_date;
+
+        $event->save();
+
+        $invoice = new Invoice();
+        $invoice->intervention_id = $intervention->id;
+        $invoice->provider_id = $intervention->provider->id;
+        $invoice->user_id = $request->user()->id;
+        $invoice->price = $intervention->price;
+
+        $invoice->save();
+
+        event(new InterventionPaid($intervention));
+
+        $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);
+        return redirect()->route('interventions.clientShow', ['id' => $intervention->id]);
+        }
+
+
+    public function showProvider($id)
+    {
+        $intervention = Intervention::findOrfail($id);
+        return view('interventions.show-provider', ['intervention' => $intervention]);
+    }
+
+    public function refusal($id, Request $request) {
+        $validatedData = $request->validate([
+            'refusal' => ['required', 'string', 'max:255'],
+        ]);
+
+        $estimation = InterventionEstimation::findOrFail($id);
+        $estimation->statut_id = 8;
+        $estimation->save();
+
+        $intervention = Intervention::findOrFail($estimation->intervention_id);
+
+        InterventionRefusal::create([
+            'intervention_id' => $intervention->id,
+            'provider_id' => $intervention->provider_id,
+            'statut_id' => 8,
+            'refusal_reason' => $validatedData['refusal'],
+            'estimate' => $estimation->estimate,
+            'price' => $intervention->price,
+            'planned_date' => $intervention->planned_date,
+            'planned_end_date' => $intervention->planned_end_date,
+        ]);
+
+        $intervention->provider_id = NULL;
+        $intervention->price = NULL;
+        $intervention->commission = NULL;
+        $intervention->statut_id = 1;
+        
+        $intervention->save();
+
+        return redirect()->back()->with('success', 'Intervention refusée, un autre devis vous sera envoyé.');
+
     }
 }

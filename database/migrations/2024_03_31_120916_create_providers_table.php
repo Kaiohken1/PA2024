@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('avatar')->nullable();
             $table->text('description');
+            $table->boolean('availability')->default(1);
             $table->string('statut')->default('en attente');
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->unique();
             $table->timestamps();
