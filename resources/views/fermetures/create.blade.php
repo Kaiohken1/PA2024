@@ -21,12 +21,12 @@
                             @csrf
                             <div class="mb-4">
                                 <label for="period_comment" class="block text-sm font-medium text-gray-700">Raison</label>
-                                <input type="text" id="period_comment" name="comment" class="form-input mt-1 block w-full" placeholder="Entrez la raison">
+                                <input type="text" id="period_comment" name="comment" class="input input-bordered input-warning w-full max-w-xs" placeholder="Entrez la raison">
                                 <x-input-error class="mt-2" :messages="$errors->get('comment')" />
                             </div>
                             <div class="mb-4">
                                 <label for="datePicker" class="block text-sm font-medium text-gray-700">Sélectionnez une période</label>
-                                <input type="text" id="datePicker" class="form-input mt-1 block w-full" placeholder="Sélectionnez une période">
+                                <input type="text" id="datePicker" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une période">
                                 <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
                             </div>
@@ -42,12 +42,12 @@
                             @csrf
                             <div class="mb-4">
                                 <label for="single_comment" class="block text-sm font-medium text-gray-700">Raison</label>
-                                <input type="text" id="single_comment" name="comment" class="form-input mt-1 block w-full" placeholder="Entrez la raison">
+                                <input type="text" id="single_comment" name="comment" class="input input-bordered input-warning w-full max-w-xs" placeholder="Entrez la raison">
                                 <x-input-error class="mt-2" :messages="$errors->get('comment')" />
                             </div>
                             <div class="mb-4">
                                 <label for="datePickerSingle" class="block text-sm font-medium text-gray-700">Sélectionnez une date</label>
-                                <input type="text" id="datePickerSingle" class="form-input mt-1 block w-full" placeholder="Sélectionnez une date">
+                                <input type="text" id="datePickerSingle" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une date">
                                 <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
                             </div>
@@ -63,7 +63,7 @@
                             @csrf
                             <div class="mb-4">
                                 <label for="monthPicker" class="block text-sm font-medium text-gray-700">Sélectionnez une période</label>
-                                <input type="text" id="monthPicker" class="form-input mt-1 block w-full" placeholder="Sélectionnez une période">
+                                <input type="text" id="monthPicker" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une période">
                                 <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
                             </div>
