@@ -87,7 +87,7 @@ Route::middleware('auth')->group(function () {
         // Route::get('/fermetures', [FermetureController::class, 'index'])->name('fermeture.index');
         // Route::delete('/fermetures/{fermeture}', [FermetureController::class, 'destroy'])->name('fermeture.destroy');
         Route::patch('/fermetures', [FermetureController::class, 'storeRecurring'])->name('fermeture.storeRecurring');
-        Route::post('/fermetures/recurring/{appartementId}', [FermetureController::class, 'generateRecurring'])->name('fermeture.generateRecurring');
+        Route::post('/fermetures/recurring/{id}', [FermetureController::class, 'createRecurringClosure'])->name('fermeture.createRecurring');
 
         // Route::get('/fermetures/create', [FermetureController::class, 'create'])->name('fermeture.create');
         // Route::post('/fermetures', [FermetureController::class, 'store'])->name('fermeture.store');

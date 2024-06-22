@@ -197,17 +197,16 @@ $appartements = $appartements->each(function ($appartement) {
 
     
 
-        $intervalle = Reservation::where("appartement_id", $appartement->id)
+        $intervalles = Reservation::where("appartement_id", $appartement->id)
             ->select("start_time","end_time")
             ->get();
 
-        $fermeture = Fermeture::where("appartement_id", $appartement->id)
+        $fermetures = Fermeture::where("appartement_id", $appartement->id)
             ->select("start","end")
             ->get();
 
-                    // Récupérer les dates déjà réservées pour cet appartement
         $reservedDates = Reservation::where('appartement_id', $id)
-        ->get() // Récupérez toutes les réservations
+        ->get() 
         ->map(function ($reservation) {
             return [
                 'start' => Carbon::parse($reservation->start_time)->toDateString(),
@@ -232,12 +231,30 @@ $appartements = $appartements->each(function ($appartement) {
             return $avis;
         });
 
+        $dateInBase = [];
+
+        foreach($fermetures as $fermeture) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($fermeture->start)),
+                'to' => date("d-m-Y", strtotime($fermeture->start))
+            ];
+        }
+
+
+        foreach($intervalles as $intervalle) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($intervalle->start_time)),
+                'to' => date("d-m-Y", strtotime($intervalle->end_time))
+            ];
+        }
+
         return view('appartements.show', [
             'appartement' => $appartement,
-            'fermetures' => $fermeture,
-            'intervalles' => $intervalle,
+            'fermetures' => $fermetures,
+            'intervalles' => $intervalles,
             'reservedDates' => $reservedDates,
-            'appartementAvis' => $appartementAvis
+            'appartementAvis' => $appartementAvis,
+            'datesInBase' => $dateInBase,
         ]);
     }
     /**

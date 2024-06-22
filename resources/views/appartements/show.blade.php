@@ -98,6 +98,8 @@
 </x-app-layout>
 
 <script>
+    var disabledDates = <?php echo json_encode($datesInBase); ?>;
+
     document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('start_time').addEventListener('change', updateTotalPrice);
@@ -127,47 +129,17 @@
         }
     });
 
-    var intervallesADesactiver = @json($intervalles);
-    var fermeturesADesactiver = @json($fermetures);
-
-    function estDansIntervalle(date, intervalles, fermetures) {
-        var currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        for (var i = 0; i < intervalles.length; i++) {
-            var startDate = new Date(intervalles[i].start_time);
-            var endDate = new Date(intervalles[i].end_time);
-            var intervalleStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-            var intervalleEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-            if (currentDate >= intervalleStartDate && currentDate <= intervalleEndDate) {
-                return true;
-            }
-        }
-        for (var i = 0; i < fermetures.length; i++) {
-            var fermetureStart = new Date(fermetures[i].start_time);
-            var fermetureEnd = new Date(fermetures[i].end_time);
-            var trueFermetureStart = new Date(fermetureStart.getFullYear(), fermetureStart.getMonth(), fermetureStart.getDate());
-            var trueFermetureEnd = new Date(fermetureEnd.getFullYear(), fermetureEnd.getMonth(), fermetureEnd.getDate());
-            if (currentDate >= trueFermetureStart && currentDate <= trueFermetureEnd) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     flatpickr("#start_time", {
     mode: "range",
     dateFormat: "d-m-Y",
     minDate: "today",
-    disable: [
-        function(date) {
-            return estDansIntervalle(date, intervallesADesactiver, fermeturesADesactiver);
-        }
-    ],
+    disable: disabledDates,
     onClose: function(selectedDates) {
         if (selectedDates.length > 0) {
             var start = selectedDates[0];
             var end = selectedDates[selectedDates.length - 1];
             document.getElementById("start_time").value = formatDate(start);
-            document.getElementById("end_time").value = formatDate(end, true); // Set end time to 23:59
+            document.getElementById("end_time").value = formatDate(end, true);
         }
     }
 });

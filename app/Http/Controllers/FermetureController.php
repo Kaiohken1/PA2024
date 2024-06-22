@@ -39,17 +39,35 @@ class FermetureController extends Controller
     {
         $appartement = Appartement::findOrFail($appartementId);
 
-        $intervalle = Reservation::where("appartement_id", $appartement->id)
+        $intervalles = Reservation::where("appartement_id", $appartement->id)
             ->select("start_time","end_time")
             ->get();
 
-        $fermeture = Fermeture::where("appartement_id", $appartement->id)
+        $fermetures = Fermeture::where("appartement_id", $appartement->id)
             ->select("start","end")
             ->get();
 
+        $dateInBase = [];
+
+        foreach($fermetures as $fermeture) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($fermeture->start)),
+                'to' => date("d-m-Y", strtotime($fermeture->start))
+            ];
+        }
+
+
+        foreach($intervalles as $intervalle) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($intervalle->start_time)),
+                'to' => date("d-m-Y", strtotime($intervalle->end_time))
+            ];
+        }
+
         return view('fermetures.create', ['appartement'=>$appartement,
-                                                'intervalles'=>$intervalle,
-                                                'fermetures'=>$fermeture]);
+                                        'intervalles'=>$intervalles,
+                                        'fermetures'=>$fermetures, 
+                                    'datesInBase' => $dateInBase]);
     }
 
     /**
@@ -82,7 +100,6 @@ class FermetureController extends Controller
     public function storeRecurring(Request $request, Appartement $appartement)
     {
         $validatedData = $request->validate([
-            'comment' => ['required', 'string', 'max:140'],
             'days' => ['required', 'array'],
             'days.*' => ['integer', 'between:0,7'],
         ]);
@@ -95,6 +112,68 @@ class FermetureController extends Controller
         return redirect()->route('fermeture.index', ['appartement' => $appartement])
                          ->with('success', "Fermeture récurrente bien prise en compte");
     }
+
+    public function createRecurringClosure(Request $request, Appartement $appartement)
+    {
+        $validatedData = $request->validate([
+            'days' => ['required', 'array'],
+            'month_start' => ['required', 'date'],
+            'month_end' => ['required', 'date'],
+        ]);
+
+        $validatedData['month_end'] = date('Y-m-d', strtotime($validatedData['month_end']. ' +1 day'));
+    
+        $startDate = Carbon::parse($validatedData['month_start']);
+        $endDate = Carbon::parse($validatedData['month_end']);
+        $days = $validatedData['days'];
+    
+        $week = [
+            0 => Carbon::SUNDAY,
+            1 => Carbon::MONDAY,
+            2 => Carbon::TUESDAY,
+            3 => Carbon::WEDNESDAY,
+            4 => Carbon::THURSDAY,
+            5 => Carbon::FRIDAY,
+            6 => Carbon::SATURDAY
+        ];
+    
+        while ($startDate->lte($endDate)) {
+            foreach ($days as $day) {
+                $closureDate = $startDate->copy()->next($week[$day]);
+    
+                if ($closureDate->gt($endDate)) {
+                    continue;
+                }
+    
+                $closureEvent = Fermeture::where('appartement_id', $appartement->id)
+                    ->whereDate('start', $closureDate)
+                    ->whereDate('end', $closureDate)
+                    ->first();
+    
+                $reservationEvent = Reservation::where('appartement_id', $appartement->id)
+                    ->where(function($query) use ($closureDate) {
+                        $query->whereDate('start_time', '<=', $closureDate)
+                              ->whereDate('end_time', '>=', $closureDate);
+                    })
+                    ->first();
+    
+                if (!$closureEvent && !$reservationEvent) {
+                    Fermeture::create([
+                        'comment' => 'Fermeture récurrente',
+                        'start' => $closureDate->format('Y-m-d'),
+                        'end' => $closureDate->format('Y-m-d'),
+                        'appartement_id' => $appartement->id,
+                    ]);
+                }
+            }
+    
+            $startDate->addWeek();
+        }
+    
+        return redirect()->route('fermeture.index', ['appartement' => $appartement])
+            ->with('success', "Fermeture récurrente bien prise en compte");
+    }
+    
 
     /**
      * Display the specified resource.
@@ -168,17 +247,24 @@ class FermetureController extends Controller
         while ($today->lte($endDate)) {
             foreach ($recurringClosures as $dayOfWeek) {
                 if (!array_key_exists($dayOfWeek, $daysMap)) {
-                    continue; // Si l'indice n'est pas valide, passer au suivant
+                    continue;
                 }
 
                 $closureDate = $today->copy()->next($daysMap[$dayOfWeek]);
 
-                $existingFermeture = Fermeture::where('appartement_id', $appartement->id)
+                $closureEvent = Fermeture::where('appartement_id', $appartement->id)
                     ->whereDate('start', $closureDate)
                     ->whereDate('end', $closureDate)
                     ->first();
 
-                if (!$existingFermeture) {
+                $reservationEvent = Reservation::where('appartement_id', $appartement->id)
+                    ->where(function($query) use ($closureDate) {
+                        $query->whereDate('start_time', '<=', $closureDate)
+                              ->whereDate('end_time', '>=', $closureDate);
+                    })
+                    ->first();
+                
+                if (!$closureEvent && !$reservationEvent) {
                     Fermeture::create([
                         'comment' => 'Fermeture récurrente',
                         'start' => $closureDate->format('Y-m-d'),
