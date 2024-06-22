@@ -46,7 +46,7 @@
                                             {{ $fermeture->comment }}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
-                                            <button onclick="confirm('Etes vous sûr de vouloir supprimer cette fermeture ?') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$fermeture->id}})" class="btn btn-error mr-3">X</button>
+                                            <button wire:click="delete({{$fermeture->id}})" class="btn btn-error mr-3">X</button>
                                         </td>
                                     </tr>
                                 @endforeach

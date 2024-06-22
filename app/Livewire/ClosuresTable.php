@@ -26,8 +26,8 @@ class ClosuresTable extends Component
     public $appartementId;
 
 
-    public function delete(Fermeture $intervention) {
-        $intervention->delete();
+    public function delete(Fermeture $fermeture) {
+        $fermeture->delete();
     }
 
     public function updatedSearch() {

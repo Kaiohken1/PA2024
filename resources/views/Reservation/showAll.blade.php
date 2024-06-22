@@ -11,7 +11,7 @@
         @endif
 
     </x-slot>
-
+{{-- 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <table class="w-full bg-white shadow-md rounded my-4">
@@ -84,5 +84,6 @@
             {{ $reservations->links() }}
 
         </div>
-    </div>
+    </div> --}}
+    <livewire:reservations-table >
 </x-app-layout>

@@ -51,6 +51,10 @@
         </div>
     </div>
 
+    <div id="closureModalDetails" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        @livewire('closureDetails')
+    </div>
+
 </div>
 
 
@@ -59,12 +63,20 @@
 
 <script>
     
-    function openModal() {
-        document.getElementById('eventModal').classList.remove('hidden');
+    function openModal(type) {
+        if(type == 'Reservation') {
+            document.getElementById('eventModal').classList.remove('hidden');
+        } else {
+            document.getElementById('closureModalDetails').classList.remove('hidden');
+        }
     }
 
-    function closeModal() {
-        document.getElementById('eventModal').classList.add('hidden');
+    function closeModal(type) {
+        if(type == 'Reservation') {
+            document.getElementById('eventModal').classList.add('hidden');
+        } else {
+            document.getElementById('closureModalDetails').classList.add('hidden');
+        }
     }
 
     function openClosureModal(date) {
@@ -85,6 +97,11 @@
             Livewire.dispatch('createClosure', { date: date, reason: reason, appartementId: appartementId });
             closeClosureModal();
         }
+    }
+
+    function deleteClosure(reservationId) {
+        Livewire.dispatch('deleteClosure', { id: reservationId });
+        closeModal('Closure');
     }
 
     document.addEventListener('livewire:initialized', function () {
@@ -124,7 +141,10 @@
             eventClick: function(info) {
                 if(info.event.extendedProps.type === 'reservation') {                    
                     Livewire.dispatch('loadReservation', { id: info.event.id });
-                    openModal();
+                    openModal('Reservation');
+                } else if (info.event.extendedProps.type === 'closure') {
+                    Livewire.dispatch('loadClosure', { id: info.event.id });
+                    openModal('Closure');
                 }
             },
 

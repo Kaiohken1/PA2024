@@ -44,4 +44,17 @@ class Reservation extends Model
     {
     return $this->hasMany(UserAvis::class);
     }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+            ->orWhereHas('appartement', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%");
+            })
+            ->orWhereHas('user', function ($query) use ($value) {
+                $query->where('name', 'like', "%{$value}%")
+                    ->orWhere('first_name', 'like', "%{$value}%")
+                    ->orWhereRaw("CONCAT(name, ' ', first_name) LIKE ?", ["%{$value}%"]);
+            });
+    }
 }
