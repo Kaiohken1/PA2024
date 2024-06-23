@@ -28,7 +28,7 @@ class Appartement extends Model
         'property_type',
         'city',
         'location_type',
-        'recurringClosures',
+        'active_flag'
     ];
 
     protected $casts = [
@@ -63,8 +63,20 @@ class Appartement extends Model
         return $this->hasMany(AppartementAvis::class);
     }
 
-    public function getRecurringClosures()
+    public function statut()
     {
-        return $this->recurringClosures ?? [];
+        return $this->belongsTo(Statut::class, 'statut_id');
+    }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhere('name', 'like', "%{$value}%")
+                ->orWhere('city', 'like', "%{$value}%")
+                ->orWhere('address', 'like', "%{$value}%")
+                ->orWhere('location_type', 'like', "%{$value}%")
+                ->orWhereHas('user', function ($query) use ($value) {
+                    $query->where('name', 'like', "%{$value}%");
+                });
     }
 }

@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
 
 <x-app-layout>
     @if (session('success'))
@@ -26,6 +28,47 @@
                         @endforeach
                     </div>
                 @endif
+                <button class="btn btn-info"
+                x-data=""
+                x-on:click.prevent="$dispatch('open-modal', 'images-show')"
+                >{{ __('Voir toutes les photos') }}</button>
+        
+                <x-modal name="images-show" focusable  maxWidth="fit" maxHeight="full">
+                    <div class="p-4 w-full">
+                        <div class="flex justify-end mb-4">
+                            <button @click="$dispatch('close')" class="text-black hover:bg-gray-300 rounded-full p-2 transition duration-300 ease-in-out">
+                                <p class="text-xl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                  </svg>
+                                  </p>
+                            </button>                        
+                        </div>
+                        <div class="flex">
+                            @foreach ($appartement->images as $image)
+                                <div class="w-full">
+                                    <a
+                                    x-data=""
+                                    x-on:click.prevent="$dispatch('open-modal', 'images-details')"
+                                    >
+                                    <img class="h-72 max-w-full rounded-lg object-cover" src="{{ Storage::url($image->image) }}" alt="Image de l'appartement">
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                        <x-modal name="images-details" maxWidth="full" maxHeight="full">
+                            <div class="container w-full">
+                                @foreach($appartement->images as $index => $image)
+                                    <div id="slide{{ $index + 1 }}" class="carousel-item relative w-half h-half">
+                                        <img src="{{ Storage::url($image->image) }}" class="w-full h-2/4 object-contain" alt="Image {{ $index + 1 }}" />                                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                            <a href="#slide{{ $index == 0 ? count($appartement->images) : $index }}" class="btn btn-circle">❮</a> 
+                                            <a href="#slide{{ $index == count($appartement->images) - 1 ? 1 : $index + 2 }}" class="btn btn-circle">❯</a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </x-modal>
+                    </div>
+                </x-modal>
                 <div class="flex justify-between mt-5">
                     <div class="mt-1 w-80">
                         @foreach ($appartement->tags as $tag)
@@ -133,6 +176,8 @@
     mode: "range",
     dateFormat: "d-m-Y",
     minDate: "today",
+    showMonths: 2,
+    locale: "fr",
     disable: disabledDates,
     onClose: function(selectedDates) {
         if (selectedDates.length > 0) {

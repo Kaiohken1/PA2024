@@ -17,7 +17,7 @@
                     <x-nav-link :href="route('admin.users.index')">
                         {{ __('Utilisateurs') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin')">
+                    <x-nav-link :href="route('admin.property.index')">
                         {{ __('Appartements') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.providers.index')">

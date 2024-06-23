@@ -93,13 +93,19 @@ class InterventionController extends Controller
             'checkbox.*' => ['array'],
             'services' => ['required', 'array'],
             'services.*' => ['exists:services,id'],
-            'planned_date' => ['required', 'date', 'after:now']
+            'planned_date' => ['required', 'date', 'after:now'],
+            'max_end_date' => ['nullable', 'date', 'after:planned_date'],
         ]);
 
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
         $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
+
+        if(isset($validatedData['planned_date'])) {
+            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+
+        }
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);

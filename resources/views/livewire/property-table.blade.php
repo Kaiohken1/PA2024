@@ -28,9 +28,7 @@
                                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                                 <option value="">Tout</option>
                                 <option value="1">En attente</option>
-                                <option value="5">Payée</option>
-                                <option value="3">Terminée</option>
-                                <option value="4">Refusée</option>
+                                <option value="11">Validé</option>
                             </select>
                         </div>
                         <button wire:click="exportCsv" class="btn btn-warning">Exporter CSV</button>
@@ -41,42 +39,46 @@
                         <thead class="text-xs text-white uppercase bg-gray-700 dark:bg-gray-700">
                             <tr>
                                 @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
-                                <th scope="col" class="px-4 py-3">Service</th>
-                                <th scope="col" class="px-4 py-3">Statut</th>
-                                <th scope="col" class="px-4 py-3">Client</th>
-                                <th scope="col" class="px-4 py-3">Prestataire</th>
-                                @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DEMANDE'])
-                                @include('livewire.includes.table-sort', ['name' => 'planned_date', 'displayName' => 'DATE PREVUE'])
-                                @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'PRIX'])
-                                @include('livewire.includes.table-sort', ['name' => 'commission', 'displayName' => 'COMMISSION'])
+                                <th scope="col" class="px-4 py-3">Nom</th>
+                                <th scope="col" class="px-4 py-3">adresse</th>
+                                <th scope="col" class="px-4 py-3">ville</th>
+                                <th scope="col" class="px-4 py-3">proprietaire</th>
+                                <th scope="col" class="px-4 py-3">disponibilité</th>
+                                @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'PRIX PAR NUIT'])
+                                @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DE CREATION'])
+                                <th scope="col" class="px-4 py-3">statut</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($interventions as $intervention)
-                                <tr wire:key="{{$intervention->id}}" class="border-b border-gray-700 dark:border-gray-700">
+                            @foreach($appartements as $appartement)
+                                <tr wire:key="{{$appartement->id}}" class="border-b border-gray-700 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-white whitespace-nowrap dark:text-white">
-                                    {{$intervention->id}}</th>
-                                    <td class="px-4 py-3">{{$intervention->services->getModel()->name}}</td>
-                                    <td class="px-4 py-3 
-                                        {{ $intervention->statut->id == 1 ? 'text-yellow-500' : '' }}
-                                        {{ $intervention->statut->id == 3 ? 'text-green-500' : '' }}
-                                        {{ $intervention->statut->id == 4 ? 'text-red-500' : '' }}
-                                        {{ $intervention->statut->id == 5 ? 'text-yellow-500' : '' }} ">
-                                        {{ $intervention->statut->nom }}
+                                    #{{$appartement->id}}</th>
+                                    <td class="px-4 py-3">{{$appartement->name}}</td>
+                                    <td class="px-4 py-3">
+                                        {{ $appartement->address }}
                                     </td>
-                                    <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
-                                    <td class="px-4 py-3">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="px-4 py-3">@if($intervention->price){{$intervention->price + ($intervention->price*0.20)}}€@endif</td>
-                                    <td class="px-4 py-3">@if($intervention->estimations->where('statut_id', 9)->first()){{$intervention->estimations->first()->commission}}€@endif</td>
-                                    <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.interventions.show', $intervention->id) }}">
+                                    <td class="px-4 py-3">{{$appartement->city}}</td>
+                                    <td class="px-4 py-3">{{$appartement->user->name}} {{$appartement->user->first_name}}</td>
+                                    <td class="px-4 py-3                                        
+                                        {{ $appartement->active_flag ? 'text-green-500' : 'text-red-500' }}">
+                                         @if($appartement->active_flag)Ouvert @else Fermé @endif
+                                    </td>
+                                    <td class="px-4 py-3">{{$appartement->price}}€</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($appartement->created_at)->format('d/m/Y H:i:s')}}</td>
+                                    <td class="px-4 py-3 
+                                        {{ $appartement->statut->id == 1 ? 'text-yellow-500' : '' }}
+                                        {{ $appartement->statut->id == 11 ? 'text-green-500' : '' }}">
+                                    {{ $appartement->statut->nom }}
+                                    </td>
+                                    <td class="px-4 py-3 flex items-center justify-end">
+                                        <a href="{{ route('admin.property.show', $appartement->id) }}"> 
                                         <button class="btn btn-info mr-3">Voir</button></a>
-                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'intervention #{{$intervention->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$intervention->id}})" class="btn btn-error mr-3">X</button>
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3">X</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -99,7 +101,7 @@
                             </select>
                         </div>
                     </div>
-                    {{$interventions->links()}}
+                    {{$appartements->links()}}
                 </div>
             </div>
         </div>

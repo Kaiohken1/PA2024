@@ -32,65 +32,66 @@ class AppartementController extends Controller
         
 
         $appartements = Appartement::query()
-    ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
-    ->with(['user:id,name'])
-    ->with(['avis'])
-    ->with(['images:*'])
-    ->withCount('avis')
-    ->withAvg('avis', 'rating_cleanness')
-    ->withAvg('avis', 'rating_price_quality')
-    ->withAvg('avis', 'rating_location')
-    ->withAvg('avis', 'rating_communication');
+            ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
+            ->where('active_flag', 1)
+            ->with(['user:id,name'])
+            ->with(['avis'])
+            ->with(['images:*'])
+            ->withCount('avis')
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication');
 
-if (isset($validateData['tag_id'])) {
-    $tags_id = $validateData['tag_id'];
-    foreach($tags_id as $tag_id){
-        $appartements->whereHas('tags', function ($query) use ($tag_id) {
-            $query->where('tags.id', $tag_id);
+        if (isset($validateData['tag_id'])) {
+            $tags_id = $validateData['tag_id'];
+            foreach($tags_id as $tag_id){
+                $appartements->whereHas('tags', function ($query) use ($tag_id) {
+                    $query->where('tags.id', $tag_id);
+                });
+            }
+            
+        }
+        if (isset($validateData['sort_type'])) {
+            $sortType = $validateData['sort_type'];
+
+            switch ($sortType) {
+                case 'price_asc':
+                    $appartements->orderBy('price', 'asc');
+                    break;
+
+                case 'price_desc':
+                    $appartements->orderBy('price', 'desc');
+                    break;
+
+                case 'surface_asc':
+                    $appartements->orderBy('surface', 'asc');
+                    break;
+
+                case 'surface_desc':
+                    $appartements->orderBy('surface', 'desc');
+                    break;
+                
+                case 'guest_count_asc':
+                    $appartements->orderBy('guestCount', 'asc');
+                    break;
+
+                case 'guest_count_desc':
+                    $appartements->orderBy('guestCount', 'desc');
+                    break;
+            } 
+        } else {
+            $appartements->latest();
+        }
+            
+
+
+        $appartements = $appartements->paginate(10);
+
+        $appartements = $appartements->each(function ($appartement) {
+            $appartement->overall_rating = ($appartement->avis_avg_rating_cleanness + $appartement->avis_avg_rating_price_quality  + $appartement->avis_avg_rating_location  + $appartement->avis_avg_rating_communication) / 4;
+            return $appartement;
         });
-    }
-    
-}
-if (isset($validateData['sort_type'])) {
-    $sortType = $validateData['sort_type'];
-
-    switch ($sortType) {
-        case 'price_asc':
-            $appartements->orderBy('price', 'asc');
-            break;
-
-        case 'price_desc':
-            $appartements->orderBy('price', 'desc');
-            break;
-
-        case 'surface_asc':
-            $appartements->orderBy('surface', 'asc');
-            break;
-
-        case 'surface_desc':
-            $appartements->orderBy('surface', 'desc');
-            break;
-        
-        case 'guest_count_asc':
-            $appartements->orderBy('guestCount', 'asc');
-            break;
-
-        case 'guest_count_desc':
-            $appartements->orderBy('guestCount', 'desc');
-            break;
-    } 
-} else {
-    $appartements->latest();
-}
-    
-
-
-$appartements = $appartements->paginate(10);
-
-$appartements = $appartements->each(function ($appartement) {
-    $appartement->overall_rating = ($appartement->avis_avg_rating_cleanness + $appartement->avis_avg_rating_price_quality  + $appartement->avis_avg_rating_location  + $appartement->avis_avg_rating_communication) / 4;
-    return $appartement;
-});
 
         $tags = Tag::all(); 
 
@@ -151,6 +152,7 @@ $appartements = $appartements->each(function ($appartement) {
         $appartement = new Appartement($validateData);
         
         $appartement->user()->associate($validateData['user_id']);
+        $appartement->statut_id = 1;
         $appartement->save();
         if(isset($validateData['tag_id'])){
             $appartement->tags()->sync($validateData['tag_id']);
@@ -171,7 +173,7 @@ $appartements = $appartements->each(function ($appartement) {
          
     
         return redirect()->route('property.index')
-            ->with('success', "Appartement créé avec succès");
+            ->with('success', "Appartement créé avec succès et en attente de validation");
     }    
 
     /**

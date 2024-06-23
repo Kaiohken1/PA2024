@@ -33,6 +33,7 @@ class Intervention extends Model
         'fiche',
         'refusal_reason',
         'commission',
+        'max_end_date',
     ];
 
     protected $dispatchesEvents = [

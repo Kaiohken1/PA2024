@@ -31,6 +31,13 @@
                         <input type="text" id="planned_date" name="planned_date" placeholder="Sélectionnez une date">
                         <x-input-error class="mt-2" :messages="$errors->get('planned_date')" />
                     </div>
+
+                    <div>
+                        <x-input-label for="max_end_date" :value="__('Date de fin limite')"/>
+                        <input type="text" id="max_end_date" name="max_end_date" placeholder="Sélectionnez une date" disabled>
+                        <x-input-error class="mt-2" :messages="$errors->get('max_end_date')" />
+                    </div>
+
                     <div>
                         <p>{{ __('Autre information dont vous souhaiteriez nous faire part (facultatif)') }}</p>
                         <textarea name="information" class="block mt-1 w-full"></textarea>
@@ -45,12 +52,30 @@
     </div>
 
     <script>
-        flatpickr("#planned_date", {
-            mode: "single",
-            enableTime: true,
-            dateFormat: "d-m-Y H:i",
-            minDate: "today",
-            locale: "fr",
+        document.addEventListener('DOMContentLoaded', function() {
+            const plannedDatePicker = flatpickr("#planned_date", {
+                mode: "single",
+                enableTime: true,
+                dateFormat: "d-m-Y H:i",
+                minDate: "today",
+                locale: "fr",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        document.getElementById('max_end_date').disabled = false;
+                        maxEndDatePicker.set('minDate', selectedDates[0]);
+                    } else {
+                        document.getElementById('max_end_date').disabled = false;
+                    }
+                }
+            });
+
+            const maxEndDatePicker = flatpickr("#max_end_date", {
+                mode: "single",
+                enableTime: true,
+                dateFormat: "d-m-Y H:i",
+                minDate: "today",
+                locale: "fr",
+            });
         });
 
         function isNotEmpty(value) {
@@ -60,7 +85,6 @@
 
         document.addEventListener('livewire:init', function () {
         Livewire.on('servicesUpdated', (event) => {
-            console.log(event);
             let additionalFields = document.getElementById('additional-fields');
             additionalFields.style.display = isNotEmpty(event.hasService) ? 'block' : 'none';
         });

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Livewire\Chat;
 use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
@@ -159,6 +160,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
     Route::resource('tags', TagController::class);
     Route::patch('/providers/{id}/validate', [AdminProviderController::class, 'validateProvider'])->name('admin.providers.validate');
+    Route::patch('/property/{id}/validate', [AdminAppartementController::class, 'validateProperty'])->name('admin.property.validate');
+
     Route::resource('services', ServiceController::class)->middleware(['admin']);
     Route::delete('/services/{service}/parameter/{id}', [ServiceController::class, 'destroyParameter'])->name('services.destroyParameter');
     Route::delete('/services/{service}/document/{id}', [ServiceController::class, 'destroyDocument'])->name('services.destroyDocument');
@@ -169,6 +172,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::patch('/services/{id}/statut', [ServiceController::class, 'updateActive'])->name('services.updateActive');
     Route::resource('/subscriptions', SubscriptionsController::class);
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
+    Route::resource('/property', AdminAppartementController::class)->names('admin.property');
+
     Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
 
     Route::get('/intervention/{id}/providers', [AdminProviderController::class, 'availableProviders'])->name('providers.available');;
