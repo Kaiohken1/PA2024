@@ -114,7 +114,7 @@
                             </select>
                         </div>
 
-                        @if ($appartement->images->count() <= 5)
+                        @if ($appartement->images->count() <= 15)
                             <div>
                                 <x-input-label for="price" :value="__('Ajouter une nouveau image')" />
                                 <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file" name='image[]'
@@ -131,19 +131,23 @@
 
                     <div>
                         <x-input-label for="price" :value="__('Vos images activées')" class="mt-5" />
-                        <div class="flex space-x-8">
+                        <livewire:appartement-images :appartementId="$appartement->id">
+                        {{-- <div class="flex space-x-8">
                             @foreach ($appartement->images as $image)
                                 <div class="relative">
-                                    <img class="rounded-md mb-3 h-52" src="{{ Storage::url($image->image) }}"
-                                        width="200px">
+                                    <img class="rounded-md mb-3 h-52" src="{{ Storage::url($image->image) }}" width="200px">
+                                    <form method="POST" action="{{ route('property.setMainImg', $image) }}" class="absolute bottom-2 left-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="checkbox" name="is_main" value="1" {{ $image->is_main ? 'checked' : '' }} onchange="this.form.submit()">
+                                        <label for="is_main" class="text-white">Principale</label>
+                                    </form>
                                     @if($appartement->images->count() > 1)
-                                    <form method="POST" action="{{ route('property.destroyImg', $image) }}"
-                                        class="absolute top-2 right-2">
+                                    <form method="POST" action="{{ route('property.destroyImg', $image) }}" class="absolute top-2 right-2">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                                fill="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M6 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zM5.293 9.293a1 1 0 011.414 0L10 13.586l3.293-3.293a1 1 0 111.414 1.414L11.414 15l3.293 3.293a1 1 0 01-1.414 1.414L10 16.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 15 5.293 11.707a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -153,7 +157,7 @@
                                     @endif
                                 </div>
                             @endforeach
-                        </div>
+                        </div>                         --}}
                     </div>
                 </div>
             </div>

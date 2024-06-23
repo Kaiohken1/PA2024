@@ -29,7 +29,7 @@ class AppartementController extends Controller
             'sort_type' => ['string']
         ]);
 
-        
+
 
         $appartements = Appartement::query()
             ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
@@ -45,12 +45,11 @@ class AppartementController extends Controller
 
         if (isset($validateData['tag_id'])) {
             $tags_id = $validateData['tag_id'];
-            foreach($tags_id as $tag_id){
+            foreach ($tags_id as $tag_id) {
                 $appartements->whereHas('tags', function ($query) use ($tag_id) {
                     $query->where('tags.id', $tag_id);
                 });
             }
-            
         }
         if (isset($validateData['sort_type'])) {
             $sortType = $validateData['sort_type'];
@@ -71,7 +70,7 @@ class AppartementController extends Controller
                 case 'surface_desc':
                     $appartements->orderBy('surface', 'desc');
                     break;
-                
+
                 case 'guest_count_asc':
                     $appartements->orderBy('guestCount', 'asc');
                     break;
@@ -79,11 +78,11 @@ class AppartementController extends Controller
                 case 'guest_count_desc':
                     $appartements->orderBy('guestCount', 'desc');
                     break;
-            } 
+            }
         } else {
             $appartements->latest();
         }
-            
+
 
 
         $appartements = $appartements->paginate(10);
@@ -93,33 +92,32 @@ class AppartementController extends Controller
             return $appartement;
         });
 
-        $tags = Tag::all(); 
+        $tags = Tag::all();
 
         return view('appartements.index', [
             'appartements' => $appartements,
             'tags' => $tags,
         ]);
-        
     }
 
     public function userIndex()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $appartements = $user->appartement;
-    
-    return view('appartements.userIndex', [
-        'appartements' => $appartements
-    ]);
-}
+        $appartements = $user->appartement;
+
+        return view('appartements.userIndex', [
+            'appartements' => $appartements
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $tags = Tag::all();    
-        return view('appartements.create',[
+        $tags = Tag::all();
+        return view('appartements.create', [
             'tags' => $tags
         ]);
     }
@@ -132,10 +130,10 @@ class AppartementController extends Controller
         $validateData = $request->validate([
             'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s]*$/'],
             'address' => ['required', 'max:255'],
-            'surface' => ['required', 'numeric'],   
-            'guestCount' => ['required', 'numeric'],   
-            'roomCount' => ['required', 'numeric'],   
-            'description' => ['required', 'max:255'],   
+            'surface' => ['required', 'numeric'],
+            'guestCount' => ['required', 'numeric'],
+            'roomCount' => ['required', 'numeric'],
+            'description' => ['required', 'max:255'],
             'price' => ['required', 'numeric'],
             'image' => ['array'],
             'image.*' => ['image'],
@@ -151,35 +149,35 @@ class AppartementController extends Controller
         }
 
         unset($validateData['image']);
-    
+
         $validateData['user_id'] = Auth()->id();
-    
+
         $appartement = new Appartement($validateData);
-        
+
         $appartement->user()->associate($validateData['user_id']);
         $appartement->statut_id = 1;
         $appartement->save();
-        if(isset($validateData['tag_id'])){
+        if (isset($validateData['tag_id'])) {
             $appartement->tags()->sync($validateData['tag_id']);
         }
 
         if ($request->hasFile('image')) {
             $images = $request->file('image');
-            
+
             foreach ($images as $image) {
                 $path = $image->store('imagesAppart', 'public');
-                
+
                 $appartementImage = new AppartementImage();
                 $appartementImage->image = $path;
-                $appartementImage->appartement_id = $appartement->id; 
+                $appartementImage->appartement_id = $appartement->id;
                 $appartementImage->save();
             }
         }
-         
-    
+
+
         return redirect()->route('property.index')
             ->with('success', "Appartement créé avec succès et en attente de validation");
-    }    
+    }
 
     /**
      * Display the specified resource.
@@ -187,40 +185,40 @@ class AppartementController extends Controller
     public function show($id)
     {
         $appartement = Appartement::with('avis')
-        ->withAvg('avis', 'rating_cleanness')
-        ->withAvg('avis', 'rating_price_quality')
-        ->withAvg('avis', 'rating_location')
-        ->withAvg('avis', 'rating_communication')
-        ->withCount('avis')
-        ->findOrFail($id);
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->withCount('avis')
+            ->findOrFail($id);
 
         $total_avg = ($appartement->avis_avg_rating_cleanness +
-        $appartement->avis_avg_rating_price_quality +
-        $appartement->avis_avg_rating_location  + 
-        $appartement->avis_avg_rating_communication) / 4;
+            $appartement->avis_avg_rating_price_quality +
+            $appartement->avis_avg_rating_location  +
+            $appartement->avis_avg_rating_communication) / 4;
 
         $appartement->overall_rating = round($total_avg, 2);
 
 
-    
+
 
         $intervalles = Reservation::where("appartement_id", $appartement->id)
-            ->select("start_time","end_time")
+            ->select("start_time", "end_time")
             ->get();
 
         $fermetures = Fermeture::where("appartement_id", $appartement->id)
-            ->select("start","end")
+            ->select("start", "end")
             ->get();
 
         $reservedDates = Reservation::where('appartement_id', $id)
-        ->get() 
-        ->map(function ($reservation) {
-            return [
-                'start' => Carbon::parse($reservation->start_time)->toDateString(),
-                'end' => Carbon::parse($reservation->end_time)->toDateString(),
-            ];
-        })
-        ->toArray();
+            ->get()
+            ->map(function ($reservation) {
+                return [
+                    'start' => Carbon::parse($reservation->start_time)->toDateString(),
+                    'end' => Carbon::parse($reservation->end_time)->toDateString(),
+                ];
+            })
+            ->toArray();
 
         $appartementAvisSessionUser = AppartementAvis::where('appartement_id', $id)
             ->where('user_id', auth()->id())
@@ -240,7 +238,7 @@ class AppartementController extends Controller
 
         $dateInBase = [];
 
-        foreach($fermetures as $fermeture) {
+        foreach ($fermetures as $fermeture) {
             $dateInBase[] = [
                 'from' => date("d-m-Y", strtotime($fermeture->start)),
                 'to' => date("d-m-Y", strtotime($fermeture->start))
@@ -248,14 +246,20 @@ class AppartementController extends Controller
         }
 
 
-        foreach($intervalles as $intervalle) {
+        foreach ($intervalles as $intervalle) {
             $dateInBase[] = [
                 'from' => date("d-m-Y", strtotime($intervalle->start_time)),
                 'to' => date("d-m-Y", strtotime($intervalle->end_time))
             ];
         }
 
-        $propertyImages = $appartement->images->take(4);
+        $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+
+        $rest = 4 - $mainImages->count();
+
+        $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
+
+        $propertyImages = $mainImages->merge($otherImages);
 
         return view('appartements.show', [
             'appartement' => $appartement,
@@ -297,11 +301,11 @@ class AppartementController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string'],
             'address' => ['required', 'max:255'],
-            'surface' => ['required', 'numeric', 'min:0'], 
-            'guestCount' => ['required', 'numeric', 'min:0'], 
-            'roomCount' => ['required', 'numeric', 'min:0'], 
+            'surface' => ['required', 'numeric', 'min:0'],
+            'guestCount' => ['required', 'numeric', 'min:0'],
+            'roomCount' => ['required', 'numeric', 'min:0'],
             'description' => ['required', 'max:255'],
-            'price' => ['required', 'numeric', 'min:0'], 
+            'price' => ['required', 'numeric', 'min:0'],
             'image' => ['array'],
             'image.*' => ['image'],
             'tag_id' => ['array'],
@@ -309,31 +313,37 @@ class AppartementController extends Controller
             'city' => ['string', 'required'],
             'location_type' => ['string', 'required']
         ]);
-        
+
+        $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();
+
+        if ($appartementImages->count() >= 15) {
+            return redirect()->route('property.edit', $appartement->id)
+                ->with('error', "Il y a déjà 15 images pour votre appartement. Pour en ajouter une nouvelle, veuillez en supprimer une autre.");
+        }
 
         unset($validatedData['image']);
 
         if ($request->hasFile('image')) {
             $images = $request->file('image');
-            
+
 
             foreach ($images as $image) {
                 $path = $image->store('imagesAppart', 'public');
-                
+
                 $appartementImage = new AppartementImage();
                 $appartementImage->image = $path;
                 $appartementImage->appartement_id = $appartement->id;
                 $appartementImage->save();
             }
-        }  
-    
+        }
+
         $appartement->update($validatedData);
-        if(isset($validatedData['tag_id'])){
+        if (isset($validatedData['tag_id'])) {
             $appartement->tags()->sync($validatedData['tag_id']);
         } else {
-                $appartement->tags()->detach();
+            $appartement->tags()->detach();
         }
-    
+
         return redirect()->route('property.edit', $appartement->id)
             ->with('success', "Appartement mis à jour avec succès");
     }
@@ -341,7 +351,7 @@ class AppartementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) : RedirectResponse
+    public function destroy($id): RedirectResponse
     {
         $appartement = Appartement::findOrFail($id);
 
@@ -352,12 +362,13 @@ class AppartementController extends Controller
         return redirect(url('/'));
     }
 
-    public function destroyImg($id) : RedirectResponse {
+    public function destroyImg($id): RedirectResponse
+    {
         $appartementImages = AppartementImage::findOrFail($id);
 
         $appartementImages->delete();
 
         return redirect()->route('property.edit', $appartementImages->appartement_id)
-        ->with('success', "Appartement mis à jour avec succès");
+            ->with('success', "Appartement mis à jour avec succès");
     }
 }
