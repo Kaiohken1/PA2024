@@ -145,6 +145,11 @@ class AppartementController extends Controller
             'location_type' => ['string', 'required']
         ]);
 
+        $images = $request->file('image');
+        if (count($images) < 4) {
+            return back()->withErrors(['image' => 'Vous devez télécharger au moins 4 images.'])->withInput();
+        }
+
         unset($validateData['image']);
     
         $validateData['user_id'] = Auth()->id();
@@ -250,6 +255,8 @@ class AppartementController extends Controller
             ];
         }
 
+        $propertyImages = $appartement->images->take(4);
+
         return view('appartements.show', [
             'appartement' => $appartement,
             'fermetures' => $fermetures,
@@ -257,6 +264,7 @@ class AppartementController extends Controller
             'reservedDates' => $reservedDates,
             'appartementAvis' => $appartementAvis,
             'datesInBase' => $dateInBase,
+            'propertyImages' => $propertyImages
         ]);
     }
     /**
@@ -308,12 +316,6 @@ class AppartementController extends Controller
         if ($request->hasFile('image')) {
             $images = $request->file('image');
             
-            $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();
-    
-            if($appartementImages->count() >= 4) {
-                return redirect()->route('property.edit', $appartement->id)
-                    ->with('error', "Il y a déjà 4 images pour votre appartement. Pour en ajouter une nouvelle, veuillez en supprimer une autre.");
-            }
 
             foreach ($images as $image) {
                 $path = $image->store('imagesAppart', 'public');

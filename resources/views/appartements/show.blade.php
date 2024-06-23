@@ -1,6 +1,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/umd/photoswipe-lightbox.umd.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.3/dist/photoswipe.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+
+
+@php
+$images = [];
+foreach ($appartement->images as $image) {
+    $images[] = Storage::url($image->image);
+}
+@endphp
+
 
 
 <x-app-layout>
@@ -17,58 +30,41 @@
         <div class="mt-9 ml-11">
             <article>
                 <h1 class="text-3xl font-extrabold">{{ $appartement->name }}</h1>
-                @if (count($appartement->images) == 1)
-                    <img class="rounded-md" src="{{ Storage::url($appartement->images->first()->image) }}" width="100%">
-                @else
                     <div class="grid grid-cols-2 gap-2">
-                        @foreach ($appartement->images as $image)
+                        @foreach ($propertyImages as $image)
                             <div class="w-full">
                                 <img class="h-72 max-w-full rounded-lg" src="{{ Storage::url($image->image) }}" width="100%">
                             </div>
                         @endforeach
                     </div>
-                @endif
-                <button class="btn btn-info"
+                <button class="btn btn-info flex justify-end"
                 x-data=""
                 x-on:click.prevent="$dispatch('open-modal', 'images-show')"
                 >{{ __('Voir toutes les photos') }}</button>
-        
-                <x-modal name="images-show" focusable  maxWidth="fit" maxHeight="full">
+
+                <x-modal name="images-show" focusable maxWidth="fit">
                     <div class="p-4 w-full">
                         <div class="flex justify-end mb-4">
                             <button @click="$dispatch('close')" class="text-black hover:bg-gray-300 rounded-full p-2 transition duration-300 ease-in-out">
-                                <p class="text-xl"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                  </svg>
-                                  </p>
-                            </button>                        
+                                <p class="text-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </p>
+                            </button>
                         </div>
                         <div class="flex">
-                            @foreach ($appartement->images as $image)
+                            @foreach ($appartement->images as $index => $image)
                                 <div class="w-full">
-                                    <a
-                                    x-data=""
-                                    x-on:click.prevent="$dispatch('open-modal', 'images-details')"
-                                    >
-                                    <img class="h-72 max-w-full rounded-lg object-cover" src="{{ Storage::url($image->image) }}" alt="Image de l'appartement">
+                                    <a href="{{ Storage::url($image->image) }}" data-pswp-width="800" data-pswp-height="800" data-pswp-index="{{ $index }}" class="gallery-item">
+                                        <img class="h-72 max-w-full rounded-lg object-cover mr-5" src="{{ Storage::url($image->image) }}" alt="Image de l'appartement">
                                     </a>
                                 </div>
                             @endforeach
                         </div>
-                        <x-modal name="images-details" maxWidth="full" maxHeight="full">
-                            <div class="container w-full">
-                                @foreach($appartement->images as $index => $image)
-                                    <div id="slide{{ $index + 1 }}" class="carousel-item relative w-half h-half">
-                                        <img src="{{ Storage::url($image->image) }}" class="w-full h-2/4 object-contain" alt="Image {{ $index + 1 }}" />                                        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                            <a href="#slide{{ $index == 0 ? count($appartement->images) : $index }}" class="btn btn-circle">❮</a> 
-                                            <a href="#slide{{ $index == count($appartement->images) - 1 ? 1 : $index + 2 }}" class="btn btn-circle">❯</a>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </x-modal>
                     </div>
                 </x-modal>
+                
                 <div class="flex justify-between mt-5">
                     <div class="mt-1 w-80">
                         @foreach ($appartement->tags as $tag)
@@ -120,8 +116,8 @@
                             </div>
 
                             <div class="mb-4" id="total_price_container">
-                                <p>Total : <span id="total_price">{{$appartement->price}}€</span></p>
-                                <input type="hidden" name="prix" id="prix" value="{{$appartement->price}}">
+                                <p><span id="priceInfos" hidden>{{$appartement->price}}€ *</span> <span id="numberOfNights"></span> <span id="priceInfos" hidden>:</span> <span id="total_price"></span></p>
+                                <input type="hidden" name="prix" id="prix">
                             </div>
 
                             <div class="mb-4">
@@ -131,8 +127,7 @@
                             </div>
                         </form>
                     </div>
-                    
-                    
+                </div>
             </article>
             <div>@include('appartements.appartement_avis.indexAvis')</div>
         </div>
@@ -143,60 +138,68 @@
 <script>
     var disabledDates = <?php echo json_encode($datesInBase); ?>;
 
-    document.addEventListener('DOMContentLoaded', function() {
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: '.flex',
+        children: 'a.gallery-item', 
+        pswpModule: PhotoSwipe
+    });
+    lightbox.init();
 
-        document.getElementById('start_time').addEventListener('change', updateTotalPrice);
-        document.getElementById('end_time').addEventListener('change', updateTotalPrice);
-        document.getElementById('nombre_de_personne').addEventListener('input', updateTotalPrice);
-
-        document.getElementById("start_time").addEventListener('focus', function(event) {
-            event.target.showPicker();
-        });
-
-        document.getElementById("end_time").addEventListener('focus', function(event) {
-            event.target.showPicker();
-        });
-
-        document.getElementById('start_time').addEventListener('change', disableReservedDates);
-        document.getElementById('end_time').addEventListener('change', disableReservedDates);
-
-        function disableReservedDates() {
-            var start = new Date(document.getElementById('start_time').value);
-            var end = new Date(document.getElementById('end_time').value);
-
-            if (end < start) {
-                alert("La date de fin ne peut pas être antérieure à la date de début.");
-                document.getElementById('end_time').value = '';
-                return;
+    flatpickr("#start_time", {
+        mode: "range",
+        dateFormat: "d-m-Y",
+        minDate: "today",
+        showMonths: 2,
+        locale: "fr",
+        disable: disabledDates,
+        onClose: function(selectedDates) {
+            if (selectedDates.length === 2) {
+                var start = selectedDates[0];
+                var end = selectedDates[1];
+                document.getElementById("start_time").value = formatDate(start);
+                document.getElementById("end_time").value = formatDate(end, true);
+                updateTotalPrice();
+            } else if (selectedDates.length === 1) {
+                var start = selectedDates[0];
+                document.getElementById("start_time").value = formatDate(start);
+                document.getElementById("end_time").value = '';
+                updateTotalPrice();
+            } else {
+                document.getElementById("start_time").value = '';
+                document.getElementById("end_time").value = '';
+                updateTotalPrice();
             }
         }
     });
 
-    flatpickr("#start_time", {
-    mode: "range",
-    dateFormat: "d-m-Y",
-    minDate: "today",
-    showMonths: 2,
-    locale: "fr",
-    disable: disabledDates,
-    onClose: function(selectedDates) {
-        if (selectedDates.length > 0) {
-            var start = selectedDates[0];
-            var end = selectedDates[selectedDates.length - 1];
-            document.getElementById("start_time").value = formatDate(start);
-            document.getElementById("end_time").value = formatDate(end, true);
+    function formatDate(date, endOfDay = false) {
+        if (endOfDay) {
+            date.setHours(23, 59, 59, 999);
+        }
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, "0");
+        var day = date.getDate().toString().padStart(2, "0");
+        return day + "-" + month + "-" + year;
+    }
+
+    function updateTotalPrice() {
+        var start = moment(document.getElementById('start_time').value, 'DD/MM/YYYY');
+        var end = moment(document.getElementById('end_time').value, 'DD/MM/YYYY');
+        var pricePerNight = {{ $appartement->price }};
+        
+        if (start.isValid() && end.isValid()) {
+            var numberOfNights = end.diff(start, 'days');
+            var totalPrice = numberOfNights * pricePerNight;
+
+            document.getElementById('total_price').textContent = ' : ' + totalPrice + '€';
+            document.getElementById('prix').value = totalPrice;
+            document.getElementById('numberOfNights').textContent = numberOfNights + ' nuits';
+            document.getElementById('priceInfos').hidden = false;
+
+            document.getElementById('prix').value = totalPrice;
+        } else {
+            document.getElementById('total_price').textContent = pricePerNight + '€';
+            document.getElementById('prix').value = pricePerNight;
         }
     }
-});
-
-function formatDate(date, endOfDay = false) {
-    if (endOfDay) {
-        date.setHours(23, 59, 59, 999);
-    }
-    var year = date.getFullYear();
-    var month = (date.getMonth() + 1).toString().padStart(2, "0");
-    var day = date.getDate().toString().padStart(2, "0");
-    return day + "-" + month + "-" + year;
-}
-
 </script>
