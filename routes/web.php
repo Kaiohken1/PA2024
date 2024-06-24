@@ -66,6 +66,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::delete('/property/image/{id}', [AppartementController::class, 'destroyImg'])->name('property.destroyImg');
+    Route::patch('/property/{id}/status', [AppartementController::class, 'updateActiveFlag'])->name('property.active-flag');
+
 
     Route::get('/reservation', [ReservationController::class, 'index'])->name('reservation');
     Route::get('/reservation/{id}/edit', [ReservationController::class, 'edit'])->name('reservation.edit');

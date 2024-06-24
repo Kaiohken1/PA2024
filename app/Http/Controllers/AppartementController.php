@@ -102,9 +102,10 @@ class AppartementController extends Controller
 
     public function userIndex()
     {
-        $user = Auth::user();
 
-        $appartements = $user->appartement;
+        $appartements = Appartement::query()
+                        ->where('user_id', Auth::user()->id)
+                        ->paginate(3);
 
         return view('appartements.userIndex', [
             'appartements' => $appartements
@@ -241,7 +242,7 @@ class AppartementController extends Controller
         foreach ($fermetures as $fermeture) {
             $dateInBase[] = [
                 'from' => date("d-m-Y", strtotime($fermeture->start)),
-                'to' => date("d-m-Y", strtotime($fermeture->start))
+                'to' => date("d-m-Y", strtotime($fermeture->end))
             ];
         }
 
@@ -359,7 +360,8 @@ class AppartementController extends Controller
 
         $appartement->delete();
 
-        return redirect(url('/'));
+        return redirect()->route('dashboard')
+        ->with('success', "Appartement supprimé");
     }
 
     public function destroyImg($id): RedirectResponse
@@ -370,5 +372,14 @@ class AppartementController extends Controller
 
         return redirect()->route('property.edit', $appartementImages->appartement_id)
             ->with('success', "Appartement mis à jour avec succès");
+    }
+
+    public function updateActiveFlag($id) {
+        $appartement = Appartement::findOrFail($id);
+        $appartement->active_flag == 1 ? $appartement->active_flag = 0 : $appartement->active_flag = 1;
+        $appartement->update();
+
+        return redirect()->route('dashboard')
+        ->with('success', "Statut de l'appartement mis à jour avec succès");
     }
 }

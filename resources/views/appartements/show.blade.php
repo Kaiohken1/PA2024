@@ -42,8 +42,8 @@ foreach ($appartement->images as $image) {
                 x-on:click.prevent="$dispatch('open-modal', 'images-show')"
                 >{{ __('Voir toutes les photos') }}</button>
 
-                <x-modal name="images-show" focusable maxWidth="fit">
-                    <div class="p-4 w-full">
+                <x-modal name="images-show" focusable maxWidth="fit" maxHeight="full">
+                    <div class="p-4 w-full h-full">
                         <div class="flex justify-end mb-4">
                             <button @click="$dispatch('close')" class="text-black hover:bg-gray-300 rounded-full p-2 transition duration-300 ease-in-out">
                                 <p class="text-xl">
@@ -53,17 +53,18 @@ foreach ($appartement->images as $image) {
                                 </p>
                             </button>
                         </div>
-                        <div class="flex">
+                        <div class="flex flex-wrap gap-5 overflow-y-auto max-h-[80vh]">
                             @foreach ($appartement->images as $index => $image)
-                                <div class="w-full">
+                                <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                                     <a href="{{ Storage::url($image->image) }}" data-pswp-width="800" data-pswp-height="800" data-pswp-index="{{ $index }}" class="gallery-item">
-                                        <img class="h-72 max-w-full rounded-lg object-cover mr-5" src="{{ Storage::url($image->image) }}" alt="Image de l'appartement">
+                                        <img class="h-72 max-w-full rounded-lg object-cover" src="{{ Storage::url($image->image) }}" alt="Image de l'appartement">
                                     </a>
                                 </div>
                             @endforeach
-                        </div>
+                        </div>                        
                     </div>
                 </x-modal>
+                
                 
                 <div class="flex justify-between mt-5">
                     <div class="mt-1 w-80">
@@ -137,6 +138,8 @@ foreach ($appartement->images as $image) {
 
 <script>
     var disabledDates = <?php echo json_encode($datesInBase); ?>;
+
+    console.log(disabledDates);
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: '.flex',
