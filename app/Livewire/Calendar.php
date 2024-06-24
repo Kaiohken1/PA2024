@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Fermeture;
 use App\Models\Appartement;
+use App\Models\Intervention;
+use App\Models\InterventionEvent;
 use App\Models\Reservation;
 use Illuminate\Support\Arr;
 
@@ -12,6 +14,7 @@ class Calendar extends Component
 {
     public $fermetures = [];
     public $reservations = [];
+    public $interventions = [];
     public $appartementId;
 
     protected $listeners = ['createClosure', 'updateClosure'];
@@ -47,6 +50,7 @@ class Calendar extends Component
     {
         $fermetures = Fermeture::where('appartement_id', $this->appartementId)->get();
         $reservations = Reservation::where('appartement_id', $this->appartementId)->with('user')->get();
+        $interventions = InterventionEvent::where('appartement_id', $this->appartementId)->get();
 
         $formatFermeture = [];
         foreach($fermetures as $fermeture) {
@@ -76,9 +80,21 @@ class Calendar extends Component
             ];
         }
 
+        $formatInterventions = [];
+        foreach($interventions as $intervention) {
+            $formatInterventions[] = [
+                'id' => $intervention->id,
+                'title' => $intervention->title,
+                'start' => date('Y-m-d H:i:s', strtotime($intervention->start)),
+                'end' => date('Y-m-d H:i:s', strtotime($intervention->end)),
+                'type' => "intervention",
+                'intervention_id' => $intervention->intervention_id,
+            ];
+        }
+
         $this->fermetures = json_encode($formatFermeture);
         $this->reservations = json_encode($formatReservation);
-
+        $this->interventions = json_encode($formatInterventions);
         return view('livewire.calendar', ['appartementId' => $this->appartementId]);
     }
 }

@@ -1,7 +1,7 @@
 <div>
     <div class="mb-4">
         <label for="category" class="block text-sm font-medium text-gray-700">{{ __('Sélectionnez une catégorie') }}</label>
-        <select id="category" wire:model.live="selectedCategory" wire:change="updateCat" class="block w-full mt-1">
+        <select id="category" class="select select-warning w-full max-w-xs" wire:model.live="selectedCategory" wire:change="updateCat" class="block w-full mt-1">
             <option value="">{{ __('-- Sélectionnez une catégorie --') }}</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -12,7 +12,7 @@
     @if (!empty($services))
         <div class="mb-4">
             <label for="service" class="block text-sm font-medium text-gray-700">{{ __('Services disponibles') }}</label>
-                <select id="service" wire:model.live="selectedService">
+                <select id="service" class="select select-warning w-full max-w-xs" wire:model.live="selectedService">
                     <option value="">-- Choisir un service --</option>
                     @foreach($services as $service)
                         <option value="{{ $service->id }}">{{ $service->name }}</option>
@@ -28,7 +28,7 @@
                                 @case(1)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="text" value="{{ $appartement->address }}" class="bg-zinc-200"
+                                        <input type="text" value="{{ $appartement->address }}" class="input input-bordered input-warning w-full max-w-xs bg-zinc-100"
                                             name="address[{{ $service->id }}][{{ $parameter->id }}]" readonly>
                                     </div>
                                 @break
@@ -36,7 +36,7 @@
                                 @case(2)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="text" value="{{ $appartement->surface }}" readonly class="bg-zinc-200"
+                                        <input type="text" value="{{ $appartement->surface }}" readonly class="input input-bordered input-warning w-full max-w-xs bg-zinc-100"
                                             name="surface[{{ $service->id }}][{{ $parameter->id }}]">
                                     </div>
                                 @break
@@ -44,7 +44,7 @@
                                 @case(3)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="text" value="{{ $appartement->roomCount }}" readonly class="bg-zinc-200"
+                                        <input type="text" value="{{ $appartement->roomCount }}" readonly class="input input-bordered input-warning w-full max-w-xs bg-zinc-100"
                                         name="roomCount[{{ $service->id }}][{{ $parameter->id }}]">
                                     </div>
                                 @break
@@ -53,7 +53,8 @@
                                     <div>
                                         <p>{{ $parameter->name }}</p>
                                         <input type="text" placeholder="{{ $parameter->name }}"
-                                            name="text[{{ $service->id }}][{{ $parameter->id }}]">
+                                            name="text[{{ $service->id }}][{{ $parameter->id }}]"
+                                            class="input input-bordered input-warning w-full max-w-xs">
                                     </div>
                                 @break
 
@@ -61,21 +62,24 @@
                                     <div>
                                         <p>{{ $parameter->name }}</p>
                                         <input type="number" placeholder="{{ $parameter->name }}"
-                                            name="number[{{ $service->id }}][{{ $parameter->id }}]">
+                                            name="number[{{ $service->id }}][{{ $parameter->id }}]"
+                                            class="input input-bordered input-warning w-full max-w-xs">
                                     </div>
                                 @break
 
                                 @case(6)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="email" placeholder="{{ $parameter->name }}" name="email[{{ $service->id }}][{{ $parameter->id }}]">
+                                        <input type="email" placeholder="{{ $parameter->name }}" name="email[{{ $service->id }}][{{ $parameter->id }}]"
+                                        class="input input-bordered input-warning w-full max-w-xs">
                                     </div>
                                 @break
 
                                 @case(7)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="tel" pattern="[0-9]{10}" placeholder="{{ $parameter->name }}" name="tel[{{ $service->id }}][{{ $parameter->id }}]">
+                                        <input type="tel" pattern="[0-9]{10}" placeholder="{{ $parameter->name }}" name="tel[{{ $service->id }}][{{ $parameter->id }}]"
+                                        class="input input-bordered input-warning w-full max-w-xs">
                                     </div>
                                 @break
 
@@ -89,13 +93,14 @@
                                 @case(9)
                                     <div>
                                         <p>{{ $parameter->name }}</p>
-                                        <input type="date" placeholder="{{ $parameter->name }}" name="date[{{ $service->id }}][{{ $parameter->id }}]">
+                                        <input type="date" placeholder="{{ $parameter->name }}" name="date[{{ $service->id }}][{{ $parameter->id }}]"
+                                        class="input input-bordered input-warning w-full max-w-xs">
                                     </div>
                                 @break
 
                                 @case(10)
                                     <div>
-                                        <input type="checkbox" name="checkbox[{{ $service->id }}][{{ $parameter->id }}]">
+                                        <input type="checkbox" name="checkbox[{{ $service->id }}][{{ $parameter->id }}]" class="checkbox checkbox-warning">
                                         {{ $parameter->name }}
                                     </div>
                                 @break

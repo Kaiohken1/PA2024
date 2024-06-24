@@ -24,6 +24,7 @@ class Intervention extends Model
         'description',
         'comment',
         'appartement_id',
+        'reservation_id',
         'service_id',
         'statut_id',
         'price',

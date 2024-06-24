@@ -61,21 +61,22 @@
                     <p class="text-lg"><label class="text-yellow-800 pr-10">Montant à payer</label> @if($intervention->price) <strong>{{$intervention->price + ($intervention->price*0.20)}}€</strong> @else À définir @endif</p>
                 </div>
 
-                <div class="mt-4 flex flex-col">
+                <div class="mt-4 flex">
                     @if($intervention->provider) 
                     <a href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">
-                        <button class="btn">Télécharger le devis</button>                                    
+                        <button class="btn btn-info mr-3 text-white">Télécharger le devis</button>                                    
                     </a>
+                            @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
+                                <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn btn-info mr-3 text-white">Télécharger la facture</button> </a>
+                                <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->provider->user->id])}}"><button class="btn btn-success text-white">Accèder au chat</button></a>
+                            @endif
 
-                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
-                            <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn mt-3">Télécharger la facture</button> </a>
-                            <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->provider->user->id])}}"><button class="btn mt-3">Accèder au chat</button></a>
-                        @endif
+                            @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
 
-                        @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
-
-                        <!-- Bouton pour ouvrir la modal -->
-                        <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">Refuser le devis</button>    
+                            
+                            <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">Refuser le devis</button>   
+                </div>
+ 
 
                         <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
                             @csrf
@@ -84,7 +85,16 @@
                         </form>                          
                         @endif     
                     @endif
-                </div>
+
+                @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3)
+                    <div>
+                        <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention', $intervention->id])}}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-error mt-10">Annuler ma demande</button>
+                        </form> 
+                    </div>  
+                @endif
             </div>
         </div>
     </div>

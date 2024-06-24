@@ -21,6 +21,9 @@
     <div id="eventModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         @livewire('calendar-component')
     </div>
+    <div id="interventionModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        @livewire('intervention-details')
+    </div>
 
     <div id="closureModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -66,16 +69,20 @@
     function openModal(type) {
         if(type == 'Reservation') {
             document.getElementById('eventModal').classList.remove('hidden');
-        } else {
+        } else if(type == 'Closure') {
             document.getElementById('closureModalDetails').classList.remove('hidden');
+        } else {
+            document.getElementById('interventionModal').classList.remove('hidden');
         }
     }
 
     function closeModal(type) {
         if(type == 'Reservation') {
             document.getElementById('eventModal').classList.add('hidden');
-        } else {
+        } else if (type == 'Closure'){
             document.getElementById('closureModalDetails').classList.add('hidden');
+        } else {
+            document.getElementById('interventionModal').classList.add('hidden');
         }
     }
 
@@ -136,6 +143,7 @@
             events: [
                 ...JSON.parse(@this.fermetures),
                 ...JSON.parse(@this.reservations),
+                ...JSON.parse(@this.interventions),
             ],
 
             eventClick: function(info) {
@@ -145,6 +153,9 @@
                 } else if (info.event.extendedProps.type === 'closure') {
                     Livewire.dispatch('loadClosure', { id: info.event.id });
                     openModal('Closure');
+                } else {
+                    Livewire.dispatch('loadIntervention', { id: info.event.extendedProps.intervention_id });
+                    openModal('Intervention');
                 }
             },
 

@@ -11,7 +11,7 @@
             @endif 
             - #{{$intervention->id}}
         </h1>
-        <div class="overcontainer p-6 bg-white shadow-sm sm:rounded-lg"
+        <div class="flex-grow overcontainer p-6 bg-white shadow-sm sm:rounded-lg"
              x-data="{ scroll: () => { $el.scrollTo(0, $el.scrollHeight); }}"
              x-intersect="scroll()"
              id="conversation">
@@ -36,7 +36,7 @@
                 @endforeach
             </div>
         </div>
-        <div class="p-6 bg-white shadow-sm sm:rounded-lg" style="height: 200px;">
+        <div class="mt-auto p-6 bg-white shadow-sm sm:rounded-lg">
             <form action="" wire:submit.prevent="sendMessage" class="flex flex-col">
                 <textarea class="textarea textarea-bordered w-full" wire:model="message" placeholder="Envoyez votre message.." @if($intervention->statut_id == 3) disabled @endif></textarea>
                 @error('message') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

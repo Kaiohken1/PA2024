@@ -99,7 +99,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('notifcations', NotificationsController::class);
-    Route::resource('property/{id}/interventions', InterventionController::class);
+    Route::resource('property/{id}/interventions', InterventionController::class)->except(['delete']);
+    Route::get('/reservation/{reservationId}/interventions/{id}', [InterventionController::class, 'create'])->name('interventions.reservation-create');
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
     Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
     Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
@@ -119,7 +120,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
-    Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+    Route::get('/interventions/client/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+    Route::get('/interventions/{id}', [InterventionController::class, 'destroy'])->name('interventions.delete');
     Route::post('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
     Route::post('/interventions/{id}/checkout', [InterventionController::class, 'checkout'])->name('interventions.checkout');
     Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');

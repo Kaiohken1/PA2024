@@ -12,6 +12,7 @@ class ServiceForm extends Component
 {
     public $appartement;
     public $categories;
+    public $id;
     public $services = [];
     public $selectedCategory = null;
     public $selectedService = null;
@@ -21,7 +22,7 @@ class ServiceForm extends Component
         $user = Auth::user();
         $roleIds = $user->roles->pluck('id')->toArray();
 
-        $this->appartement = Appartement::findOrFail(request()->route('id'));
+        $this->appartement = Appartement::findOrFail($this->id);
         $this->categories = Category::whereHas('services', function($query) use ($roleIds) {
             $query->where('active_flag', 1)
                 ->whereIn('role_id', $roleIds);

@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
+use App\Models\Reservation;
 
 class InterventionController extends Controller
 {
@@ -41,17 +42,29 @@ class InterventionController extends Controller
     public function create(Request $request)
     {
         $appartement_id = $request->route('id');
-        $selectedAppartement = Appartement::find($appartement_id);
+        $selectedAppartement = Appartement::findOrFail($appartement_id);
+        $reservation_id = $request->route('reservationId');
         $appartements = Appartement::all();
         $selectedServices = [];
 
+        $reservation = null;
+
+        if ($reservation_id) {
+            $reservation = Reservation::find($reservation_id);
+        }
+
         $services = Service::All()->where('active_flag', 1);
+
+
 
         return view('interventions.create', [
             'selectedAppartement' => $selectedAppartement,
             'services' => $services,
             'appartements' => $appartements,
             'selectedServices' => $selectedServices,
+            'reservation' => $reservation,
+            'start_time' => $reservation ? $reservation->start_time : null,
+            'end_time' => $reservation ? $reservation->end_time : null,
         ]);
     }
 
@@ -62,6 +75,7 @@ class InterventionController extends Controller
     {
         $validatedData = $request->validate([
             'appartement_id' => ['required', 'exists:appartements,id'],
+            'reservation_id' => ['nullable', 'exists:reservations,id'],
             'text' => ['nullable', 'array'],
             'text.*' => ['array'],
             'text.*.*' => ['string', 'max:255'],
@@ -96,6 +110,18 @@ class InterventionController extends Controller
             'planned_date' => ['required', 'date', 'after:now'],
             'max_end_date' => ['nullable', 'date', 'after:planned_date'],
         ]);
+
+
+        foreach ($validatedData['services'] as $service_id) {
+            $intervention = Intervention::where('appartement_id', $validatedData['appartement_id'])
+                ->where('service_id', $service_id)
+                ->whereDate('planned_date', '=', date('Y-m-d', strtotime($validatedData['planned_date'])))
+                ->exists();
+
+            if ($intervention) {
+                return redirect()->back()->withErrors(['error' => 'Il y a déjà une demande pour ce service à cette date.']);
+            }
+        }
 
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
@@ -148,7 +174,7 @@ class InterventionController extends Controller
                 }
             }
         }
-        return redirect()->route('property.index')->with('success', 'Intervention en attente de validation');
+        return redirect()->route('interventions.dashboard')->with('success', 'Intervention en attente de validation');
     }
 
     /**
@@ -206,12 +232,13 @@ class InterventionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Intervention $intervention)
+    public function destroy($intervention)
     {
+        $intervention = Intervention::findOrFail($intervention);
         $intervention->delete();
 
-        return redirect()->route('interventions.index')
-            ->with('success', 'Intervention deleted successfully.');
+        return redirect()->route('interventions.dashboard')
+            ->with('success', 'Intervention annulée.');
     }
 
 
@@ -282,6 +309,7 @@ class InterventionController extends Controller
 
         $event = new InterventionEvent();
         $event->intervention_id = $intervention->id;
+        $event->appartement_id = $intervention->appartement->id;
         $event->provider_id = $intervention->provider->id;
         $event->title = $intervention->service->name;
         $event->start = $intervention->planned_date;

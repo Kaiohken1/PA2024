@@ -45,6 +45,7 @@
                                 @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'PRIX'])
                                 @include('livewire.includes.table-sort', ['name' => 'start_time', 'displayName' => 'DATE D\'ARRIVEE'])
                                 @include('livewire.includes.table-sort', ['name' => 'end_time', 'displayName' => 'DATE DE DEPART'])
+                                @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'TARIF'])
                                 @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'RESERVE LE'])
                                 <th scope="col" class="px-4 py-3">Statut</th>
                                 <th scope="col" class="px-4 py-3">
@@ -62,6 +63,7 @@
                                     <td class="px-4 py-3">{{$reservation->prix}}€</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y')}}</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y')}}</td>
+                                    <td class="px-4 py-3">{{$reservation->prix}}€</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->created_at)->format('d/m/Y')}}</td>
                                     <td class="px-4 py-3">{{$reservation->status}}</td>
                                     <td class="px-4 py-3 flex items-center justify-end">
