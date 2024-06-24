@@ -65,7 +65,6 @@ foreach ($appartement->images as $image) {
                     </div>
                 </x-modal>
                 
-                
                 <div class="flex justify-between mt-5">
                     <div class="mt-1 w-80">
                         @foreach ($appartement->tags as $tag)
@@ -118,6 +117,9 @@ foreach ($appartement->images as $image) {
 
                             <div class="mb-4" id="total_price_container">
                                 <p><span id="priceInfos" hidden>{{$appartement->price}}€ *</span> <span id="numberOfNights"></span> <span id="priceInfos" hidden>:</span> <span id="total_price"></span></p>
+                                <p id="fee" hidden></p>
+                                <p id="price" class="border-t mt-5 font-bold" hidden></p>
+
                                 <input type="hidden" name="prix" id="prix">
                             </div>
 
@@ -138,8 +140,6 @@ foreach ($appartement->images as $image) {
 
 <script>
     var disabledDates = <?php echo json_encode($datesInBase); ?>;
-
-    console.log(disabledDates);
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: '.flex',
@@ -193,13 +193,23 @@ foreach ($appartement->images as $image) {
         if (start.isValid() && end.isValid()) {
             var numberOfNights = end.diff(start, 'days');
             var totalPrice = numberOfNights * pricePerNight;
+            var fee = totalPrice * 0.20;
+            var tva = (totalPrice + fee) * 0.20;
+            var finalPrice = totalPrice + fee + tva;
 
             document.getElementById('total_price').textContent = ' : ' + totalPrice + '€';
-            document.getElementById('prix').value = totalPrice;
+
             document.getElementById('numberOfNights').textContent = numberOfNights + ' nuits';
             document.getElementById('priceInfos').hidden = false;
+            
+            document.getElementById('fee').textContent = 'Frais de services : ' + fee + '€';
+            document.getElementById('fee').hidden = false;
 
-            document.getElementById('prix').value = totalPrice;
+            document.getElementById('price').textContent = 'Prix total (TTC) : ' + finalPrice + '€';
+            document.getElementById('price').hidden = false;
+
+
+            document.getElementById('prix').value = finalPrice;
         } else {
             document.getElementById('total_price').textContent = pricePerNight + '€';
             document.getElementById('prix').value = pricePerNight;

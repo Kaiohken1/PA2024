@@ -28,7 +28,8 @@ class Appartement extends Model
         'property_type',
         'city',
         'location_type',
-        'active_flag'
+        'active_flag',
+        'postal_code'
     ];
 
     protected $casts = [

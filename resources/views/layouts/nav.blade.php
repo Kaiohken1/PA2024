@@ -19,7 +19,7 @@
                         {{ __('Louer mon logement') }}
                     </x-nav-link>
                     
-                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation')">
+                    <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation') || request()->routeIs('reservation.show')">
                         {{ __('Espace Client') }}
                     </x-nav-link>
 

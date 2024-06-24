@@ -141,7 +141,8 @@ class AppartementController extends Controller
             'tag_id' => ['array'],
             'property_type' => ['string', 'required'],
             'city' => ['string', 'required'],
-            'location_type' => ['string', 'required']
+            'location_type' => ['string', 'required'],
+            'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
         ]);
 
         $images = $request->file('image');
@@ -312,7 +313,8 @@ class AppartementController extends Controller
             'tag_id' => ['array'],
             'property_type' => ['string', 'required'],
             'city' => ['string', 'required'],
-            'location_type' => ['string', 'required']
+            'location_type' => ['string', 'required'],
+            'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
         ]);
 
         $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();

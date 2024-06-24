@@ -77,6 +77,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
     Route::patch('/reservation/validate/{id}', [ReservationController::class, 'validate'])->name('reservation.validate');
     Route::patch('/reservation/refused/{id}', [ReservationController::class, 'refused'])->name('reservation.refused');
+
+    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservation.show');
     Route::get('/reservation/{id}', [ReservationController::class, 'showAll'])->name('reservation.showAll');
     
     Route::post('/estimate', [InterventionEstimationController::class, 'store'])->name('estimate.store');
@@ -102,6 +104,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
     Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
     Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
+    Route::get('/reservation/invoice/{id}', [ContractController::class, 'reservationInvoice'])->name('reservation.generate');
+
 
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');

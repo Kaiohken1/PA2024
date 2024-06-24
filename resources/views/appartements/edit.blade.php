@@ -71,6 +71,13 @@
                         </div>
 
                         <div>
+                            <x-input-label for="postal_code" :value="__('Code postal')" />
+                            <x-text-input id="postal_code" class="form-input block mt-1 w-full" type="text" name="postal_code"
+                                :value="old('postal_code', $appartement->postal_code)" />
+                            <x-input-error :messages="$errors->get('postal_code')" class="mt-2" />
+                        </div>
+
+                        <div>
                             <x-input-label for="surface" :value="__('Surface (Au mètre carré)')" />
                             <x-text-input id="surface" class="form-input block mt-1 w-full" type="number" name="surface"
                                 :value="old('surface', $appartement->surface)" min="1" />

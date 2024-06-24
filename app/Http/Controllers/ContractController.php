@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Intervention;
 use App\Models\Provider;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 
@@ -73,6 +74,19 @@ class ContractController extends Controller
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, 'facture_intervention_#' . $intervention->id . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
+    public function reservationInvoice($reservationId)
+    {        
+        $reservation = Reservation::findOrFail($reservationId);
+
+        $pdf = app('dompdf.wrapper');
+        
+        $pdf->loadView('invoices.reservation-model', compact('reservation'));
+        
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'facture_reservation#' . $reservation->id . '.pdf', ['Content-Type' => 'application/pdf']);
     }
 
     public function generateFiche($interventionId)

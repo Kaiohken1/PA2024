@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('price');
             $table->boolean('availability')->default(true);
             $table->string('image')->nullable();
+            $table->integer('postal_code');
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Statut::class)->constrained()->cascadeOnDelete();
             $table->timestamps();

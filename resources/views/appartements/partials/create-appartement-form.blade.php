@@ -32,10 +32,17 @@
     </div>
 
     <div>
-                            <x-input-label for="city" :value="__('Ville')" />
-                            <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city"/>
-                            <x-input-error :messages="$errors->get('city')" class="mt-2" />
-                        </div>
+        <x-input-label for="city" :value="__('Ville')" />
+        <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city"/>
+        <x-input-error :messages="$errors->get('city')" class="mt-2" />
+    </div>
+
+    <div>
+        <x-input-label for="city" :value="__('Code postal')" />
+        <x-text-input id="postal_code" class="form-input block mt-1 w-full" type="text" name="postal_code" pattern="[0-9]{5}" oninput="timedValidation()"/>
+        <span id="postal_code_error" class="text-red-500 text-sm hidden">Le code postal doit comporter 5 chiffres.</span>
+        <x-input-error :messages="$errors->get('postal_code')" class="mt-2" />
+    </div>
 
     <div>
         <x-input-label for="surface" :value="__('Surface (Au mètre carré)')" />
@@ -90,3 +97,24 @@
     </x-primary-button>
     </div>
 </form>
+
+<script>
+    let timeout = null;
+
+    function timedValidation() {
+        clearTimeout(timeout);
+        timeout = setTimeout(validatePostalCode, 500); 
+    }
+
+    function validatePostalCode() {
+        const postalCodeInput = document.getElementById('postal_code');
+        const postalCodeError = document.getElementById('postal_code_error');
+        const pattern = /^[0-9]{5}$/;
+
+        if (!pattern.test(postalCodeInput.value)) {
+            postalCodeError.classList.remove('hidden');
+        } else {
+            postalCodeError.classList.add('hidden');
+        }
+    }
+</script>

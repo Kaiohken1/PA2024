@@ -26,7 +26,6 @@ class ReservationController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
             
-        // Passer les réservations à la vue
         return view('Reservation.index', ['reservations' => $reservations]);
     }
 
@@ -114,7 +113,7 @@ class ReservationController extends Controller
     {
         $reservation = Reservation::findOrFail($id);
 
-        return view('Reservation.index', ['reservation' => $reservation]);
+        return view('Reservation.show', ['reservation' => $reservation]);
     }
 
     /**
@@ -200,7 +199,6 @@ class ReservationController extends Controller
     {
         $validatedData = $request->session()->get('validatedData');
 
-        // Créer la réservation dans la base de données
         $reservation = new Reservation();
         $reservation->appartement_id = $validatedData['appartement_id'];
         $reservation->user_id = Auth::id();
@@ -210,7 +208,6 @@ class ReservationController extends Controller
         $reservation->prix = $validatedData['prix'];
         $reservation->save();
     
-        // Rediriger vers une page de confirmation ou une autre page appropriée
         return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');
     }
 }
