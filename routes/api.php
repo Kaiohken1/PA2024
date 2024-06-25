@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ReservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('guest:sanctum')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
+    Route::post('/mobile/login', [AuthenticatedSessionController::class, 'apiMobileLogin']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'apiLogout']);
+    Route::post('/mobile/logout', [AuthenticatedSessionController::class, 'apiMobileLogout']);
 
     Route::get('/tickets/roles', [TicketController::class, 'apiIndexRoles']);
     Route::get('/tickets/roles/{id}', [TicketController::class, 'apiShowRoles']);
@@ -44,6 +47,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/tickets/admin/update/{id}', [TicketController::class, 'apiUpdateAdmin']);
 
     Route::get('/tickets/stats', [TicketController::class, 'apiStats']);
+
+
+
+    route::get('/mobile/reservations/user',[ReservationController::class,'MobileIndex']);
 
 
 });

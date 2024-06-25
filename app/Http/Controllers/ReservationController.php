@@ -29,7 +29,26 @@ class ReservationController extends Controller
         // Passer les réservations à la vue
         return view('Reservation.index', ['reservations' => $reservations]);
     }
-
+    public function MobileIndex()
+    {
+        $user = Auth::user();
+        if ($user) {
+            $reservations = Reservation::where('user_id', $user->id)->get();
+            $reservationsArray = $reservations->map(function($reservation) {
+                return [
+                    'start_time' => Carbon::parse($reservation->start_time)->format('d/m/Y'),
+                    'end_time' =>  Carbon::parse($reservation->end_time)->format('d/m/Y'),
+                    'nombre_de_personne' => $reservation->nombre_de_personne,
+                    'appartement_id' => $reservation->appartement_id,
+                    'prix' => $reservation->prix,
+                ];
+            });
+    
+            return response()->json($reservationsArray);
+        } else {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
