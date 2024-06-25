@@ -4,6 +4,9 @@
             {{ __('Gestion de mes logements') }}
         </h2>
 
+        <x-nav-link :href="route('reservations.invoices.index')">
+            {{ __('Voir mes factures') }}
+        </x-nav-link>
         <x-session-statut></x-session-statut>
     </x-slot>
 

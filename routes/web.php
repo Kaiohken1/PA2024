@@ -130,6 +130,14 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
+    Route::get('/dashboard/invoices', function () {
+        return view('Reservation.invoices.index');
+    })->name('reservations.invoices.index');
+
+    Route::get('/providers/invoices', function () {
+        return view('provider.invoices.index');
+    })->name('provider.invoices.index');
+
     Route::get('/messagerie', function() {
         if(Auth::user()->provider) {
             return view('provider.messagerie');

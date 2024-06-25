@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Provider;
 use App\Models\Reservation;
 use App\Models\Intervention;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Storage;
@@ -151,9 +152,12 @@ class ContractController extends Controller
         $filePath = 'factures/' . 'facture_interventions_' . $userId . '_' . $year . '_' . $month . '.pdf';
 
         Storage::put($filePath, $pdf->output());
+
+        $user = User::findOrFail($userId);
         
         $invoice = new Invoice();
         $invoice->user_id = $userId;
+        $invoice->provider_id = $user->provider->id;
         $invoice->pdf = $filePath;
         $invoice->role = "Prestataire";
         $invoice->save();
