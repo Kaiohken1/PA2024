@@ -317,14 +317,6 @@ class InterventionController extends Controller
 
         $event->save();
 
-        $invoice = new Invoice();
-        $invoice->intervention_id = $intervention->id;
-        $invoice->provider_id = $intervention->provider->id;
-        $invoice->user_id = $request->user()->id;
-        $invoice->price = $intervention->price;
-
-        $invoice->save();
-
         event(new InterventionPaid($intervention));
 
         $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);

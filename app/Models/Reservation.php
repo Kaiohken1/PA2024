@@ -19,7 +19,8 @@ class Reservation extends Model
         'prix',
         'status',
         'commentaire',
-        'content'
+        'content',
+        'commission',
     ];
 
     protected $dispatchesEvents = [

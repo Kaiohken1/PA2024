@@ -117,10 +117,12 @@ foreach ($appartement->images as $image) {
 
                             <div class="mb-4" id="total_price_container">
                                 <p><span id="priceInfos" hidden>{{$appartement->price}}€ *</span> <span id="numberOfNights"></span> <span id="priceInfos" hidden>:</span> <span id="total_price"></span></p>
-                                <p id="fee" hidden></p>
+                                <p id="fee" hidden name="commission"></p>
                                 <p id="price" class="border-t mt-5 font-bold" hidden></p>
 
                                 <input type="hidden" name="prix" id="prix">
+                                <input type="hidden" name="commission" id="commission">
+
                             </div>
 
                             <div class="mb-4">
@@ -208,11 +210,9 @@ foreach ($appartement->images as $image) {
             document.getElementById('price').textContent = 'Prix total (TTC) : ' + finalPrice + '€';
             document.getElementById('price').hidden = false;
 
-
             document.getElementById('prix').value = finalPrice;
-        } else {
-            document.getElementById('total_price').textContent = pricePerNight + '€';
-            document.getElementById('prix').value = pricePerNight;
-        }
+            document.getElementById('commission').value = fee;
+
+        } 
     }
 </script>

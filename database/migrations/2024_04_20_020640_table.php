@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('nombre_de_personne');
             $table->string('status')->default('Payée');
             $table->integer('prix');
+            $table->integer('commission');
             $table->timestamps();
         });
     }

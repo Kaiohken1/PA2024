@@ -107,6 +107,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
     Route::get('/reservation/invoice/{id}', [ContractController::class, 'reservationInvoice'])->name('reservation.generate');
 
+    Route::get('/invoice/download/{id}', [ContractController::class, 'downloadInvoice'])->name('invoice.download');
 
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
@@ -187,6 +188,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('/intervention/{id}/providers', [AdminProviderController::class, 'availableProviders'])->name('providers.available');;
 
     Route::get('/providers/available', [AvailabilityController::class, 'availableProviders']);
+
+    Route::get('/invoices', function () {
+        return view('admin.invoices.index');
+    })->name('admin.invoices.index');
 
 });
 

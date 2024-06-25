@@ -72,6 +72,7 @@ class ReservationController extends Controller
             'nombre_de_personne' => ['required', 'numeric'],
             'appartement_id' => ['required', 'exists:appartements,id'],
             'prix' => ['required', 'numeric'],
+            'commission' => ['required', 'numeric']
         ]);
 
         $request->session()->put('validatedData', $validatedData);
@@ -206,6 +207,7 @@ class ReservationController extends Controller
         $reservation->end_time = date('Y-m-d', strtotime($validatedData['end_time']));
         $reservation->nombre_de_personne = $validatedData['nombre_de_personne'];
         $reservation->prix = $validatedData['prix'];
+        $reservation->commission = $validatedData['commission'];
         $reservation->save();
     
         return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');

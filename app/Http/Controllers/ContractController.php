@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Intervention;
+use Carbon\Carbon;
+use App\Models\Invoice;
 use App\Models\Provider;
 use App\Models\Reservation;
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Storage;
 
 class ContractController extends Controller
 {
@@ -100,5 +103,100 @@ class ContractController extends Controller
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, 'fiche_intervention_#' . $intervention->id . '.pdf', ['Content-Type' => 'application/pdf']);
+    }
+
+    public function reservationsGains($userId)
+    {        
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+        $reservations = Reservation::where('user_id', $userId)
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->get();
+
+        $pdf = app('dompdf.wrapper');
+        
+        $pdf->loadView('pdf-models.reservations-gains', compact('reservations'));
+
+        $filePath = 'factures/' . 'facture_reservation_' . $userId . '_' . $year . '_' . $month . '.pdf';
+
+        Storage::put($filePath, $pdf->output());
+        
+        $invoice = new Invoice();
+        $invoice->user_id = $userId;
+        $invoice->pdf = $filePath;
+        $invoice->role = "Bailleur";
+        $invoice->save();
+    
+        return response()->json([
+            'message' => 'Le PDF a été généré et stocké avec succès.',
+            'path' => $filePath
+        ]);
+    }
+
+    public function interventionsGains($userId)
+    {        
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+        $interventions = Intervention::where('user_id', $userId)
+                        ->where('statut_id', 3)
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->get();
+
+        $pdf = app('dompdf.wrapper');
+        
+        $pdf->loadView('pdf-models.interventions-gains', compact('interventions'));
+
+        $filePath = 'factures/' . 'facture_interventions_' . $userId . '_' . $year . '_' . $month . '.pdf';
+
+        Storage::put($filePath, $pdf->output());
+        
+        $invoice = new Invoice();
+        $invoice->user_id = $userId;
+        $invoice->pdf = $filePath;
+        $invoice->role = "Prestataire";
+        $invoice->save();
+    
+        return response()->json([
+            'message' => 'Le PDF a été généré et stocké avec succès.',
+            'path' => $filePath
+        ]);
+    }
+
+    public function downloadReservation($userId)
+    {
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+
+        $filePath = 'factures/' . 'facture_reservation_' . $userId . '_' . $year . '_' . $month . '.pdf';
+
+        if (!Storage::exists($filePath)) {
+            return response()->json(['error' => 'Le fichier n\'existe pas.'], 404);
+        }
+
+        return Storage::download($filePath);
+    }
+
+    public function downloadIntervention($userId)
+    {
+        $month = Carbon::now()->month;
+        $year = Carbon::now()->year;
+
+        $filePath = 'factures/' . 'facture_interventions_' . $userId . '_' . $year . '_' . $month . '.pdf';
+
+        if (!Storage::exists($filePath)) {
+            return response()->json(['error' => 'Le fichier n\'existe pas.'], 404);
+        }
+
+        return Storage::download($filePath);
+    }
+
+    public function downloadInvoice($id)
+    {
+        $invoice = Invoice::findOrfail($id);
+
+
+        return Storage::download($invoice->pdf);
     }
 }
