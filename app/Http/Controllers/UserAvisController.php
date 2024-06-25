@@ -45,11 +45,13 @@ class UserAvisController extends Controller
         $userAvis->receiver_user_id = $receiver_user_id;
         $sender_user_id = Auth()->id();
         $userAvis->sender_user_id = $sender_user_id;
+       
 
         $receiver_reservation = Reservation::where('user_id', $receiver_user_id)->get();
+        
         $sender_appartement = Appartement::where('user_id', $sender_user_id)->get();
-
-        if($sender_appartement->id == $receiver_reservation->appartement_id){
+        $alreadyReserved = $receiver_reservation->intersect($sender_appartement);
+        if($alreadyReserved->isNotEmpty()){
             $userAvis->save();
             return redirect()->route('users.show', ['user' => $receiver_user_id])
             ->with('success', "Avis créé avec succès");

@@ -17,7 +17,7 @@
                         <label for="input_{{ $key }}_name" class="sr-only">Nom du paramètre</label>
                         <input type="text" id="input_{{ $key }}_name"
                             name = "input_{{ $key }}_name"
-                            wire:model.defer="inputs.{{ $key }}.name"
+                            wire:model="inputs.{{ $key }}.name"
                             class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md"
                             placeholder="Nom du paramètre" autocomplete="off">
                         @error('inputs.' . $key . '.name')
@@ -26,7 +26,7 @@
                     </div>
                     <div>
                         <label for="input_{{ $key }}_type" class="sr-only">Type de donnée</label>
-                        <select id="input_{{ $key }}_type" wire:model.defer="inputs.{{ $key }}.type" name ="input_{{$key}}_type"
+                        <select id="input_{{ $key }}_type" wire:model="inputs.{{ $key }}.type" name ="input_{{$key}}_type"
                             class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
                             <option value="" disabled>Sélectionnez un type de donnée</option>
                             @foreach (\App\Models\DataType::All() as $type)

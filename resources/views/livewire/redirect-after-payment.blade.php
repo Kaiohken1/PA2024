@@ -11,7 +11,7 @@
 </div>
 
 <script>
-    document.addEventListener('livewire:load', function () {
+    document.addEventListener('livewire:init', function () {
         @this.redirectToPlan();
     });
 </script>

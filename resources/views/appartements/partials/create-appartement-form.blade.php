@@ -3,7 +3,7 @@
     @csrf
 
     <div>
-    <x-input-label for="name" :value="__('Type de logement')" class="form-label"/>
+        <x-input-label for="name" :value="__('Type de logement')" class="form-label" />
         <select name="property_type" class="form-select select select-bordered w-full max-w-xs">
             <option value="appartement">Appartement</option>
             <option value="house">Maison</option>
@@ -12,7 +12,7 @@
     </div>
 
     <div>
-    <x-input-label for="name" :value="__('Type de location')" class="form-label"/>
+        <x-input-label for="name" :value="__('Type de location')" class="form-label" />
         <select name="location_type" class="form-select select select-bordered w-full max-w-xs">
             <option value="full_property">Logement complet</option>
             <option value="guestroom">Chambre d'hôte</option>
@@ -20,7 +20,7 @@
     </div>
 
     <div>
-        <x-input-label for="name" :value="__('Titre')" class="form-label"/>
+        <x-input-label for="name" :value="__('Titre')" class="form-label" />
         <x-text-input id="name" class="form-input block mt-1 w-full" type="text" name="name" />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
     </div>
@@ -32,10 +32,10 @@
     </div>
 
     <div>
-                            <x-input-label for="city" :value="__('Ville')" />
-                            <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city"/>
-                            <x-input-error :messages="$errors->get('city')" class="mt-2" />
-                        </div>
+        <x-input-label for="city" :value="__('Ville')" />
+        <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city" />
+        <x-input-error :messages="$errors->get('city')" class="mt-2" />
+    </div>
 
     <div>
         <x-input-label for="surface" :value="__('Surface (Au mètre carré)')" />
@@ -58,7 +58,7 @@
 
     <div>
         <x-input-label for="price" :value="__('Prix par nuit')" />
-        <x-text-input id="price" class="form-input block mt-1 w-full" type="number" name="price"  min="1" />
+        <x-text-input id="price" class="form-input block mt-1 w-full" type="number" name="price" min="1" />
         <x-input-error :messages="$errors->get('price')" class="mt-2" />
     </div>
 
@@ -70,16 +70,15 @@
 
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez vos images</label>
-        <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file" name='image[]'
-        multiple>
-    <x-input-error :messages="$errors->get('image')" class="mt-2" />
+        <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file" name='image[]' multiple>
+        <x-input-error :messages="$errors->get('image')" class="mt-2" />
     </div>
-    
+
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez des tags</label>
         <select class="select select-bordered w-full max-w-xs chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm" multiple name="tag_id[]" id=tag_id>
             @foreach($tags as $tag)
-                <option value="{{$tag->id}}">{{$tag->name}}</option>
+            <option value="{{$tag->id}}">{{$tag->name}}</option>
             @endforeach
         </select>
     </div>
@@ -88,5 +87,4 @@
     <x-primary-button class="ms-3 mt-5 ml-0">
         {{ __('Créer un appartement') }}
     </x-primary-button>
-    </div>
 </form>

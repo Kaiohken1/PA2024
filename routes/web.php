@@ -29,6 +29,9 @@ use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Http\Controllers\TicketCategoryController;
+use App\Livewire\Chatbot;
+use App\Models\Ticket;
+use App\Livewire\TicketChat;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,6 +114,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
+
     Route::get('/messagerie', function() {
         if(Auth::user()->provider) {
             return view('provider.messagerie');
@@ -126,7 +130,7 @@ Route::middleware('auth')->group(function () {
     })->name('espace-client');
     Route::prefix('property/{appartement}/')->group(function () {
         Route::resource('avis', AppartementAvisController::class)->except('create', 'edit');
-        Route::post('avis/{avis}/edit', [AppartementAvisController::class, 'edit'])->name('avis.edit');
+        Route::match(['get', 'post'], 'avis/{avis}/edit', [AppartementAvisController::class, 'edit'])->name('avis.edit');
 
     });
 
@@ -136,6 +140,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('tickets', TicketController::class);
+    Route::get('/tickets/{ticket}/chat/{user}', TicketChat::class)->name('tickets.chat');
+
+    Route::get('/chatbot', Chatbot::class);
 
 });
 

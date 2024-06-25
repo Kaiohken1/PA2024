@@ -37,8 +37,8 @@
             </div>
         </div>
         <div class="p-6 bg-white shadow-sm sm:rounded-lg" style="height: 200px;">
-            <form action="" wire:submit.prevent="sendMessage" class="flex flex-col">
-                <textarea class="textarea textarea-bordered w-full" wire:model="message" placeholder="Envoyez votre message.." @if($intervention->statut_id == 3) disabled @endif></textarea>
+            <form action="" wire:submit="sendMessage" class="flex flex-col">
+                <textarea class="textarea textarea-bordered w-full" wire:model.live="message" placeholder="Envoyez votre message.." @if($intervention->statut_id == 3) disabled @endif></textarea>
                 @error('message') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 <button class="btn btn-warning mt-4" type="submit" @if($intervention->statut_id == 3) disabled @endif>Envoyer</button>
             </form>

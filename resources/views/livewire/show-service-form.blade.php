@@ -1,7 +1,7 @@
 <div class="mt-3 mb-3">
     <div>
         <x-input-label for="service" :value="__('Service proposé')" />
-        <select name="service_id" id="service_id" wire:model.change="service_id">
+        <select name="service_id" id="service_id" wire:model.live.change="service_id">
             @foreach (App\Models\Service::All() as $service)
                 <option value="{{ $service->id }}">
                     {{ $service->name }}

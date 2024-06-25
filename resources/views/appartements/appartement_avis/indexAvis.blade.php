@@ -64,14 +64,10 @@
                                 </div>
                                 <span class="py-3 text-left">{{ $avis->comment }}</span>
                                 </div>
-                                
-                                
-                                
-</div>
-                    @endforeach
+                                            @endforeach
 
 
                     
 
 </div>
-<div>
+</div>
