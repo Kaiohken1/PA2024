@@ -44,7 +44,7 @@
                                             <button class="btn btn-info">Voir le profil</button>                                    
                                         </a>
 
-                                        <a href="{{ route('test', $provider) }}">
+                                        <a href="{{ route('admin.providers.calendar', $provider->id) }}">
                                             <button class="btn btn-active btn-primary">Voir le calendrier</button>
                                         </a>
                                     </td>

@@ -8,13 +8,14 @@ use App\Models\Provider;
 use Illuminate\Http\Request;
 use Livewire\Attributes\Url;
 use App\Models\InterventionEvent;
+use Illuminate\Support\Facades\Auth;
 
 class ProviderCalendar extends Component
 {
     public $interventions = [];
     public $absences = [];
     public $provider_id;
-    
+    public $isAdmin;
     public function render(Request $request)
     {        
         $interventionsQuery = InterventionEvent::query();
@@ -37,6 +38,8 @@ class ProviderCalendar extends Component
     
         $this->interventions = json_encode($interventionsQuery->get());
         $this->absences = json_encode($formattedAbsences);
+
+        $this->isAdmin = Auth::user()->isAdmin();
     
         return view('livewire.provider-calendar');
     }

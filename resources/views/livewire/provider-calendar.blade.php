@@ -1,3 +1,7 @@
+@if($isAdmin)
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/slate/bootstrap.min.css">
+@endif
+
 <style>
     #calendar-container {
         position: fixed;

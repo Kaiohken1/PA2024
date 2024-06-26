@@ -201,6 +201,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
         return view('admin.invoices.index');
     })->name('admin.invoices.index');
 
+    Route::get('/providers/calendar/{id}', function () {
+        return view('admin.providers.calendar');
+    })->name('admin.providers.calendar');
+
 });
 
 Route::prefix('users/{user}')->group(function () {
