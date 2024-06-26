@@ -42,7 +42,7 @@ class InterventionController extends Controller
     public function create(Request $request)
     {
         $appartement_id = $request->route('id');
-        $selectedAppartement = Appartement::findOrFail($appartement_id);
+        $selectedAppartement = Appartement::withTrashed()->findOrFail($appartement_id);
         $reservation_id = $request->route('reservationId');
         $appartements = Appartement::all();
         $selectedServices = [];
@@ -52,10 +52,13 @@ class InterventionController extends Controller
         if ($reservation_id) {
             $reservation = Reservation::find($reservation_id);
         }
-
-        $services = Service::All()->where('active_flag', 1);
-
-
+        $user = Auth::user();
+    
+        $userRoles = $user->roles->pluck('id'); 
+    
+        $services = Service::whereIn('role_id', $userRoles)
+                        ->where('active_flag', 1)
+                        ->get();
 
         return view('interventions.create', [
             'selectedAppartement' => $selectedAppartement,

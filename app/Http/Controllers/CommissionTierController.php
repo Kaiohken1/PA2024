@@ -9,7 +9,8 @@ class CommissionTierController extends Controller
 {
     public function index()
     {
-        $tiers = CommissionTier::all();
+        $tiers = CommissionTier::orderBy('min_amount')->get();
+
         return view('admin.commission_tiers.index', compact('tiers'));
     }
 
@@ -21,13 +22,13 @@ class CommissionTierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'min_amount' => 'required|numeric',
-            'max_amount' => 'nullable|numeric',
-            'percentage' => 'required|numeric',
+            'min_amount' => ['required', 'numeric'],
+            'max_amount' => ['nullable', 'numeric'],
+            'percentage' => ['required', 'numeric'],
         ]);
 
         CommissionTier::create($request->all());
-        return redirect()->route('commission_tiers.index');
+        return redirect()->route('admin.commissions.index');
     }
 
     public function edit($id)
@@ -53,7 +54,7 @@ class CommissionTierController extends Controller
     {
         $tier = CommissionTier::findOrFail($id);
         $tier->delete();
-        return redirect()->route('commission_tiers.index');
+        return redirect()->route('admin.commissions.index');
     }
 }
 

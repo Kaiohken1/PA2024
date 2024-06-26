@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Livewire\Chat;
 use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
@@ -11,8 +10,8 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\UserAvisController;
 use App\Http\Controllers\FermetureController;
@@ -21,6 +20,7 @@ use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\CommissionTierController;
 use App\Http\Controllers\AppartementAvisController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
@@ -30,6 +30,7 @@ use App\Http\Controllers\InterventionEstimateController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
+use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 
 /*
@@ -204,6 +205,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('/providers/calendar/{id}', function () {
         return view('admin.providers.calendar');
     })->name('admin.providers.calendar');
+
+    Route::resource('commissions', CommissionTierController::class)->names('admin.commissions');
 
 });
 

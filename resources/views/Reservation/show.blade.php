@@ -79,11 +79,13 @@
                             </form>
                         @endif
                     </div>
+                    @if(!\Carbon\Carbon::today()->isAfter($reservation->end_time))
                     <div class="mt-5">
                         <a href="{{ route('interventions.reservation-create', ['id' => $reservation->appartement->id, 'reservationId' => $reservation->id]) }}">
                             <button class="btn btn-warning mr-3">Réserver un service</button>
                         </a>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
