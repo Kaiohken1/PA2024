@@ -360,6 +360,8 @@ class AppartementController extends Controller
 
         Gate::authorize('delete', $appartement);
 
+        $appartement->statut_id = 12;
+
         $appartement->delete();
 
         return redirect()->route('dashboard')

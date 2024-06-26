@@ -29,6 +29,7 @@ return new class extends Migration
             ['nom' => 'Attribuée'],
             ['nom' => 'Devis envoyé'],
             ['nom' => 'Validé'],
+            ['nom' => 'Supprimé'],
 
         ]);
     }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Provider::class)->constrained()->cascadeOnDelete()->nullable();
             $table->string('pdf');
-            $table->string('Role');
+            $table->string('role');
             $table->timestamps();
         });
     }

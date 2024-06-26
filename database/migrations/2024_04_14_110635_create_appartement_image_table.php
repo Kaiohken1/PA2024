@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->boolean('is_main')->default(false);
-            $table->integer('main_order');
+            $table->integer('main_order')->nullable();
             $table->timestamps();
             $table->foreignIdFor(Appartement::class)->constrained()->cascadeOnDelete();
         });

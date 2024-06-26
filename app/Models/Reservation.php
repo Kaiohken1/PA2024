@@ -34,7 +34,9 @@ class Reservation extends Model
 
     public function appartement()
     {
-        return $this->belongsTo(Appartement::class, 'appartement_id');
+        return $this->belongsTo(Appartement::class, 'appartement_id')
+                    ->withTrashed();
+
     }
 
     public function avis(): HasOne

@@ -47,7 +47,8 @@ class PropertyTable extends Component
     }
 
     public function exportCsv() {
-        $reservations = Appartement::search($this->search)
+        $appartements = Appartement::withTrashed()
+            ->search($this->search)
             ->when($this->statut !== '', function($query) {
                 $query->where('statut_id', $this->statut);
             })
@@ -55,19 +56,24 @@ class PropertyTable extends Component
             ->get();
 
         $timestamp = date('Y-m-d_H-i-s');
-        $filename = "biens__{$timestamp}.csv";
+        $filename = "logement__{$timestamp}.csv";
         $handle = fopen($filename, 'w');
+
 
         fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($handle, ['ID', 'Appartement', 'Prix', 'Date d\'arrivé', 'Date de départ']);
+        fputcsv($handle, ['ID', 'Nom', 'Adresse', 'Ville', 'Proprietaire', 'Prix par nuit', 'Statut']);
 
-        foreach ($reservations as $reservation) {
+        foreach ($appartements as $appartement) {
+            $userName = $appartement->user->name . ' ' . $appartement->user->first_name;
             fputcsv($handle, [
-                $reservation->id,
-                $reservation->prix,
-                \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y'),
-                \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y'),
+                $appartement->id,
+                $appartement->name,
+                $appartement->address,
+                $appartement->city,
+                $userName,
+                $appartement->price,
+                $appartement->statut->nom
             ]);
         }
 
@@ -83,7 +89,8 @@ class PropertyTable extends Component
     {
         return view('livewire.property-table',
         [
-            'appartements' => Appartement::search($this->search)
+            'appartements' => Appartement::withTrashed()
+            ->search($this->search)
             ->when($this->statut !== '', function($query) {
                 $query->where('statut_id', $this->statut);
             })

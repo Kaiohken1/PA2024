@@ -42,7 +42,8 @@ class AppartementController extends Controller
      */
     public function show($id)
     {
-        $appartement = Appartement::findOrFail($id);
+        $appartement = Appartement::withTrashed()->findOrFail($id);
+
         return view('admin.property.show', ['appartement' => $appartement]);
     }
 

@@ -29,9 +29,10 @@
                                 <option value="">Tout</option>
                                 <option value="1">En attente</option>
                                 <option value="11">Validé</option>
+                                <option value="12">Supprimé</option>
                             </select>
                         </div>
-                        <button wire:click="exportCsv" class="btn btn-warning">Exporter CSV</button>
+                        <button wire:click="exportCsv" class="btn btn-warning" @if($appartements->isEmpty()) disabled @endif>Exporter CSV</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -72,13 +73,14 @@
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($appartement->created_at)->format('d/m/Y H:i:s')}}</td>
                                     <td class="px-4 py-3 
                                         {{ $appartement->statut->id == 1 ? 'text-yellow-500' : '' }}
-                                        {{ $appartement->statut->id == 11 ? 'text-green-500' : '' }}">
+                                        {{ $appartement->statut->id == 11 ? 'text-green-500' : '' }}
+                                         {{ $appartement->statut->id == 12 ? 'text-red-500' : '' }}">
                                     {{ $appartement->statut->nom }}
                                     </td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         <a href="{{ route('admin.property.show', $appartement->id) }}"> 
                                         <button class="btn btn-info mr-3">Voir</button></a>
-                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3">X</button>
+                                        @if($appartement->deleted_at === NULL)<button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3">X</button>@endif
                                     </td>
                                 </tr>
                             @endforeach
