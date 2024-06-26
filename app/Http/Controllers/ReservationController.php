@@ -32,14 +32,25 @@ class ReservationController extends Controller
     public function MobileIndex()
     {
         $user = Auth::user();
+    
         if ($user) {
-            $reservations = Reservation::where('user_id', $user->id)->get();
+            $reservations = Reservation::where('user_id', $user->id)
+                ->with('appartement') 
+                ->get();
+    
             $reservationsArray = $reservations->map(function($reservation) {
                 return [
                     'start_time' => Carbon::parse($reservation->start_time)->format('d/m/Y'),
-                    'end_time' =>  Carbon::parse($reservation->end_time)->format('d/m/Y'),
+                    'end_time' => Carbon::parse($reservation->end_time)->format('d/m/Y'),
                     'nombre_de_personne' => $reservation->nombre_de_personne,
-                    'appartement_id' => $reservation->appartement_id,
+                    'appartement' => [
+                        'id' => $reservation->appartement->id,
+                        'name' => $reservation->appartement->name,
+                        'address' => $reservation->appartement->address,
+                        'city' => $reservation->appartement->city
+                        
+                        
+                    ],
                     'prix' => $reservation->prix,
                 ];
             });
@@ -49,6 +60,7 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
     }
+    
 
     /**
      * Show the form for creating a new resource.

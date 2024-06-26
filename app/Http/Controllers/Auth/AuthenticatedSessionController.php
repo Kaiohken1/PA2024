@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -117,7 +118,7 @@ class AuthenticatedSessionController extends Controller
         $user = User::where('id', $user->id)->with('roles')->first();
         Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
 
-       
+        $user->formatted_date = Carbon::parse($user->created_at)->format('d/m/Y');
 
         $token = $user->createToken('auth_token')->plainTextToken;
         Log::info('Token created', ['token' => $token]);
@@ -129,7 +130,8 @@ class AuthenticatedSessionController extends Controller
                 'first_name' => $user->first_name,
                 'name' => $user->name,
                 'email' => $user->email,
-                'roles' => $user->roles
+                'roles' => $user->roles,
+                'created_at' => $user->formatted_date
             ]
         ]);
     } catch (\Exception $e) {
