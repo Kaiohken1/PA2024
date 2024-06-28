@@ -33,7 +33,7 @@ class TicketController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::where('id', '>', 5)->get();
 
         return view('ticket.create', [
             'roles' => $roles

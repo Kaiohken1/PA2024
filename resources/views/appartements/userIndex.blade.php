@@ -28,6 +28,7 @@
                     <x-primary-button>Interventions</x-primary-button>
                 </a>
             </div>
+        </div>
             @empty
         </div>
             <div class="py-12">
@@ -37,8 +38,8 @@
                         <x-primary-button class="mt-4"><a href="{{ route('property.create') }}" class="font-bold">Mettez votte bien à disposition dès maintenant</a></x-primary-button>
                     </div>
                 </div>
-            </div>      
+            </div>
+            </div>
         @endforelse
-    </div>
-    </div>
+    
 </x-app-layout>

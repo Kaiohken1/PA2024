@@ -3,11 +3,12 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\ChatbotMessage;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Process;
 use Livewire\Attributes\On;
+use App\Models\ChatbotMessage;
+use App\Jobs\ProcessChatbotMessage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Process;
 
 class Chatbot extends Component
 {
@@ -21,12 +22,12 @@ class Chatbot extends Component
         $messages = ChatbotMessage::where('user_id', $user->id)->get();
         $lastMessage = $messages->last();
         if(!isset($lastMessage)){
-            $lastMessageOfChatbot = 0;
+            $lastMessageOfChatbot = 1;
         } else{
             $lastMessageOfChatbot = $lastMessage->is_chatbot_message;
         }
 
-
+        $this->dispatch('refreshComponent');
         return view('livewire.chatbot', [
             'messages' => $messages,
             'lastMessageOfChatbot' => $lastMessageOfChatbot
@@ -34,49 +35,37 @@ class Chatbot extends Component
     }
 
     public function sendMessage()
-    {
-        $this->validate([
-            'message' => 'required|string|max:255',
-        ], [
-            'message.required' => 'Le message ne peut pas être vide.',
-            'message.max' => 'Le message ne peut pas dépasser 255 caractères.',
-        ]);
+{
+    $this->validate([
+        'message' => 'required|string|max:255',
+    ], [
+        'message.required' => 'Le message ne peut pas être vide.',
+        'message.max' => 'Le message ne peut pas dépasser 255 caractères.',
+    ]);
 
-        ChatbotMessage::create([
-            'user_id' => auth()->id(),
-            'message' => $this->message,
-            'is_chatbot_message' => false,
-        ]);
+    ChatbotMessage::create([
+        'user_id' => auth()->id(),
+        'message' => $this->message,
+        'is_chatbot_message' => false,
+    ]);
 
-        Log::info('Message sent by user: ' . $this->message);
+    Log::info('Message sent by user: ' . $this->message);
 
-        $chatbotRequest = $this->message;
-        $this->reset('message');
+    $userMessage = $this->message;
+    $this->reset('message');
 
-        // Emit an event to refresh the component to display the user's message
-        $this->dispatch('refreshComponent');
+    $this->dispatch('processMessage', $userMessage);
+    $this->dispatch('refreshComponent');
 
-        // Dispatch the processMessage method to handle the chatbot response
-        $this->dispatch('processMessage', $chatbotRequest);
+ 
     }
 
     #[On('processMessage')]
-    public function processMessage($chatbotRequest)
+    public function processMessage($userMessage)
     {
-        $result = Process::run('python3 /var/www/html/chatbot.py ' . escapeshellarg($chatbotRequest));
-        $chatBotMessage = $result->output();
-        $errorOutput = $result->errorOutput();
 
-        Log::info('Chatbot response: ' . $chatBotMessage);
-        Log::error('Chatbot error output: ' . $errorOutput);
-
-        ChatbotMessage::create([
-            'user_id' => auth()->id(),
-            'message' => $chatBotMessage,
-            'is_chatbot_message' => true,
-        ]);
-
-        Log::info('Chatbot message saved: ' . $chatBotMessage);
+        Log::info('test message dans processMessage: ' . $userMessage);
+        ProcessChatbotMessage::dispatch($userMessage, auth()->id());
 
         $this->dispatch('refreshComponent');
     }

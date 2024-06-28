@@ -1,42 +1,69 @@
 {
-    "intents": [
-      {
-        "tag": "salutations",
-        "patterns": [
-          "bonjour", "salut", "ça va?", "quoi de neuf?", "bonjour", "bonsoir", "matin", "comment ça va?", "comment ça se passe?", "comment allez-vous?", "salutations", "hey", "yo", "coucou", "bonne journée", "bonne soirée", "bonne nuit"
-        ],
-        "responses": ["Bonjour!", "Salut!", "Que puis-je faire pour vous?", "Salut, humain!", "Comment puis-je vous aider aujourd'hui?", "Ravi de vous voir!"]
-      },
-      {
-        "tag": "nom",
-        "patterns": ["Quel est votre nom?", "Pouvez-vous me dire votre nom?", "Comment dois-je vous appeler?", "Qui êtes-vous?", "C'est quoi ton nom?", "Dis-moi ton nom", "Comment t'appelles-tu?", "Quel est votre prénom?", "Comment vous appelez-vous?"],
-        "responses": ["Je suis un chatbot. Mon nom est Chatbot.", "Appelez-moi Chatbot puisque je suis un chatbot.", "Mon nom est Chatbot.", "Vous pouvez m'appeler Chatbot.", "Je suis Chatbot."]
-      },
-      {
-        "tag": "âge",
-        "patterns": ["Quel âge avez-vous?", "Quel est votre âge?", "âge?", "Quel âge as-tu?", "Dis-moi ton âge", "Tu as quel âge?", "Quel est ton âge?", "Quel âge a ton propriétaire?", "Quel est l'âge de ton propriétaire?", "L'âge de ton propriétaire?"],
-        "responses": ["J'ai 25 ans!", "Mon propriétaire a 25 ans!", "J'ai 25 ans.", "Mon propriétaire a 25 ans.", "Je suis âgé de 25 ans.", "Mon propriétaire est âgé de 25 ans."]
-      },
-      {
-        "tag": "au revoir",
-        "patterns": ["au revoir", "à bientôt", "bonne journée", "bonne soirée", "à la prochaine", "adieu", "bye", "ciao", "je dois y aller", "à plus tard"],
-        "responses": ["Au revoir!", "À bientôt!", "Bonne journée!", "Bonne soirée!", "À la prochaine!", "Adieu!", "Bye!", "Ciao!", "À plus tard!"]
-      },
-      {
-        "tag": "merci",
-        "patterns": ["merci", "merci beaucoup", "je te remercie", "c'est gentil", "merci bien", "merci infiniment", "merci pour votre aide", "je vous remercie", "merci beaucoup pour votre aide"],
-        "responses": ["De rien!", "Avec plaisir!", "Je vous en prie!", "Pas de problème!", "C'est un plaisir de vous aider!", "N'hésitez pas si vous avez besoin de plus d'aide!"]
-      },
-      {
-        "tag": "heure",
-        "patterns": ["quelle heure est-il?", "donne-moi l'heure", "tu as l'heure?", "quelle est l'heure actuelle?", "il est quelle heure?", "peux-tu me dire l'heure?", "quelle heure as-tu?", "donnez-moi l'heure", "c'est quelle heure?"],
-        "responses": ["Je ne peux pas vous donner l'heure exacte, mais vous pouvez vérifier sur votre appareil.", "Je suis désolé, mais je ne peux pas consulter l'heure pour vous.", "Je ne peux pas donner l'heure actuelle."]
-      },
-      {
-        "tag": "date",
-        "patterns": ["quelle est la date aujourd'hui?", "quelle date sommes-nous?", "c'est quel jour?", "quelle est la date actuelle?", "peux-tu me dire la date?", "donne-moi la date d'aujourd'hui", "quelle est la date?", "quel jour sommes-nous?"],
-        "responses": ["Je ne peux pas vous donner la date exacte, mais vous pouvez vérifier sur votre appareil.", "Je suis désolé, mais je ne peux pas consulter la date pour vous.", "Je ne peux pas donner la date actuelle."]
-      }
-    ]
-  }
-  
+  "intents": [
+    {
+      "tag": "réserver",
+      "patterns": ["comment réserver un bien", "je veux réserver un appartement", "pouvez-vous m'aider à réserver?", "appartement", "maison"],
+      "responses": ["Pour réserver cliquez sur l'image d'un appartement pour voir les détail sur la droite vous trouverez une fenêtre pour réserver votre séjour."]
+    },
+    {
+      "tag": "moyens paiement",
+      "patterns": ["pouvez-vous m'aider à payer?", "paiement", "moyens de paiement", "méthodes"],
+      "responses": ["Vous pouvez utiliser votre carte bancaire ou google pay pour payer sur le site."]
+    },
+    {
+      "tag": "réserver service",
+      "patterns": ["comment réserver un service d'un prestataire", "je veux réserver une intervention", "pouvez-vous m'aider à réserver un service?"],
+      "responses": ["Vous pouvez réserver un service d'un prestataire sur votre espace client après avoir réserver votre séjour."]
+    },
+    {
+      "tag": "date indisponible",
+      "patterns": ["pourquoi certaine date sont indisponible", "non disponibles", "bloqué", "réservation impossible", "pourquoi je ne peux pas réserver"],
+      "responses": ["Les dates grisées sont celles où le bien est occupé par d'autre locataire ou lors d'une intervention ou une fermeture demandé par le bailleur."]
+    },
+    {
+      "tag": "historique réservation",
+      "patterns": ["comment voir mon historique de réservation", "voir mes réservations"],
+      "responses": ["Vous pouvez voir votre historique de réservation dans votre espace client"]
+    },
+    {
+      "tag": "annuler réservation",
+      "patterns": ["comment faire si je dois annuler ma réservation", "procédure d'annulation", "annulation de réservation"],
+      "responses": ["Vous pouvez annuler une réservation 24h avant la date de début du séjour dans vos réservation sur votre espace clients, vous serez remboursé par la suite"]
+    },
+    {
+      "tag": "problème réservation",
+      "patterns": ["comment faire si j'ai un problème avec ma réservation", "bug ", "aide pour réservation", "assistance", "contacter"],
+      "responses": ["Si vous avez un problème de réservation ou tout autre problème cliquer <a href='http://localhost/tickets/create'>ici</a> pour contacter PCS."]
+    },
+    {
+      "tag": "modifier profil",
+      "patterns": ["comment modifier mon profil", "changer informations", "mettre à jour", "changer adresse", "ville", "mot de passe", "identifiants"],
+      "responses": ["Si vous souhaiter modifier une information sur votre profil cliquez <a href='http://localhost/profile'>ici</a>."]
+    },
+    {
+      "tag": "laisser avis appartement",
+      "patterns": ["comment laisser un avis sur un appartement", "avis sur appartement", "commentaire sur appartement", "avis après une réservation"],
+      "responses": ["Vous pouvez laisser un avis sur l'appartement que vous avez réserver à la fin du séjour."]
+    },
+    {
+      "tag": "laisser avis prestataire",
+      "patterns": ["comment laisser un avis sur un prestataire", "avis sur prestataire", "commentaire sur prestataire", "avis après une prestation"],
+      "responses": ["Vous pouvez laisser un avis sur le prestataire après avoir eu une intervention de sa part"]
+    },
+    {
+      "tag": "réservations téléphone",
+      "patterns": ["comment voir mes réservations sur téléphone", "réservations mobile", "accéder aux réservations sur téléphone"],
+      "responses": ["Vous devez télécharger l'application de PCS disponible sur Android puis vous connectez avec vos identifiants"]
+    },
+    {
+      "tag": "signaler utilisateur",
+      "patterns": ["comment signaler un utilisateur", "rapport utilisateur", "problème avec un utilisateur", "comportement"],
+      "responses": ["Vous pouvez signaler le comportement d'un utlisateur <a href='http://localhost/tickets/create'>ici</a> et en sélectionnant la catégorie Signalement"]
+    },
+    {
+      "tag": "question univers",
+      "patterns": ["quelle est la réponse à la grande question sur la vie, l'univers et le reste"],
+      "responses": ["42 😂"]
+    }
+  ]
+}
