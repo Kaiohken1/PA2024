@@ -1,18 +1,24 @@
-<div 
-x-data="{
-    height:0,
-    conversationElement:document.getElementById('conversation'),
-}"
-x-init="
-height= conversationElement.scrollHeight;
-$nextTick(()=>conversationElement.scrollTop= height);
-"
-@scroll-bottom.window="
-$nextTick(()=>
-conversationElement.scrollTop= conversationElement.scrollHeight
-);
-"
-class="w-full overflow-hidden">
+<div x-data="{
+    height: 0,
+    conversationElement: document.getElementById('conversation'),
+    markAsRead: null
+}" x-init="height = conversationElement.scrollHeight;
+$nextTick(() => conversationElement.scrollTop = height);
+
+
+Echo.private('users.{{ Auth()->User()->id }}')
+    .notification((notification) => {
+        if (notification['type'] == 'App\\Notifications\\MessageRead' && notification['conversation_id'] == {{ $this->selectedConversation->id }}) {
+
+            markAsRead = true;
+        }
+    });"
+    @scroll-bottom.window="
+ $nextTick(()=>
+ conversationElement.scrollTop= conversationElement.scrollHeight
+ );
+ "
+    class="w-full overflow-hidden">
 
     <div class="border-b flex flex-col overflow-y-scroll grow h-full">
 
@@ -55,26 +61,26 @@ class="w-full overflow-hidden">
         {{-- body --}}
         <main
             @scroll="
-            scropTop = $el.scrollTop;
-    
-            if(scropTop <= 0){
-    
-            $dispatch('loadMore');
-    
-            }
-        
-            "
+      scropTop = $el.scrollTop;
+
+      if(scropTop <= 0){
+
+        $dispatch('loadMore');
+
+      }
+     
+     "
             @update-chat-height.window="
 
-            newHeight= $el.scrollHeight;
-   
-            oldHeight= height;
-            $el.scrollTop= newHeight- oldHeight;
-   
-            height=newHeight;
-        
-        "
-         id="conversation"
+         newHeight= $el.scrollHeight;
+
+         oldHeight= height;
+         $el.scrollTop= newHeight- oldHeight;
+
+         height=newHeight;
+     
+     "
+            id="conversation"
             class="flex flex-col gap-3 p-2.5 overflow-y-auto  flex-grow overscroll-contain overflow-x-hidden w-full my-auto">
 
             @if ($loadedMessages)
@@ -83,26 +89,29 @@ class="w-full overflow-hidden">
                     $previousMessage = null;
                 @endphp
 
+
                 @foreach ($loadedMessages as $key => $message)
+                    {{-- keep track of the previous message --}}
 
-                @if($key>0)
+                    @if ($key > 0)
+                        @php
+                            $previousMessage = $loadedMessages->get($key - 1);
+                        @endphp
+                    @endif
 
-                @php
-                    $previousMessage = $loadedMessages->get($key-1)
-                @endphp
 
-                @endif
-                    <div @class([
+                    <div wire:key="{{ time() . $key }}" @class([
                         'max-w-[85%] md:max-w-[78%] flex w-auto gap-2 relative mt-2',
                         'ml-auto' => $message->sender_id === auth()->id(),
-                    ]) >
+                    ])>
 
                         {{-- avatar --}}
 
-                        <div @class(['shrink-0',
-                                            'invisible'=>$previousMessage?->sender_id==$message->sender_id,
-                                            'hidden'=>$message->sender_id === auth()->id()
-                                ])>
+                        <div @class([
+                            'shrink-0',
+                            'invisible' => $previousMessage?->sender_id == $message->sender_id,
+                            'hidden' => $message->sender_id === auth()->id(),
+                        ])>
 
                             <x-avatar />
                         </div>
@@ -132,37 +141,58 @@ class="w-full overflow-hidden">
                                     'text-white' => $message->sender_id === auth()->id(),
                                 ])>
 
-                                    {{$message->created_at->format('H:i')}}
+
+                                    {{ $message->created_at->format('H:i') }}
+
                                 </p>
 
-                                @if ($message->sender_id=== auth()->id())
-          
-                                <div x-data="{markAsRead:@json($message->isRead())}">
-            
-                                    {{-- double ticks --}}
-            
-                                    <span x-cloak x-show="markAsRead" @class('text-gray-200')>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-all" viewBox="0 0 16 16">
-                                            <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z"/>
-                                            <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z"/>
-                                        </svg>
-                                    </span>
-            
-                                    {{-- single ticks --}}
-                                    <span x-show="!markAsRead" @class('text-gray-200')>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-                                        </svg>
-                                    </span>
-                                
-            
-                                </div>
-                            @endif
+
+                                {{-- message status , only show if message belongs auth --}}
+
+                                @if ($message->sender_id === auth()->id())
+                                    <div x-data="{ markAsRead: @json($message->isRead()) }">
+
+                                        {{-- double ticks --}}
+
+                                        <span x-cloak x-show="markAsRead" @class('text-gray-200')>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-check2-all" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0z" />
+                                                <path
+                                                    d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708z" />
+                                            </svg>
+                                        </span>
+
+                                        {{-- single ticks --}}
+                                        <span x-show="!markAsRead" @class('text-gray-200')>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                                            </svg>
+                                        </span>
+
+
+                                    </div>
+                                @endif
+
+
+
                             </div>
+
                         </div>
+
+
+
+
+
+
+
                     </div>
                 @endforeach
             @endif
+
         </main>
 
 
@@ -182,13 +212,23 @@ class="w-full overflow-hidden">
                         <input x-model="body" type="text" autocomplete="off" autofocus
                             placeholder="Ecrivez votre message ici" maxlength="1700"
                             class="col-span-10 bg-gray-100 p-3 border-0 outline-0 focus:border-0 focus:ring-0 hover:ring-0 rounded-lg  focus:outline-none">
+
                         <button x-bind:disabled="!body.trim()" class="col-span-2 bg-yellow-400" type='submit'>Envoyer</button>
+
                     </div>
+
                 </form>
+
                 @error('body')
-                    <p class="text-red-500"> {{ $message }} </p>
+                    <p> {{ $message }} </p>
                 @enderror
+
             </div>
+
+
+
+
+
         </footer>
 
     </div>

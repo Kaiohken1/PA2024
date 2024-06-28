@@ -16,7 +16,7 @@
         if(notification['type']== 'App\\Notifications\\MessageRead'||notification['type']== 'App\\Notifications\\MessageSent')
         {
 
-            window.Livewire.emit('refresh');
+            $dispatch('refresh');
         }
     });
    
@@ -151,7 +151,7 @@
 
                                     </button>
                                     <button 
-                                    onclick="confirm('Are you sure?')||event.stopImmediatePropagation()"
+                                    onclick="confirm('Etes-vous sûrs ?')||event.stopImmediatePropagation()"
                                     wire:click="deleteByUser('{{encrypt($conversation->id)}}')"
                                     class="items-center gap-3 flex w-full px-4 py-2 text-left text-sm leading-5 text-gray-500 hover:bg-gray-100 transition-all duration-150 ease-in-out focus:outline-none focus:bg-gray-100">
 

@@ -210,7 +210,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::resource('commissions', CommissionTierController::class)->names('admin.commissions');
 
-    Route::get('/messagerie', Index::class)->name('chat');
+    Route::get('/messagerie', Index::class)->name('chat.index');
     Route::get('/messagerie/{query}', MessagerieChat::class)->name('chat');
 
 });
