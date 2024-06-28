@@ -32,6 +32,8 @@ use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Livewire\Messagerie\Chat as MessagerieChat;
+use App\Livewire\Messagerie\Index;
 
 /*
 |--------------------------------------------------------------------------
@@ -207,6 +209,9 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     })->name('admin.providers.calendar');
 
     Route::resource('commissions', CommissionTierController::class)->names('admin.commissions');
+
+    Route::get('/messagerie', Index::class)->name('chat');
+    Route::get('/messagerie/{query}', MessagerieChat::class)->name('chat');
 
 });
 

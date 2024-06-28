@@ -35,15 +35,16 @@
         <x-input-label for="city" :value="__('Ville')" />
         <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city" disabled/>
         <x-input-error :messages="$errors->get('city')" class="mt-2" />
+        <input type="hidden" id="city-input" name="city">
     </div>
 
     <div>
         <x-input-label for="city" :value="__('Code postal')" />
         <x-text-input id="postal_code" class="form-input block mt-1 w-full" type="text" name="postal_code"
         disabled/>
-        <span id="postal_code_error" class="text-red-500 text-sm hidden">Le code postal doit comporter 5
-            chiffres.</span>
-        <x-input-error :messages="$errors->get('postal_code')" class="mt-2" />
+
+        <input type="hidden" id="postal_code-input" name="postal_code">
+
     </div>
 
     <div>
@@ -142,7 +143,10 @@
             });
             input.value = place.name;
             document.getElementById('city').value = city;
+            document.getElementById('city-input').value = city;
+
             document.getElementById('postal_code').value = postalCode;
+            document.getElementById('postal_code-input').value = postalCode;
         });
 
         input.addEventListener('input', function() {

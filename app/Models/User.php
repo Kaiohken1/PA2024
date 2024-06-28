@@ -127,4 +127,14 @@ class User extends Authenticatable
     public function askedTickets(): HasMany {
         return $this->hasMany(Ticket::class, 'asker_user_id');
     }
+
+    public function conversations()
+    {   
+        return $this->hasMany(Conversation::class,'sender_id')->orWhere('receiver_id',$this->id)->whereNotDeleted();
+    }
+
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'users.'.$this->id;
+    }
 }
