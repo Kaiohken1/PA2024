@@ -167,6 +167,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('tickets', TicketController::class);
 
+    
+
+        Route::get('/provider/chat', Index::class)->name('chat.index');
+        Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+
 });
 
 
@@ -210,6 +215,9 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::resource('commissions', CommissionTierController::class)->names('admin.commissions');
 
+    Route::get('/chat', Index::class)->name('admin.chat.index');
+    Route::get('/chat/{query}', MessagerieChat::class)->name('admin.chat');
+    
 
 });
 
@@ -240,9 +248,6 @@ Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name
 
 
 
-
-Route::get('/chat', Index::class)->name('chat.index');
-Route::get('/chat/{query}', MessagerieChat::class)->name('chat');
 
 
 

@@ -1,9 +1,9 @@
 <div>
     @if ($user)
-        <button class="btn btn-info" wire:click="message({{ $user->id }})">
+        <button class="btn btn-success mr-3" wire:click="message({{ $user->id }})">
             Message
         </button>
     @else
-        <p>No users available to message.</p>
+        <p>Aucun utilisateur trouvé.</p>
     @endif
 </div>

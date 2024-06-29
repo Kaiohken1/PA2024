@@ -51,9 +51,13 @@ class ChatList extends Component
         $conversation->forceDelete();
     }
 
+    if(Auth()->user()->isAdmin()) {
+        return redirect(route('admin.chat.index'));
+
+    }
+
     return redirect(route('chat.index'));
 
-    
     
    }
     

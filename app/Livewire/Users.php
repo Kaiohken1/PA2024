@@ -25,7 +25,7 @@ class Users extends Component
             })->first();
         
       if ($existingConversation) {
-        return redirect()->route('messagerie.index', ['query' => $existingConversation->id]);
+        return redirect()->route('admin.chat', ['query' => $existingConversation->id]);
       }
   
       $createdConversation = Conversation::create([
