@@ -2,14 +2,17 @@
 
 namespace App\Livewire\Messagerie;
 
-use App\Models\Chat as ModelsChat;
 use Livewire\Component;
 use App\Models\Conversation;
+use Livewire\Attributes\Layout;
+use App\Models\Chat as ModelsChat;
+use Illuminate\Support\Facades\Auth;
 
 class Chat extends Component
 {
     public $query;
     public $selectedConversation;
+    public $layout;
 
     public function mount()
     {
@@ -23,8 +26,16 @@ class Chat extends Component
                 ->update(['read_at'=>now()]);
     }
 
+
+
     public function render()
     {
-        return view('livewire.messagerie.chat');
+        if (Auth::user()->provider) {
+            $this->layout = 'layouts.provider';
+        } else {
+            $this->layout = 'layouts.admin'; 
+        }
+        return view('livewire.messagerie.chat')
+        ->layout($this->layout);
     }
 }

@@ -210,8 +210,6 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::resource('commissions', CommissionTierController::class)->names('admin.commissions');
 
-    Route::get('/messagerie', Index::class)->name('chat.index');
-    Route::get('/messagerie/{query}', MessagerieChat::class)->name('chat');
 
 });
 
@@ -243,6 +241,8 @@ Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name
 
 
 
+Route::get('/chat', Index::class)->name('chat.index');
+Route::get('/chat/{query}', MessagerieChat::class)->name('chat');
 
 
 
