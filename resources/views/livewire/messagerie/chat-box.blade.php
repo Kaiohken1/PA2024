@@ -118,7 +118,7 @@
 
         <footer class="shrink-0 z-10 {{ Auth::user()->isAdmin() ? 'bg-gray-800 border-t border-gray-700' : 'bg-white border-t border-gray-200' }}">
             <div class="p-2">
-                <form x-data="{ body: @entangle('body') }" @submit.prevent="$wire.sendMessage" method="POST" autocapitalize="off">
+                <form x-data="{ body: $wire.entangle('body') }" @submit.prevent="$wire.sendMessage" method="POST" autocapitalize="off">
                     @csrf
                     <input type="hidden" autocomplete="false" style="display:none">
                     <div class="grid grid-cols-12">

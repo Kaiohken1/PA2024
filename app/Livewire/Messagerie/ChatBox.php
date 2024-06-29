@@ -10,7 +10,7 @@ use App\Notifications\MessageSent;
 class ChatBox extends Component
 {
     public $selectedConversation;
-    public $body;
+    public $body = '';
     public $loadedMessages;
 
     public $paginate_var = 10;
