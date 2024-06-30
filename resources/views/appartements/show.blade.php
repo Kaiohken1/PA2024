@@ -195,9 +195,9 @@ foreach ($appartement->images as $image) {
         if (start.isValid() && end.isValid()) {
             var numberOfNights = end.diff(start, 'days');
             var totalPrice = numberOfNights * pricePerNight;
-            var fee = totalPrice * 0.20;
-            var tva = (totalPrice + fee) * 0.20;
-            var finalPrice = totalPrice + fee + tva;
+            var fee = parseFloat((totalPrice * 0.20).toFixed(2));
+            var tva = parseFloat(((totalPrice + fee) * 0.20).toFixed(2));
+            var finalPrice = parseFloat((totalPrice + fee + tva).toFixed(2));
 
             document.getElementById('total_price').textContent = ' : ' + totalPrice + '€';
 

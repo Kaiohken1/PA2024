@@ -153,7 +153,7 @@ class ContractController extends Controller
                             ->whereMonth('created_at', $month)
                             ->whereYear('created_at', $year)
                             ->get();
-
+                            
             $pdf = app('dompdf.wrapper');
             
             $pdf->loadView('pdf-models.interventions-gains', compact('interventions'));

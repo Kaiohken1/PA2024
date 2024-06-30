@@ -32,6 +32,7 @@ use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Livewire\Messagerie\Chat as MessagerieChat;
 use App\Livewire\Messagerie\Index;
 
@@ -217,7 +218,12 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 
     Route::get('/chat', Index::class)->name('admin.chat.index');
     Route::get('/chat/{query}', MessagerieChat::class)->name('admin.chat');
-    
+
+    Route::resource('property/{id}/interventions', AdminInterventionController::class)->names('admin.interventions')->except('index', 'show', 'update');
+    Route::post('/interventions/{id}/plan', [AdminInterventionController::class, 'plan'])->name('admin.interventions.plan');
+
+    Route::resource('/reservations', AdminReservationController::class)->names('admin.reservations');
+
 
 });
 

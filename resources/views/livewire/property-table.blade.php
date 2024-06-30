@@ -80,7 +80,10 @@
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         <a href="{{ route('admin.property.show', $appartement->id) }}"> 
                                         <button class="btn btn-info mr-3">Voir</button></a>
-                                        @if($appartement->deleted_at === NULL)<button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3">X</button>@endif
+
+                                        <a href="{{ route('admin.interventions.create', $appartement->id) }}"> 
+                                            <button class="btn btn-success mr-3">Intervention</button></a>
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3 {{$appartement->deleted_at === NULL ? 'visible' : 'invisible'}}">X</button>
                                     </td>
                                 </tr>
                             @endforeach

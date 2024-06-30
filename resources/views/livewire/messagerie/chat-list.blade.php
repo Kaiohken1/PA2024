@@ -45,7 +45,7 @@
                             <x-avatar src="{{ $conversation->getReceiver()->getImageUrl() }}" />
                         </a>
                         <aside class="grid grid-cols-12 w-full">
-                            <a href="{{ route('chat', $conversation->id) }}" class="col-span-11 border-b pb-2 {{ Auth::user()->isAdmin() ? 'border-gray-600' : 'border-gray-200' }} relative overflow-hidden truncate leading-5 w-full flex-nowrap p-1">
+                            <a href="{{ Auth::user()->isAdmin() ? route('admin.chat', $conversation->id) : route('chat', $conversation->id) }}" class="col-span-11 border-b pb-2 {{ Auth::user()->isAdmin() ? 'border-gray-600' : 'border-gray-200' }} relative overflow-hidden truncate leading-5 w-full flex-nowrap p-1">
                                 <div class="flex justify-between w-full items-center">
                                     <h6 class="truncate font-medium tracking-wider {{ Auth::user()->isAdmin() ? 'text-white' : 'text-black' }}">
                                         {{ $conversation->getReceiver()->name }}

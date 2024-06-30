@@ -324,7 +324,7 @@ class InterventionController extends Controller
 
         $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);
         return redirect()->route('interventions.clientShow', ['id' => $intervention->id]);
-        }
+    }
 
 
     public function showProvider($id)

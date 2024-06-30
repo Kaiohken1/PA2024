@@ -72,7 +72,15 @@ $totalGlobal = 0;
     .text-center {
         text-align: center;
     }
+    
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
 
+    th, td {
+        width: 20%;
+    }
 </style>
 </head>
 <body>
@@ -92,7 +100,7 @@ $totalGlobal = 0;
     </table>
 
     <div class="mb-6">
-      <p class="text-xl">FACTURE - INTERVE--</p>
+      <p class="text-xl">FACTURE - INTERVENTION</p>
       <p class="text-lg">DATE DE DÉLIVRANCE : <span class="font-normal">{{\Carbon\Carbon::now()->format('d/m/Y')}}</p>
       <p><span  class="text-lg">À L'INTENTION DE :</span> {{$interventions->first()->provider->name}}</p>
     </div>
@@ -102,9 +110,9 @@ $totalGlobal = 0;
         <tr>
           <th class="border px-4 py-2">ID</th>
           <th class="border px-4 py-2">Effectué le</th>
-          <th class="border px-4 py-2 text-right">Prix TTC</th>
-          <th class="border px-4 py-2 text-right">Prix HT</th>
-          <th class="border px-4 py-2 text-right">Commission</th>
+          <th class="border px-4 py-2">Prix TTC</th>
+          <th class="border px-4 py-2">Prix HT</th>
+          <th class="border px-4 py-2">Commission</th>
         </tr>
       </thead>
       <tbody>
@@ -112,7 +120,8 @@ $totalGlobal = 0;
             @php
                 $commission = $intervention->commission;
                 $prix = $intervention->price;  
-                $total = $prix - $commission;
+                $prixTVA = $intervention->price + ($intervention->price*0.20);
+                $total = $prixTVA - $commission;
                 $totalGlobal += $total;
             @endphp
             <tr class="bg-white">
@@ -124,7 +133,7 @@ $totalGlobal = 0;
             </tr>
         @endforeach
         <tr>
-            <td class="border px-4 py-2 text-right font-bold" colspan="6">Total à verser</td>
+            <td class="border px-4 py-2 text-right font-bold" colspan="5">Total à verser</td>
             <td class="border px-4 py-2 text-right font-bold">{{ $totalGlobal }} €</td>
         </tr>
       </tbody>
