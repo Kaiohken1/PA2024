@@ -258,7 +258,7 @@ public function apiUpdateHelper(string $ticket_id, Request $request)
     $ticket = Ticket::findOrfail($ticket_id);
     $validateData = $request->validate([
         'status' => ['required', 'string'],
-        'solution' => ['string'],
+        'solution' => ['nullable', 'string'],
         'priority' => ['required', 'numeric']
     ]);
     Log::info('updated', ['request' => $request->all()]);
