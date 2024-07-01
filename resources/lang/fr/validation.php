@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'phone' => 'Le champ :attribute doit être un numéro de téléphone valide.',
     'accepted' => 'Le champ :attribute doit être accepté.',
     'accepted_if' => 'Le champ :attribute doit être accepté quand :other a la valeur :value.',
     'active_url' => 'Le champ :attribute n\'est pas une URL valide.',

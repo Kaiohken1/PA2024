@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class RegisteredUserController extends Controller
 {
@@ -35,13 +36,17 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'alpha', 'max:255'],
             'first_name' => ['required', 'string', 'alpha', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => ['required', 'phone:mobile'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()
+        ],
         ]);
 
+        $number = str_replace('+', '', $request->phone);
         $user = User::create([
             'name' => $request->name,
             'first_name' => $request->first_name,
             'email' => $request->email,
+            'number' => $number,
             'password' => Hash::make($request->password),
         ]);
 

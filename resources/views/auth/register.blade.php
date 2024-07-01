@@ -22,6 +22,13 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <div class="mt-4">
+            <x-input-label for="email" :value="__('Numéro de téléphone')" />
+            <input id="phone" class="input input-bordered input-warning w-full" type="tel" name="phone" :value="old('phone')" required autocomplete="username" placeholder="+33712345678" />
+            <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{__('Entrez un numéro de téléphone qui respecte ce format')}}</p>
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Mot de passe')" />
