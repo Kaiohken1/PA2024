@@ -32,7 +32,8 @@ class ProcessChatbotMessage implements ShouldQueue
      */
     public function handle()
     {
-        $result = Process::run('python3 /var/www/html/chatbot.py ' . escapeshellarg($this->userMessage));
+        $venvPython = env('VENV_PATH', '/var/www/venv') . '/bin/python3';
+        $result = Process::run("$venvPython /var/www/chatbot.py " . escapeshellarg($this->userMessage));
         $chatBotMessage = $result->output();
         $errorOutput = $result->errorOutput();
 
