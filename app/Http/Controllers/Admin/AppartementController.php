@@ -6,6 +6,8 @@ use App\Models\Appartement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\PropertyValidated;
+use Illuminate\Support\Facades\Notification;
 
 class AppartementController extends Controller
 {
@@ -85,9 +87,10 @@ class AppartementController extends Controller
 
         $appartement->statut_id = 11;
         $appartement->update();
+
+        Notification::send($appartement->user, new PropertyValidated);
         
         return redirect()->route('admin.property.show', ['property' => $appartement])
         ->with('success', 'Le bien a été validé avec succès');
-
     }
 }
