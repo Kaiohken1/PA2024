@@ -35,9 +35,9 @@
                                     <p>{{__('Loué par')}} {{ $appartement->user->name }}</p>
                                     
                                         
-                                    <p><span class="font-extrabold">{{ $appartement->price }}€</span>{{__('par nuit')}} </p>
+                                    <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{__('par nuit')}} </p>
                                 
-                                    <span class="font-extrabold size-max inline-flex"><x-ri-star-fill class="size-6"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }}{{__('Avis')}}</span>
+                                    <span class="font-extrabold size-max inline-flex"><x-ri-star-fill class="size-6"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} {{__('Avis')}}</span>
                                     <div>
                             @foreach ($appartement->tags as $tag)
                                 <span

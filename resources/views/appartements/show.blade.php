@@ -70,17 +70,17 @@ foreach ($appartement->images as $image) {
                         @foreach ($appartement->tags as $tag)
                         <span class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{$tag->name}}</span>
                         @endforeach
-                        <p class="text-xl"><span>{{ $appartement->guestCount }} voyageurs</span> · <span>{{ $appartement->roomCount }} chambres</span></p>
+                        <p class="text-xl"><span>{{ $appartement->guestCount }} {{__('voyageurs')}} </span> · <span>{{ $appartement->roomCount }} {{__('chambres')}}</span></p>
                         <p class="text-xl">{{ $appartement->address }}</p>
-                        <p class="text-xl">Loué par {{ $appartement->user->name }}</p>
+                        <p class="text-xl">{{__('Loué par')}} {{ $appartement->user->name }}</p>
 
-                        <p class="mt-10">Description</p>
+                        <p class="mt-10">{{__('Description')}}</p>
                         <div class="border-t-2 border-grey overflow-x-auto">
                             <p class="text-xl">{{ $appartement->description }}</p>
                         </div>
                     </div>
                     <div class="p-4 sm:p-8 ml-20 bg-white sm:rounded-lg shadow-xl">
-                        <p class="text-xl"><span class="font-extrabold">{{ $appartement->price }}€</span> par nuit</p>
+                        <p class="text-xl"><span class="font-extrabold">{{ $appartement->price }}€</span> {{__('par nuit')}} </p>
 
                         <form method="POST" action="{{ route('reservation.store') }}">
                             @csrf
@@ -88,25 +88,25 @@ foreach ($appartement->images as $image) {
                             <input type="hidden" name="appartement_id" value="{{ $appartement->id }}">
 
                             <div class="mb-4">
-                                <label for="start_time" class="block text-gray-700 text-sm font-bold mb-2">Date de début :</label>
+                                <label for="start_time" class="block text-gray-700 text-sm font-bold mb-2">{{__('Date de début')}} :</label>
                                 <input type="date" name="start_time" id="start_time"
                                     min="{{ \Carbon\Carbon::now()->toDateString() }}"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Arrivée" readonly>
+                                    placeholder="{{__('Arrivée')}}" readonly>
                                 @error('start_time')
                                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <div class="mb-4">
-                                <label for="end_time" class="block text-gray-700 text-sm font-bold mb-2">Date de fin :</label>
+                                <label for="end_time" class="block text-gray-700 text-sm font-bold mb-2">{{__('Date de fin')}} :</label>
                                 <input type="text" name="end_time" id="end_time"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Départ" readonly>
+                                    placeholder="{{__('Départ')}}" readonly>
                             </div>
 
                             <div class="mb-4">
-                                <label for="nombre_de_personne" class="block text-gray-700 text-sm font-bold mb-2">Nombre de personnes :</label>
+                                <label for="nombre_de_personne" class="block text-gray-700 text-sm font-bold mb-2">{{__('Nombre de personnes')}} :</label>
                                 <input type="number" name="nombre_de_personne" id="nombre_de_personne"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     min="1" max="{{ $appartement->guestCount }}">
@@ -127,7 +127,7 @@ foreach ($appartement->images as $image) {
 
                             <div class="mb-4">
                                 <x-primary-button type="submit"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Réserver
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">{{__('Réserver')}}
                                 </x-primary-button>
                             </div>
                         </form>

@@ -3,6 +3,8 @@
 use App\Livewire\Chat;
 use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
+use App\Livewire\Messagerie\Index;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\RedirectAfterPayment;
@@ -22,6 +24,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\CommissionTierController;
 use App\Http\Controllers\AppartementAvisController;
+use App\Livewire\Messagerie\Chat as MessagerieChat;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Admin\AvailabilityController;
@@ -31,10 +34,8 @@ use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
-use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
-use App\Livewire\Messagerie\Chat as MessagerieChat;
-use App\Livewire\Messagerie\Index;
+use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -254,8 +255,11 @@ Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name
 
 
 
-
-
+Route::get('set-locale/{locale}', function ($locale) {
+    App::setLocale($locale);
+    session()->put('locale', $locale);
+    return redirect()->back();
+})->name('locale.setting');
 
 
 require __DIR__.'/auth.php';

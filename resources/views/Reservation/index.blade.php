@@ -95,7 +95,7 @@
                                 <div>
                                     <h1 class="text-2xl font-extrabold">{{ $reservation->appartement->name }}</h1>
                                     <p><span class="font-extrabold">{{ \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y') }} - {{$reservation->appartement->city}}</span></p>
-                                    <p><span class="font-extrabold text-green-500">{{ $reservation->status }}</span></p>
+                                    <p><span class="font-extrabold text-green-500">{{__('Confirmée')}}</span></p>
                                 </div>
                             </article>
                         </div>

@@ -5,17 +5,17 @@
     <div>
         <x-input-label for="name" :value="__('Type de logement')" class="form-label" />
         <select name="property_type" class="form-select select select-bordered w-full max-w-xs">
-            <option value="appartement">Appartement</option>
-            <option value="house">Maison</option>
-            <option value="gite">Gite</option>
+            <option value="appartement">{{__('Appartement')}}</option>
+            <option value="house">{{__('Maison')}}</option>
+            <option value="gite">{{__('Gite')}}</option>
         </select>
     </div>
 
     <div>
         <x-input-label for="name" :value="__('Type de location')" class="form-label" />
         <select name="location_type" class="form-select select select-bordered w-full max-w-xs">
-            <option value="full_property">Logement complet</option>
-            <option value="guestroom">Chambre d'hôte</option>
+            <option value="full_property">{{__('Logement complet')}}</option>
+            <option value="guestroom">{{__('Chambre d\'hôte')}}</option>
         </select>
     </div>
 
@@ -26,7 +26,7 @@
     </div>
 
     <div>
-        <x-input-label for="address" :value="__('Addresse')" />
+        <x-input-label for="address" :value="__('Adresse')" />
         <x-text-input id="autocomplete" class="form-input block mt-1 w-full" type="text" name="address" />
         <x-input-error :messages="$errors->get('address')" class="mt-2" />
     </div>
@@ -84,16 +84,16 @@
     </div>
 
     <div>
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez vos
-            images</label>
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">{{__('Ajoutez vos
+            images')}}</label>
         <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file"
             name='image[]' multiple>
         <x-input-error :messages="$errors->get('image')" class="mt-2" />
     </div>
 
     <div>
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez des
-            tags</label>
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">{{__('Ajoutez des
+            tags')}}</label>
         <select
             class="select select-bordered w-full max-w-xs chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm"
             multiple name="tag_id[]" id=tag_id>

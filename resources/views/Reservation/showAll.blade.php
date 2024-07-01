@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Réservation de l\'appartement : ' . $appartement_name) }}
+            {{ __('Réservation de l\'appartement')}} : {{ $appartement_name }}
         </h2>
 
         @if (session('success'))

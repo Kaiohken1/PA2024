@@ -9,7 +9,7 @@
     </div>
 
     <div>
-    <x-input-label for="surface" :value="__('Noté la localisation du bien')" />
+    <x-input-label for="surface" :value="__('Localisation du bien')" />
     <div class="rating">
         <input type="radio" name="location_rating" class="mask mask-star" value="1"/>
         <input type="radio" name="location_rating" class="mask mask-star" value="2"/>
@@ -27,7 +27,7 @@
     </div>
 
     <div>
-    <x-input-label for="surface" :value="__('Noté l\'aspect du bien')" />
+    <x-input-label for="surface" :value="__('Aspect du bien')" />
     <div class="rating">
         <input type="radio" name="aspect_rating" class="mask mask-star" value="1"/>
         <input type="radio" name="aspect_rating" class="mask mask-star" value="2"/>
@@ -38,7 +38,7 @@
     </div>
     
     <div>
-        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">Ajoutez des tags</label>
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">{{__('Ajoutez des tags')}}</label>
         <select class="form-input chosen-select border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm" multiple name="tag_id[]" id=tag_id>
             @foreach($tags as $tag)
                 <option value="{{$tag->id}}">{{$tag->name}}</option>
@@ -53,8 +53,8 @@
     </div>
 
 
-    <x-primary-button class="ms-3 mt-5 ml-0">
+    <button class="mt-5 btn btn-warning">
         {{ __('Commencer la simulation') }}
-    </x-primary-button>
+    </button>
     </div>
 </form>

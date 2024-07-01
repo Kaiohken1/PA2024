@@ -45,18 +45,18 @@
                         <div>
                             <a class="text-blue-500 hover:underline"
                                 href="https://www.google.com/maps/dir/?api=1&destination={{ urlencode($reservation->appartement->address) }}+ {{ urlencode($reservation->appartement->postal_code) }} +{{ urlencode($reservation->appartement->city) }}"
-                                target="_blank">Voir l'itinéraire</a>
+                                target="_blank">{{__('Voir l\'itinéraire')}}</a>
                         </div>
                     </div>
 
                     <div class="mt-5 mb-5 border rounded-md px-6">
-                        <p>{{ __('Tarif HT :') }} {{ number_format($reservation->prix / 1.2, 2) }}€</p>
-                        <p class="text-lg">{{ __('Tarif :') }} <span class="font-bold">{{ number_format($reservation->prix, 2) }} €</span></p>
+                        <p>{{ __('Tarif HT') }} : {{ number_format($reservation->prix / 1.2, 2) }}€</p>
+                        <p class="text-lg">{{ __('Tarif') }} : <span class="font-bold">{{ number_format($reservation->prix, 2) }} €</span></p>
                     </div>
 
                     <div class="flex">
                         <a href="{{ route('reservation.generate', $reservation->id) }}">
-                            <button class="btn btn-info mr-3">Facture</button>
+                            <button class="btn btn-info mr-3">{{__('Facture')}}</button>
                         </a>
 
                         @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time))
@@ -64,7 +64,7 @@
                                 <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success mr-3" onclick="return">
-                                        Laissez un avis
+                                        {{__('Laissez un avis')}}
                                     </button>
                                 </form>
                             @endif
@@ -74,7 +74,7 @@
                                 @csrf
                                 <button type="submit" class="btn btn-error"
                                     onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
-                                    Annuler
+                                    {{__('Annuler')}}
                                 </button>
                             </form>
                         @endif
@@ -82,7 +82,7 @@
                     @if(!\Carbon\Carbon::today()->isAfter($reservation->end_time))
                     <div class="mt-5">
                         <a href="{{ route('interventions.reservation-create', ['id' => $reservation->appartement->id, 'reservationId' => $reservation->id]) }}">
-                            <button class="btn btn-warning mr-3">Réserver un service</button>
+                            <button class="btn btn-warning mr-3">{{__('Réserver un service')}}</button>
                         </a>
                     </div>
                     @endif

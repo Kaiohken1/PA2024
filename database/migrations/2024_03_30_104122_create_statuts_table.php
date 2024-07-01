@@ -23,7 +23,7 @@ return new class extends Migration
             ['nom' => 'Terminée'],
             ['nom' => 'Annulée'],
             ['nom' => 'Payée'],
-            ['nom' => 'Aceptée'],
+            ['nom' => 'Acceptée'],
             ['nom' => 'Refusée'],
             ['nom' => 'Envoyée'],
             ['nom' => 'Attribuée'],

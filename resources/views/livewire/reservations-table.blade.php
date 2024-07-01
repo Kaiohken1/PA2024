@@ -17,23 +17,23 @@
                                 wire:model.live.debounce.300ms="search"
                                 type="text"
                                 class="bg-gray-100 border border-gray-300 text-black text-sm rounded-lg focus:ring-yellow-500 focus:border-primary-500 block w-full pl-10 p-2"
-                                placeholder="Rechercher" required>
+                                placeholder="{{__('Rechercher')}}" required>
                         </div>
                     </div>
                     <div class="flex space-x-3">
                         <div class="flex space-x-3 items-center">
-                            <label class="w-40 text-sm font-medium text-black">Statut :</label>
+                            <label class="w-40 text-sm font-medium text-black">{{__('Statut')}} :</label>
                             <select 
                                 wire:model.live="statut"
                                 class="bg-gray-100 border border-gray-300 text-black text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
-                                <option value="">Tout</option>
-                                <option value="1">En attente</option>
-                                <option value="2">Payée</option>
-                                <option value="3">Terminée</option>
-                                <option value="4">Refusée</option>
+                                <option value="">{{__('Tout')}}</option>
+                                <option value="1">{{__('En attente')}}</option>
+                                <option value="2">{{__('Payée')}}</option>
+                                <option value="3">{{__('Terminée')}}</option>
+                                <option value="4">{{__('Refusée')}}</option>
                             </select>
                         </div>
-                        <button wire:click="exportCsv" class="btn btn-warning">Exporter CSV</button>
+                        <button wire:click="exportCsv" class="btn btn-warning">{{__('Exporter')}} CSV</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -41,15 +41,15 @@
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
                                 @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
-                                <th scope="col" class="px-4 py-3">Locataire</th>
+                                <th scope="col" class="px-4 py-3">{{__('Locataire')}}</th>
                                 @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'PRIX'])
                                 @include('livewire.includes.table-sort', ['name' => 'start_time', 'displayName' => 'DATE D\'ARRIVEE'])
                                 @include('livewire.includes.table-sort', ['name' => 'end_time', 'displayName' => 'DATE DE DEPART'])
                                 @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'TARIF'])
                                 @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'RESERVE LE'])
-                                <th scope="col" class="px-4 py-3">Statut</th>
+                                <th scope="col" class="px-4 py-3">{{__('Statut')}}</th>
                                 <th scope="col" class="px-4 py-3">
-                                    <span class="sr-only">Actions</span>
+                                    <span class="sr-only">{{__('Actions')}}</span>
                                 </th>
                             </tr>
                         </thead>
@@ -65,7 +65,7 @@
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y')}}</td>
                                     <td class="px-4 py-3">{{$reservation->prix}}€</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->created_at)->format('d/m/Y')}}</td>
-                                    <td class="px-4 py-3">{{$reservation->status}}</td>
+                                    <td class="px-4 py-3">{{__($reservation->status)}}</td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                     </td>
                                 </tr>
@@ -77,7 +77,7 @@
                 <div class="py-4 px-3">
                     <div class="flex">
                         <div class="flex space-x-4 items-center mb-3">
-                            <label class="w-32 text-sm font-medium text-black">Par Page</label>
+                            <label class="w-32 text-sm font-medium text-black">{{__('Par Page')}}</label>
                             <select
                                 wire:model.live='perPage'
                                 class="bg-gray-100 border border-gray-300 text-black text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">

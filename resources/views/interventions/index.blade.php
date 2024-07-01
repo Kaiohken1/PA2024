@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-3xl font-bold ">Vos demandes de prestations</h1>
-        <p class="text-lg">Gérez vos demande de prestations</p>
+        <h1 class="text-3xl font-bold ">{{__('Vos demandes de prestations')}}</h1>
+        <p class="text-lg">{{__('Gérez vos demande de prestations')}}</p>
 
         @if (session('success'))
             <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600" role="alert">
@@ -25,23 +25,24 @@
 
                             <div class="ml-4">
                                 <h3 class="text-xl font-medium">{{ $intervention->service->name }}</h3>
-                                <span>Intervention #{{ $intervention->id }}</span>
-                                <p>Date d'intervention: {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y') }} | Heure: {{ \Carbon\Carbon::parse($intervention->planned_date)->format('H:i') }}</p>
+                                <span>{{__('Intervention')}} #{{ $intervention->id }}</span>
+                                <p>{{__('Date d\'intervention')}}: {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y') }} | {{__('Heure')}} : {{ \Carbon\Carbon::parse($intervention->planned_date)->format('H:i') }}</p>
                                 <p>
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $intervention->statut_id == 2 || $intervention->statut_id == 5 ? 'bg-green-100 text-green-800' : ($intervention->statut_id == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                        {{ ucfirst($intervention->statut->nom) }}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {{ $intervention->statut_id == 2 || $intervention->statut_id == 5 ? 'bg-green-100 text-green-800' : ($intervention->statut_id == 1 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                                        {{ __($intervention->statut->nom) }}
                                     </span>
                                 </p>
                             </div>
                             <div class="ml-auto">
                                 <a href="{{ route('interventions.clientShow', ['id' => $intervention->id]) }}">
-                                    <button class="text-yellow-500 font-semibold text-xl">Voir</button>
+                                    <button class="text-yellow-500 font-semibold text-xl">{{__('Voir')}}</button>
                                 </a>
                             </div>
                         </div>
                     @endforeach
                 @else
-                    <p>Aucune demande</p>
+                    <p>{{__('Aucune demande')}}</p>
                 @endif
             </div>
             {{$interventions->links()}}

@@ -19,7 +19,7 @@
                         <div class="mr-10">
                             <img class="rounded-md" src="{{ Storage::url($appartement->images->first()->image) }}" width="200px">
                             <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
-                            <p><span class="font-extrabold">{{ $appartement->price }}€</span> par nuit</p>
+                            <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{__('par nuit')}}</p>
                             <p><span class="font-extrabold">{{ $appartement->city }}</span></p>
                             @foreach ($appartement->tags as $tag)
                                 <span class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>
@@ -36,28 +36,26 @@
                 </div>
                 <div class="p-6 grid grid-cols-2 gap-4">
                     <a href="{{ route('property.edit', $appartement) }}">
-                        <button class="btn btn-warning w-full">Editer</button>
+                        <button class="btn btn-warning w-full">{{__('Editer')}}</button>
                     </a>
                     <a href="{{ route('reservation.showAll', $appartement) }}">
-                        <button class="btn btn-warning w-full">Réservations</button>
+                        <button class="btn btn-warning w-full">{{__('Réservations')}}</button>
                     </a>
-                    <a href="{{ route('interventions.create', $appartement) }}">
-                        <button class="btn btn-warning w-full">Interventions</button>
-                    </a>
-                    <a href="{{ route('calendar.show', $appartement->id) }}">
-                        <button class="btn btn-warning w-full">Calendrier</button>
+
+                    <a href="{{ route('calendar.show', $appartement->id) }}" class="col-span-2">
+                        <button class="btn btn-warning w-full">{{__('Calendrier')}}</button>
                     </a>
                     <form action="{{ route('property.active-flag', $appartement) }}" method="POST" class="col-span-2">
                         @csrf
-                        @method('PATCh')
-                        @if($appartement->active_flag == 1)<button class="btn btn-error w-full">Désactiver</button>@else<button class="btn  btn-success w-full">Activer</button>@endif
+                        @method('PATCH')
+                        @if($appartement->active_flag == 1)<button class="btn btn-error w-full">{{__('Désactiver')}}</button>@else<button class="btn  btn-success w-full">{{__('Activer')}}</button>@endif
                     </form>
 
                     @if($appartement->active_flag == 0)
                         <form action="{{ route('property.destroy', $appartement) }}" method="POST" class="col-span-2">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-error w-full" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet appartement ?')">Supprimer</button>
+                            <button class="btn btn-error w-full" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet appartement ?')">{{__('Supprimer')}}</button>
                         </form>
                     @endif
                 </div>
