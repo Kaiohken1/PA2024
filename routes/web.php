@@ -246,7 +246,11 @@ Route::get('/admin/dashboard', function () {
 })->middleware(['admin'])->name('admin');
 
 
-Route::resource('providers', ProviderController::class)->middleware(['auth']);
+Route::resource('providers', ProviderController::class)->middleware(['auth'])->except(['create, store']);
+Route::get('/providers/create', [ProviderController::class, 'create'])->name('providers.create');
+Route::post('/providers/store', [ProviderController::class, 'store'])->name('providers.store');
+
+
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
 
 Route::prefix('estimation')->group(function () {

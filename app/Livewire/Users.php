@@ -8,9 +8,9 @@ use App\Models\Conversation;
 
 class Users extends Component
 {
+    public $userId;
     public function message($userId)
     {
-
       //  $createdConversation =   Conversation::updateOrCreate(['sender_id' => auth()->id(), 'receiver_id' => $userId]);
 
       $authenticatedUserId = auth()->id();
@@ -38,9 +38,7 @@ class Users extends Component
     }
 
     public function render()
-    {
-        $user = User::where('id', '!=', auth()->id())->first();
-    
-        return view('livewire.users', ['user' => $user]);
+    {    
+        return view('livewire.users', ['userId' => $this->userId]);
     }
 }

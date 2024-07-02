@@ -12,15 +12,22 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
-                        {{ __('Louer mon logement') }}
-                    </x-nav-link>
+                    @if(Auth::check() && Auth::user()->hasRole(4))
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
                     
                     <x-nav-link :href="route('espace-client')" :active="request()->routeIs('espace-client') || request()->routeIs('interventions.index') || request()->routeIs('reservation') || request()->routeIs('reservation.show')">
                         {{ __('Espace Client') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('property.create')" :active="request()->routeIs('property.create')">
+                        {{ __('Louer mon logement') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('providers.create')" :active="request()->routeIs('providers.create')">
+                        {{ __('Devenir prestataire') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('ticket.create')">

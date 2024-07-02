@@ -1,7 +1,8 @@
 <div class="mt-3 mb-3">
     <div>
         <x-input-label for="service" :value="__('Service proposé')" />
-        <select name="service_id" id="service_id" wire:model.change="service_id">
+        <select name="service_id" id="service_id" wire:model.change="service_id" class="select select-warning  w-full max-w-xs">
+            <option disabled selected>Choissisez un service</option>
             @foreach (App\Models\Service::All() as $service)
                 <option value="{{ $service->id }}">
                     {{ $service->name }}
@@ -14,7 +15,7 @@
     @if ($service)
         <div>
             @if ($flexPrice)
-                <p class="font-semibold">Le tarif de ce service est évolutif, nous vous invitons à nous envoyer votre
+                <p class="font-semibold mt-3">Le tarif de ce service est évolutif, nous vous invitons à nous envoyer votre
                     propre barème.</p>
                     <div>
                         <x-input-label :value="__('Barème proposé')" />

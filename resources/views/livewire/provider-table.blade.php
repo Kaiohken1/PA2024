@@ -64,6 +64,7 @@
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($provider->created_at)->format('d/m/Y H:i:s')}}
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.providers.show', $provider->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a>
+
                                         <livewire:users :userId="$provider->user->id">
                                         <button onclick="confirm('Etes vous sûr de vouloir supprimer le prestataire {{$provider->name}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$provider->id}})" class="btn btn-error mr-3">X</button>
                                     </td>

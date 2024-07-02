@@ -82,6 +82,10 @@ class User extends Authenticatable
     }
 
     public function getImageUrl() {
+        if($this->provider) {
+            return Storage::url($this->provider->avatar);
+        }
+
         if($this->avatar) {
             return Storage::url($this->avatar);
         } else {
@@ -143,5 +147,12 @@ class User extends Authenticatable
     public function routeNotificationForVonage(Notification $notification): string
     {
         return $this->number;
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where('role_id', $role)
+                            ->orWhere('nom', $role)
+                            ->exists();
     }
 }

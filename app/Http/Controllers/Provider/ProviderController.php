@@ -38,6 +38,9 @@ class ProviderController extends Controller
      */
     public function create()
     {
+        if(!Auth::check()) {
+            return redirect()->route('provider-register');
+        }
         $services = Service::query()
             ->select(['id', 'name'])
             ->get();
@@ -98,6 +101,8 @@ class ProviderController extends Controller
             'price_scale' => $validateData['bareme'],
             'description' => $validateData['provider_description'],
         ]);
+
+        Auth::logout();
 
         return redirect('/')
             ->with('success', "Votre demande a bien été prise en compte, elle sera soumise à validation par un administrateur");
