@@ -23,6 +23,11 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
+    public function createAdmin(): View
+    {
+        return view('auth.admin-login');
+    }
+
     /**
      * Handle an incoming authentication request.
      */
@@ -39,6 +44,26 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
+    public function storeAdmin(LoginRequest $request): RedirectResponse
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            if (Auth::user()->roles->contains('nom', 'admin')) {
+                return redirect()->intended('/admin/dashboard');
+            }
+
+            Auth::logout();
+            return redirect()->route('admin.login')->withErrors(['email' => 'Non autorisé']);
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
+    }
+
     /**
      * Destroy an authenticated session.
      */
@@ -49,8 +74,19 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-
+        
         return redirect('/');
+    }
+
+    public function destroyAdmin(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+        
+        return redirect('/admin');
     }
 
     public function apiLogin(LoginRequest $request)

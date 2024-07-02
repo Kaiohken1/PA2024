@@ -6,9 +6,9 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{route('admin')}}"
-                    <h2 class="font-semibold text-xl text-white leading-tight hover:text-gray-300">
-                        {{ __('PCS Admin') }}
-                    </h2>
+                        <h2 class="font-semibold text-xl text-white leading-tight hover:text-gray-300">
+                            {{ __('PCS Admin') }}
+                        </h2>
                     </a>
                 </div>
 
@@ -78,15 +78,10 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profil') }}
-                            </x-dropdown-link>
-
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('admin-logout') }}">
                                 @csrf
 
-                                <x-dropdown-link :href="route('logout')"
+                                <x-dropdown-link :href="route('admin-logout')"
                                     onclick="event.preventDefault();
                                                     this.closest('form').submit();">
                                     {{ __('Se déconnecter') }}

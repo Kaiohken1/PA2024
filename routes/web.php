@@ -236,8 +236,12 @@ Route::get('/avis/{avis}/edit', [UserAvisController::class, 'edit'])->name('user
 Route::delete('/avis/{avis}', [UserAvisController::class, 'destroy'])->name('users.avis.destroy');
 });
 
+Route::get('admin', function () {
+    return view('auth.admin-login');
+})->name('admin.login');
 
-Route::get('/admin', function () {
+
+Route::get('/admin/dashboard', function () {
     return view('admin.index');
 })->middleware(['admin'])->name('admin');
 
