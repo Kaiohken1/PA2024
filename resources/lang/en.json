@@ -63,7 +63,7 @@
     "Duplicate :name": "Duplicate :name",
     "Edit": "Edit",
     "Edit :name": "Edit :name",
-    "Email": "The :attribute must be a valid email address.",
+    "Email": "Email",
     "Email Password Reset Link": "Email Password Reset Link",
     "Enable": "Enable",
     "Ensure your account is using a long, random password to stay secure.": "Ensure your account is using a long, random password to stay secure.",
@@ -382,6 +382,7 @@
     "Localisation du bien": "Localization of property",
     "Aspect du bien": "Aspect of property",
     "Commencer la simulation": "Start simulation",
-    "Mes réservation":"My reservations"
+    "Mes réservation":"My reservations",
+    "Devenir prestataire":"Register as a provider"
 
 }

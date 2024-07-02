@@ -63,7 +63,7 @@
     "Duplicate :name": "Duplicar :name",
     "Edit": "Editar",
     "Edit :name": "Editar :name",
-    "Email": "El campo :attribute no es un correo válido.",
+    "Email": "Email",
     "Email Password Reset Link": "Enviar enlace para restablecer contraseña",
     "Enable": "Habilitar",
     "Ensure your account is using a long, random password to stay secure.": "Asegúrese que su cuenta esté usando una contraseña larga y aleatoria para mantenerse seguro.",
@@ -378,6 +378,7 @@
     "Localisation du bien": "Ubicación de la propiedad",
     "Aspect du bien": "Aspecto de la propiedad",
     "Commencer la simulation": "Iniciar la simulación",
-    "Mes réservations":"Mis reservas"
+    "Mes réservations":"Mis reservas",
+    "Devenir prestataire":"Regístrate como proveedor"
 
 }
