@@ -1,26 +1,14 @@
-<x-app-layout>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
-
-    @if (session('success'))
-        <x-slot name="header">
-            <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600"
-                role="alert">
-                {{ session('success') }}
-            </div>
-        </x-slot>
-    @endif
-    <div class="flex flex-col sm:p-8 bg-white shadow sm:rounded-lg absolute w-1/9">
-        @include('appartements.partials.appartement-sorting')
-        @include('appartements.partials.tag-filter-appartement')
+<div>
+    <div class="flex justify-center">
+        <input type="text" wire:model="city" placeholder="Ville" />
+        <input type="text" wire:model="start_time" id="start_time" placeholder="Date d'arrivée" />
+        <input type="text" wire:model="end_time" id="end_time" placeholder="Date de départ"/>
+        <input type="number" wire:model="guestCount" placeholder="Voyageurs"/>
+        <button wire:click="search">Rechercher</button>
     </div>
 
-    <div class="flex justify-center mt-5">
-        <livewire:search-property />
-    </div>
-    <div class="flex flex-row py-9">
-        <div class="flex justify-around" id="base">
+    @if ($appartements)
+        <div class="flex justify-around mt-10">
             <div class="grid grid-cols-4 gap-6 w-8/12 sm:p-8 bg-white shadow sm:rounded-lg ">
                 @forelse ($appartements as $appartement)
                     <div>
@@ -60,22 +48,52 @@
                                 <p class="text-center text-gray-600 text-lg">
                                     {{ __('Aucun appartement disponible...') }}</p>
                                 <x-primary-button class="mt-4"><a
-                                        href="{{ route('property.create') }}">{{ __('Et si vous proposiez le vôtre ?') }}</a></x-primary-button>
+                                        href="{{ route('property.create') }}">{{ __('Et si vous
+                                                                            proposiez le vôtre ?') }}</a></x-primary-button>
                             </div>
                         </div>
                     </div>
                 @endforelse
             </div>
-        </div>
-    </div>
-</x-app-layout>
 
+    @endif
+</div>
 
 <script>
-    document.addEventListener('livewire:init', () => {
-       Livewire.on('search', (event) => {
-        console.log("test");
-           document.getElementById("base").style.display = "none";
-       });
+    document.addEventListener('livewire:init', function () {
+        flatpickr("#start_time", {
+            mode: "range",
+            dateFormat: "d-m-Y",
+            minDate: "today",
+            showMonths: 2,
+            locale: "fr",
+            onClose: function(selectedDates) {
+                if (selectedDates.length === 2) {
+                    var start = selectedDates[0];
+                    var end = selectedDates[1];
+                    document.getElementById("start_time").value = formatDate(start);
+                    document.getElementById("end_time").value = formatDate(end, true);
+                    @this.set('end_time', formatDate(end));
+                } else if (selectedDates.length === 1) {
+                    var start = selectedDates[0];
+                    document.getElementById("start_time").value = formatDate(start);
+                    document.getElementById("end_time").value = '';
+                } else {
+                    document.getElementById("start_time").value = '';
+                    document.getElementById("end_time").value = '';
+                }
+            }
+        });
+
+        function formatDate(date, endOfDay = false) {
+            if (endOfDay) {
+                date.setHours(23, 59, 59, 999);
+            }
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, "0");
+            var day = date.getDate().toString().padStart(2, "0");
+            return day + "-" + month + "-" + year;
+        }
     });
 </script>
+
