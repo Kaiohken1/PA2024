@@ -298,7 +298,7 @@
     "Annuler": "anular",
     "Réserver un service": "Reserva un servicio",
     "Arrivée": "Llegada",
-    "Départ": "salida",
+    "Départ": "Salida",
     "En attente": "A la espera",
     "En cours": "En curso",
     "Terminée": "Terminado",
@@ -379,6 +379,6 @@
     "Aspect du bien": "Aspecto de la propiedad",
     "Commencer la simulation": "Iniciar la simulación",
     "Mes réservations":"Mis reservas",
-    "Devenir prestataire":"Regístrate como proveedor"
-
+    "Devenir prestataire":"Regístrate como proveedor",
+    "Voyageurs":"Viajeros"
 }

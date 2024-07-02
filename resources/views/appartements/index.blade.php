@@ -2,6 +2,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+
 
     @if (session('success'))
         <x-slot name="header">

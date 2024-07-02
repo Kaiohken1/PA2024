@@ -1,10 +1,10 @@
 <div>
     <div class="flex justify-center">
-        <input type="text" wire:model="city" placeholder="Ville" />
-        <input type="text" wire:model="start_time" id="start_time" placeholder="Date d'arrivée" />
-        <input type="text" wire:model="end_time" id="end_time" placeholder="Date de départ"/>
-        <input type="number" wire:model="guestCount" placeholder="Voyageurs"/>
-        <button wire:click="search">Rechercher</button>
+        <input type="text" wire:model="city" placeholder="{{__('Ville')}}" />
+        <input type="text" wire:model="start_time" id="start_time" placeholder="{{__('Départ')}}" />
+        <input type="text" wire:model="end_time" id="end_time" placeholder="{{__('Arrivée')}}" readonly/>
+        <input type="number" wire:model="guestCount" placeholder="{{__('Voyageurs')}}"/>
+        <button wire:click="search">{{__('Rechercher')}}</button>
     </div>
 
     @if ($appartements)
@@ -66,7 +66,7 @@
             dateFormat: "d-m-Y",
             minDate: "today",
             showMonths: 2,
-            locale: "fr",
+            locale: "{{ config('app.locale') }}",
             onClose: function(selectedDates) {
                 if (selectedDates.length === 2) {
                     var start = selectedDates[0];
