@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b940625fa1404516a35612331b5597ec",
+    "content-hash": "1dafff962f1f8e3e817469321370d16a",
     "packages": [
         {
             "name": "andreiio/blade-remix-icon",
@@ -1330,16 +1330,16 @@
         },
         {
             "name": "laravel/cashier",
-            "version": "v15.3.2",
+            "version": "v15.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/cashier-stripe.git",
-                "reference": "f468fb187b2229a0f1b7d20e2a619369eb4a36e7"
+                "reference": "8442f1854ceb11fb67c8db6523f65881ae2ea6a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/cashier-stripe/zipball/f468fb187b2229a0f1b7d20e2a619369eb4a36e7",
-                "reference": "f468fb187b2229a0f1b7d20e2a619369eb4a36e7",
+                "url": "https://api.github.com/repos/laravel/cashier-stripe/zipball/8442f1854ceb11fb67c8db6523f65881ae2ea6a1",
+                "reference": "8442f1854ceb11fb67c8db6523f65881ae2ea6a1",
                 "shasum": ""
             },
             "require": {
@@ -1414,7 +1414,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2024-04-12T09:45:48+00:00"
+            "time": "2024-07-02T13:16:47+00:00"
         },
         {
             "name": "laravel/framework",

@@ -4,21 +4,23 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Tag;
+
 use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
 use App\Models\Subscription;
+
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use MBarlow\Megaphone\HasMegaphone;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Laravel\Cashier\Billable;
-use MBarlow\Megaphone\HasMegaphone;
 
 class User extends Authenticatable
 {
@@ -127,4 +129,7 @@ class User extends Authenticatable
     public function askedTickets(): HasMany {
         return $this->hasMany(Ticket::class, 'asker_user_id');
     }
+
+    
+
 }

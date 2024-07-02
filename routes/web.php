@@ -17,7 +17,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\TicketCategoryController;
 use App\Http\Controllers\AppartementAvisController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
@@ -28,7 +30,7 @@ use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\TicketCategoryController;
+use App\Http\Controllers\SubscriptionControllerClient;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/estimate/{id}', [InterventionEstimationController::class, 'update'])->name('estimate.update');
     Route::delete('/estimate/{id}', [InterventionEstimationController::class, 'destroy'])->name('estimate.destroy');
 
+
+    Route::get('/subscribe', [SubscriptionControllerClient::class, 'showSubscriptionForm'])->name('subscribe.form');
+    Route::post('/subscribe', [SubscriptionControllerClient::class, 'subscribe'])->name('subscribe');
+    Route::get('/subscribe/checkout/success', [SubscriptionControllerClient::class, 'success'])->name('checkout.success');
+    Route::get('/subscribe/checkout/cancel', [SubscriptionControllerClient::class, 'cancel'])->name('checkout.cancel');
 
 
     Route::prefix('property/{appartement}/edit')->group(function () {
