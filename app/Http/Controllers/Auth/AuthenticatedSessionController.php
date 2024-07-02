@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\ChatbotMessage;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -105,4 +107,52 @@ class AuthenticatedSessionController extends Controller
             return response()->json(['message' => 'Internal Server Error'], 500);
         }
     }
+
+
+
+    
+    public function apiMobileLogin(LoginRequest $request)
+{
+    try {
+        $request->authenticate();
+
+        $user = Auth::user();
+        Log::info('User authenticated', ['user_id' => $user->id]);
+
+        $user = User::where('id', $user->id)->with('roles')->first();
+        Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
+
+        $user->formatted_date = Carbon::parse($user->created_at)->format('d/m/Y');
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        Log::info('Token created', ['token' => $token]);
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => [
+                'first_name' => $user->first_name,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->roles,
+                'created_at' => $user->formatted_date
+            ]
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Login error: ' . $e->getMessage());
+        return response()->json(['message' => 'Internal Server Error'], 500);
+    }
+}
+
+public function apiMobileLogout(Request $request)
+{
+    try {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully'], 200);
+    } catch (\Exception $e) {
+        Log::error('Logout error: ' . $e->getMessage());
+        return response()->json(['message' => 'Internal Server Error'], 500);
+    }
+} 
+ 
 }
