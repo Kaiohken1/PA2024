@@ -110,6 +110,7 @@ class InterventionController extends Controller
             'services.*' => ['exists:services,id'],
             'planned_date' => ['required', 'date', 'after:now'],
             'max_end_date' => ['nullable', 'date', 'after:planned_date'],
+            'provider_id' => ['nullable', 'exists:providers,id'],
         ]);
 
 
@@ -158,6 +159,7 @@ class InterventionController extends Controller
             // $intervention->description = $description;
             $intervention->description = $validatedData['information'];
             $intervention->service_version = $service->currentVersion()->version_id;
+            $intervention->provider_id = $validatedData['provider_id'];
             $intervention->save();
 
             foreach ($validatedData as $value) {

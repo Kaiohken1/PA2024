@@ -1,11 +1,44 @@
 <div>
     <div class="flex justify-center">
-        <input type="text" wire:model="city" placeholder="{{__('Ville')}}" />
-        <input type="text" wire:model="start_time" id="start_time" placeholder="{{__('Départ')}}" />
-        <input type="text" wire:model="end_time" id="end_time" placeholder="{{__('Arrivée')}}" readonly/>
-        <input type="number" wire:model="guestCount" placeholder="{{__('Voyageurs')}}"/>
-        <button wire:click="search">{{__('Rechercher')}}</button>
+        <div class="flex justify-center p-4 bg-white rounded-lg shadow-md space-x-2 mt-3">
+            <input 
+                type="text" 
+                wire:model="city" 
+                placeholder="{{__('Ville')}}" 
+                class="input input-bordered w-full max-w-xs m-2" 
+            />
+            <input 
+                type="text" 
+                wire:model="start_time" 
+                id="start_time" 
+                placeholder="{{__('Départ')}}" 
+                class="input input-bordered w-full max-w-xs m-2" 
+            />
+            <input 
+                type="text" 
+                wire:model="end_time" 
+                id="end_time" 
+                placeholder="{{__('Arrivée')}}" 
+                readonly 
+                class="input input-bordered w-full max-w-xs m-2" 
+            />
+            <input 
+                type="number" 
+                wire:model="guestCount" 
+                placeholder="{{__('Voyageurs')}}" 
+                min="0" 
+                class="input input-bordered w-full max-w-xs m-2  [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <button 
+                wire:click="search" 
+                class="btn btn-warning m-2"
+            >
+                {{__('Rechercher')}}
+            </button>
+        </div>
+        
     </div>
+    
 
     @if ($appartements)
         <div class="flex justify-around mt-10">

@@ -30,17 +30,16 @@ foreach ($appartement->images as $image) {
         <div class="mt-9 ml-11">
             <article>
                 <h1 class="text-3xl font-extrabold">{{ $appartement->name }}</h1>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-2 gap-2"
+                    class="btn btn-info flex justify-end"
+                        x-data=""
+                        x-on:click.prevent="$dispatch('open-modal', 'images-show')">
                         @foreach ($propertyImages as $image)
                             <div class="w-full">
                                 <img class="h-72 max-w-full rounded-lg" src="{{ Storage::url($image->image) }}" width="100%">
                             </div>
                         @endforeach
                     </div>
-                <button class="btn btn-info flex justify-end"
-                x-data=""
-                x-on:click.prevent="$dispatch('open-modal', 'images-show')"
-                >{{ __('Voir toutes les photos') }}</button>
 
                 <x-modal name="images-show" focusable maxWidth="fit" maxHeight="full">
                     <div class="p-4 w-full h-full">

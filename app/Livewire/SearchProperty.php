@@ -43,7 +43,11 @@ class SearchProperty extends Component
             ->withAvg('avis', 'rating_price_quality')
             ->withAvg('avis', 'rating_location')
             ->withAvg('avis', 'rating_communication')
-            ->where('guestCount', '>=', $this->guestCount)
+            
+            ->when($this->guestCount, function ($query, $guestCount) {
+                return $query->where('guestCount', '>=', $guestCount);
+            })
+
             ->whereDoesntHave('reservations', function ($query) use ($start_time, $end_time) {
                 $query->where(function ($query) use ($start_time, $end_time) {
                     $query->whereBetween('start_time', [$start_time, $end_time])

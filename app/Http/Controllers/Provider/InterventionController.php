@@ -131,10 +131,10 @@ class InterventionController extends Controller
 
         $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
 
-        if(isset($validatedData['planned_date'])) {
-            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+        // if(isset($validatedData['planned_date'])) {
+        //     $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
 
-        }
+        // }
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);

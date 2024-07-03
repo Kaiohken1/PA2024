@@ -42,13 +42,13 @@
                 @foreach ($conversations as $key => $conversation)
                     <li id="conversation-{{ $conversation->id }}" wire:key="{{ $conversation->id }}" class="py-3 {{Auth()->user()->isAdmin() ? 'hover:bg-black' : 'hover:bg-gray-200'}} rounded-2xl transition-colors duration-150 flex gap-4 relative w-full cursor-pointer px-2 {{ $conversation->id == $selectedConversation?->id ? (Auth::user()->isAdmin() ? 'bg-black' : 'bg-gray-200') : '' }}">
                         <a href="#" class="shrink-0">
-                            <x-avatar src="{{ $conversation->getReceiver()->getImageUrl() }}" />
+                            <x-avatar src="{{ $conversation->getReceiver()->provider ? $conversation->getReceiver()->provider->avatar : $conversation->getReceiver()->getImageUrl() }}" />
                         </a>
                         <aside class="grid grid-cols-12 w-full">
                             <a href="{{ Auth::user()->isAdmin() ? route('admin.chat', $conversation->id) : route('chat', $conversation->id) }}" class="col-span-11 border-b pb-2 {{ Auth::user()->isAdmin() ? 'border-gray-600' : 'border-gray-200' }} relative overflow-hidden truncate leading-5 w-full flex-nowrap p-1">
                                 <div class="flex justify-between w-full items-center">
                                     <h6 class="truncate font-medium tracking-wider {{ Auth::user()->isAdmin() ? 'text-white' : 'text-black' }}">
-                                        {{ $conversation->getReceiver()->name }}
+                                        {{ $conversation->getReceiver()->provider ? $conversation->getReceiver()->provider->name : $conversation->getReceiver()->name }}
                                     </h6>
                                     <small class="{{ Auth::user()->isAdmin() ? 'text-gray-400' : 'text-gray-700' }}">{{ $conversation->messages?->last()?->created_at?->shortAbsoluteDiffForHumans() }}</small>
                                 </div>
