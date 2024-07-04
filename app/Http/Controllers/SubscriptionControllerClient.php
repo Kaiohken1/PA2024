@@ -52,11 +52,11 @@ class SubscriptionControllerClient extends Controller
 
     public function success()
     {
-        return view('subscription.success');
+        return redirect()->route('home')->with('Payment was success.');
     }
 
     public function cancel()
     {
-        return view('subscription.cancel');
+        return redirect()->route('home')->with('error', 'Payment was cancelled.');
     }
 }
