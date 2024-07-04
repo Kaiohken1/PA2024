@@ -7,10 +7,14 @@ use Livewire\Component;
 use App\Models\Appartement;
 
 use Livewire\Attributes\Url;
+use Livewire\WithPagination;
+
 use function Laravel\Prompts\search;
 
 class SearchProperty extends Component
 {
+    use WithPagination;
+
     #[Url()]
     public $city;
 
@@ -25,6 +29,8 @@ class SearchProperty extends Component
     
     
     public $appartements = [];
+    public $pagination = 8;
+
 
     public function mount()
     {
@@ -32,6 +38,12 @@ class SearchProperty extends Component
             $this->search();
         }
     }
+
+    public function loadMore() {
+        $this->pagination += 8;
+        $this->search();
+    }
+
     public function search()
     {
         if (empty($this->city) && empty($this->start_time) && empty($this->end_time) && empty($this->guestCount)) {
@@ -73,7 +85,7 @@ class SearchProperty extends Component
                 });
             })
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate($this->pagination);
 
 
 

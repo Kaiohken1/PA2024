@@ -101,7 +101,7 @@ class AppartementController extends Controller
             ->withAvg('avis', 'rating_location')
             ->withAvg('avis', 'rating_communication')
             ->orderBy('reservations_count', 'desc')
-            ->take(10)
+            ->take(4)
             ->get();
     
         $mostReserved->each(function ($appartement) {
@@ -119,6 +119,7 @@ class AppartementController extends Controller
             ->withAvg('avis', 'rating_price_quality')
             ->withAvg('avis', 'rating_location')
             ->withAvg('avis', 'rating_communication')
+            ->take(4)
             ->get();
     
         $bestRated->each(function ($appartement) {
