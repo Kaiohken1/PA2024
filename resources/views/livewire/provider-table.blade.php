@@ -41,6 +41,7 @@
                                 <th scope="col" class="px-4 py-3">Nom</th>
                                 <th scope="col" class="px-4 py-3">Email</th>
                                 <th scope="col" class="px-4 py-3">Statut</th>
+                                <th scope="col" class="px-4 py-3">Service</th>
                                 @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'COMPTE CREE LE'])
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
@@ -61,11 +62,17 @@
                                         {{ $provider->statut == 'Refusé' ? 'text-red-500' : '' }}">
                                         {{ $provider->statut }}
                                     </td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($provider->created_at)->format('d/m/Y H:i:s')}}
+                                    <td class="px-4 py-3">{{$provider->services->first()->name}}</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($provider->created_at)->format('d/m/Y à H:i')}}
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.providers.show', $provider->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a>
 
-                                        <livewire:users :userId="$provider->user->id">
+                                        <a href="{{route('admin.provider.message', $provider->user->id)}}">
+                                        <button class="btn btn-success mr-3">
+                                            Message
+                                        </button>
+                                        </a>
+                                        {{-- <livewire:users :userId="$provider->user->id"> --}}
                                         <button onclick="confirm('Etes vous sûr de vouloir supprimer le prestataire {{$provider->name}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$provider->id}})" class="btn btn-error mr-3">X</button>
                                     </td>
                                 </tr>

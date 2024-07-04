@@ -79,6 +79,9 @@ class Provider extends Model
     {
         return $query->where('id', 'like', "%{$value}%")
                 ->orWhere('name', 'like', "%{$value}%")
-                ->orWhere('email', 'like', "%{$value}%");
+                ->orWhere('email', 'like', "%{$value}%")
+                ->orWhereHas('services', function($query) use ($value) {
+                    $query->where('services.name', 'like', "%{$value}%");
+                });;
     }
 }

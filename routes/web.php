@@ -220,6 +220,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('/chat', Index::class)->name('admin.chat.index');
     Route::get('/chat/{query}', MessagerieChat::class)->name('admin.chat');
 
+    Route::get('providers/{id}/message', [AdminProviderController::class, 'message'])->name('admin.provider.message');
+
     Route::resource('property/{id}/interventions', AdminInterventionController::class)->names('admin.interventions')->except('index', 'show', 'update');
     Route::post('/interventions/{id}/plan', [AdminInterventionController::class, 'plan'])->name('admin.interventions.plan');
 
