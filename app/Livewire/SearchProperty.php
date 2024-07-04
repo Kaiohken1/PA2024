@@ -34,6 +34,10 @@ class SearchProperty extends Component
     }
     public function search()
     {
+        if (empty($this->city) && empty($this->start_time) && empty($this->end_time) && empty($this->guestCount)) {
+            return redirect()->to('/'); 
+        }
+        
         $start_time = date('Y-m-d', strtotime($this->start_time));
         $end_time = date('Y-m-d', strtotime($this->end_time));
         $this->appartements = Appartement::where('city', 'like', '%' . $this->city . '%')

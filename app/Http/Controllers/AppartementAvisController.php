@@ -30,15 +30,17 @@ class AppartementAvisController extends Controller
      */
     public function store(Request $request)
     {
+
         $validateData = $request->validate([
             'comment' => ['required', 'max:255'],
             'appartement_id' => ['required', 'numeric'],
             'reservation_id' => ['required', 'numeric'],
-            'rating_cleanness' => ['required', 'numeric', 'max:5'],
-            'rating_price_quality' => ['required', 'numeric', 'max:5'],
-            'rating_location' => ['required', 'numeric', 'max:5'],
-            'rating_communication' => ['required', 'numeric', 'max:5'],
+            'rating_cleanness' => ['required', 'numeric', 'max:5', 'min:1'],
+            'rating_price_quality' => ['required', 'numeric', 'max:5', 'min:1'],
+            'rating_location' => ['required', 'numeric', 'max:5', 'min:1'],
+            'rating_communication' => ['required', 'numeric', 'max:5', 'min:1'],
         ]);
+
         
         $validateData['user_id'] = Auth()->id();
     

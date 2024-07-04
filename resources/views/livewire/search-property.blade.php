@@ -42,8 +42,18 @@
 
     @if ($appartements)
         <div class="flex justify-around mt-10">
-            <div class="grid grid-cols-4 gap-6 w-8/12 sm:p-8 bg-white shadow sm:rounded-lg ">
+            <div class="grid grid-cols-4 gap-6 w-11/12 mt-10 sm:p-8 bg-white shadow sm:rounded-lg ">
                 @forelse ($appartements as $appartement)
+                @php
+                $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+        
+                $rest = 4 - $mainImages->count();
+        
+                $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
+        
+                $propertyImages = $mainImages->merge($otherImages);
+        
+                @endphp
                     <div>
                         <a href="{{ route('property.show', $appartement) }}" class="block">
                             <article>
@@ -81,8 +91,7 @@
                                 <p class="text-center text-gray-600 text-lg">
                                     {{ __('Aucun appartement disponible...') }}</p>
                                 <x-primary-button class="mt-4"><a
-                                        href="{{ route('property.create') }}">{{ __('Et si vous
-                                                                            proposiez le vôtre ?') }}</a></x-primary-button>
+                                        href="{{ route('property.create') }}">{{ __('Et si vous proposiez le vôtre ?') }}</a></x-primary-button>
                             </div>
                         </div>
                     </div>

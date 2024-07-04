@@ -28,10 +28,8 @@ class AppartementController extends Controller
             'tag_id' => ['array'],
             'sort_type' => ['string']
         ]);
-
-
-
-        $appartements = Appartement::query()
+    
+        $appartementsQuery = Appartement::query()
             ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
             ->where('active_flag', 1)
             ->with(['user:id,name'])
@@ -42,63 +40,109 @@ class AppartementController extends Controller
             ->withAvg('avis', 'rating_price_quality')
             ->withAvg('avis', 'rating_location')
             ->withAvg('avis', 'rating_communication');
-
+    
         if (isset($validateData['tag_id'])) {
             $tags_id = $validateData['tag_id'];
             foreach ($tags_id as $tag_id) {
-                $appartements->whereHas('tags', function ($query) use ($tag_id) {
+                $appartementsQuery->whereHas('tags', function ($query) use ($tag_id) {
                     $query->where('tags.id', $tag_id);
                 });
             }
         }
+    
         if (isset($validateData['sort_type'])) {
             $sortType = $validateData['sort_type'];
-
+            
             switch ($sortType) {
                 case 'price_asc':
-                    $appartements->orderBy('price', 'asc');
+                    $appartementsQuery->orderBy('price', 'asc');
                     break;
-
+    
                 case 'price_desc':
-                    $appartements->orderBy('price', 'desc');
+                    $appartementsQuery->orderBy('price', 'desc');
                     break;
-
+    
                 case 'surface_asc':
-                    $appartements->orderBy('surface', 'asc');
+                    $appartementsQuery->orderBy('surface', 'asc');
                     break;
-
+    
                 case 'surface_desc':
-                    $appartements->orderBy('surface', 'desc');
+                    $appartementsQuery->orderBy('surface', 'desc');
                     break;
-
+    
                 case 'guest_count_asc':
-                    $appartements->orderBy('guestCount', 'asc');
+                    $appartementsQuery->orderBy('guestCount', 'asc');
                     break;
-
+    
                 case 'guest_count_desc':
-                    $appartements->orderBy('guestCount', 'desc');
+                    $appartementsQuery->orderBy('guestCount', 'desc');
                     break;
             }
         } else {
-            $appartements->latest();
+            $appartementsQuery->latest();
         }
-
-
-
-        $appartements = $appartements->paginate(10);
-
-        $appartements = $appartements->each(function ($appartement) {
-            $appartement->overall_rating = ($appartement->avis_avg_rating_cleanness + $appartement->avis_avg_rating_price_quality  + $appartement->avis_avg_rating_location  + $appartement->avis_avg_rating_communication) / 4;
+    
+        $appartements = $appartementsQuery->paginate(10);
+    
+        $appartements->getCollection()->transform(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
             return $appartement;
         });
-
+    
+        $mostReserved = Appartement::withCount('reservations')
+            ->withCount('avis')
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->orderBy('reservations_count', 'desc')
+            ->take(10)
+            ->get();
+    
+        $mostReserved->each(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
+            return $appartement;
+        });
+    
+        $bestRated = Appartement::withCount('avis')
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->get();
+    
+        $bestRated->each(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
+            return $appartement;
+        });
+    
+        $bestRated = $bestRated->sortByDesc('overall_rating')->take(10);
+    
         $tags = Tag::all();
-
+    
         return view('appartements.index', [
             'appartements' => $appartements,
+            'mostReserved' => $mostReserved,
+            'bestRated' => $bestRated,
             'tags' => $tags,
         ]);
     }
+    
 
     public function userIndex()
     {
