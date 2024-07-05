@@ -36,7 +36,7 @@ use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\AppartementController as AdminAppartementController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-
+use App\Livewire\CitySelection;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -171,8 +171,11 @@ Route::middleware('auth')->group(function () {
 
     
 
-        Route::get('/provider/chat', Index::class)->name('chat.index');
-        Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+    Route::get('/provider/chat', Index::class)->name('chat.index');
+    Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+
+    Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
+
 
 });
 
@@ -226,6 +229,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::post('/interventions/{id}/plan', [AdminInterventionController::class, 'plan'])->name('admin.interventions.plan');
 
     Route::resource('/reservations', AdminReservationController::class)->names('admin.reservations');
+
 
 
 });

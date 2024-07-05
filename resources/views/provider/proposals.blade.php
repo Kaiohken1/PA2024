@@ -1,4 +1,25 @@
 <x-provider-layout>
+    <x-slot name="header">
+        
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
+            {{ __('Mes propositions') }}
+        </h2>
+
+        <x-nav-link :href="route('proposals.parameter')" class="text-xl">
+            {{ __('Gérer les villes à afficher') }}
+        </x-nav-link>
+
+        @if (session('success'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600" role="alert">
+                {{ session('success') }}
+            </div>
+                @elseif (session('error'))
+            <div class="p-4 mb-3 mt-3 text-center text-sm text-red-800 rounded-lg bg-red-50 dark:text-red-600"
+                role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+    </x-slot>
     {{-- <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">

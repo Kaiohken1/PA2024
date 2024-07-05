@@ -75,6 +75,11 @@ class Provider extends Model
         return $this->belongsToMany(Intervention::class, 'hidden_interventions');
     }
 
+    public function selectedCities()
+    {
+        return $this->hasMany(ProviderCitySelection::class);
+    }
+
     public function scopeSearch($query, $value)
     {
         return $query->where('id', 'like', "%{$value}%")
