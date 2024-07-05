@@ -1,4 +1,7 @@
 <div>
+    @php
+    $hasAdress = false;
+    @endphp
     <section class="mt-10">
         <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
             <div class="bg-white text-gray-900 relative shadow-md sm:rounded-lg overflow-hidden border border-gray-300">
@@ -39,10 +42,17 @@
                                     @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
                                     @foreach ($interventions->last()->service->parameters as $parameter)
                                         <th scope="col" class="px-4 py-3">{{ $parameter->name }}</th>
+                                        @if($parameter->data_type_id == 1)
+                                            @php
+                                                $hasAdress = true;
+                                            @endphp
+                                        @endif
                                     @endforeach
-                                    @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DE DEMANDE'])
+                                    @if($hasAdress == FALSE)<th scope="col" class="px-4 py-3">Adresse de l'appartement</th>@endif
+                                    <th scope="col" class="px-4 py-3">Ville</th>
                                     <th scope="col" class="px-4 py-3">Client</th>
                                     @include('livewire.includes.table-sort', ['name' => 'planned_date', 'displayName' => 'DATE PREVUE'])
+                                    @include('livewire.includes.table-sort', ['name' => 'created_at', 'displayName' => 'DATE DE DEMANDE'])
                                     <th scope="col" class="px-4 py-3">Statut</th>
                                     <th scope="col" class="px-4 py-3"></th>
                                 </tr>
@@ -61,14 +71,22 @@
                                                 {{ $paramValue }}
                                             </td>
                                         @endforeach
+                                        @if($hasAdress == FALSE)
+                                            <td class="px-4 py-3 font-medium whitespace-nowrap">
+                                                {{ $intervention->appartement->address}}
+                                            </td>
+                                        @endif
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
-                                            {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s') }}
+                                            {{ $intervention->appartement->city}}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
                                             {{ $intervention->user->name }}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
-                                            {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s') }}
+                                            {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i') }}
+                                        </td>
+                                        <td class="px-4 py-3 font-medium whitespace-nowrap">
+                                            {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i') }}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
                                             @if($intervention->estimations->where('provider_id', Auth::user()->provider->id)->isNotEmpty())

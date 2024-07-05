@@ -209,7 +209,7 @@ class ProviderController extends Controller
                             ->where('service_id', $provider->services->first()->id)
                             ->where('statut_id', 1)
                             ->where(function($query) use ($providerId) {
-                                        $query->where('provider_id', '')
+                                        $query->where('provider_id', NULL)
                                       ->orWhere('provider_id', $providerId);
                             })
                             ->latest()
