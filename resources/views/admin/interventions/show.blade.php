@@ -27,7 +27,7 @@
                             <span class="text-yellow-500">À définir</span>
                         @endif
                     </p>
-                    <p><strong>Date d'intervention:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</p>
+                    <p><strong>Date d'intervention:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}}</p>
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
 
                     @foreach ($intervention->service_parameters as $parameter)
@@ -43,8 +43,8 @@
                     @if($intervention->description)
                         <p><strong>Description:</strong> {{ $intervention->description }}</p>
                     @endif
-                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s') }}</p>
-                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($intervention->updated_at)->format('d/m/Y H:i:s') }}</p>
+                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i') }}</p>
+                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($intervention->updated_at)->format('d/m/Y H:i') }}</p>
 
                     <form action="{{ route('providers.available', $intervention->id) }}" method="GET" class="mt-6">
                         @csrf
@@ -70,11 +70,11 @@
                         @foreach($refusals as $refusals)
                             @if($refusals->statut_id == 8)
                                 <div class="border-b border-gray-200 py-2">
-                                    <p class="text-lg"><label class="pr-10 font-semibold">Refusé le :</label> {{ $refusals->created_at->format('d/m/Y à H:i:s') }}</p>
+                                    <p class="text-lg"><label class="pr-10 font-semibold">Refusé le :</label> {{ $refusals->created_at->format('d/m/Y à H:i') }}</p>
                                     <p class="text-lg"><label class="pr-10 font-semibold">Raison :</label> {{ $refusals->refusal_reason }}</p>
                                     <p class="text-lg"><label class="pr-10 font-semibold">Prestataire :</label> {{ $refusals->provider->name }}</p>
                                     <p class="text-lg"><label class="pr-10 font-semibold">Montant :</label> {{ $refusals->price ? $refusals->price . '€' : 'À définir' }}</p>
-                                    <p class="text-lg"><label class="pr-10 font-semibold">Date et heure de fin prévue :</label> {{ $refusals->end_time ? \Carbon\Carbon::parse($refusals->end_time)->format('d/m/Y à H:i:s') : 'À définir' }}</p>
+                                    <p class="text-lg"><label class="pr-10 font-semibold">Date et heure de fin prévue :</label> {{ $refusals->end_time ? \Carbon\Carbon::parse($refusals->end_time)->format('d/m/Y à H:i') : 'À définir' }}</p>
                                 </div>
                             @endif
                         @endforeach

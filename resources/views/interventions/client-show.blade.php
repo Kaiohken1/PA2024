@@ -54,9 +54,9 @@
                         <p class="text-lg"><label class="text-yellow-800 pr-10">{{$version->getModel()->name}}</label> {{$parameter->pivot->value}} </p>
                     @endforeach
 
-                    <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Date et heure de début')}}</label> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}} </p>
+                    <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Date et heure de début')}}</label> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i')}} </p>
 
-                    <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Date et heure de fin')}}</label> {{\Carbon\Carbon::parse($intervention->planned_end_date)->format('d/m/Y à H:i:s')}} </p>
+                    <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Date et heure de fin')}}</label> {{\Carbon\Carbon::parse($intervention->planned_end_date)->format('d/m/Y à H:i')}} </p>
 
                     <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Montant à payer')}}</label> @if($intervention->price) <strong>{{$intervention->price + ($intervention->price*0.20)}}€</strong> @else{{__('À définir')}}  @endif</p>
                 </div>

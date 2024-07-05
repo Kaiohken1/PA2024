@@ -19,13 +19,13 @@
                     <p><strong>Objet:</strong> {{ $ticket->subject }}</p>
                     <p><strong>Catégorie:</strong> {{ $ticket->attributedRole->nom }}</p>
                     <p><strong>Description:</strong> {{ $ticket->description }}</p>
-                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y H:i:s') }}</p>
+                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($ticket->created_at)->format('d/m/Y H:i') }}</p>
                     
 
 
                     <h2 class="text-2xl font-bold mt-4 mb-2">Réponse de PCS</h2>
                     <p><strong>Solution:</strong> {{ $ticket->solution }}</p>
-                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($ticket->updated_at)->format('d/m/Y H:i:s') }}</p>
+                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($ticket->updated_at)->format('d/m/Y H:i') }}</p>
 
                     
                     </a>

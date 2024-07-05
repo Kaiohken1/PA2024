@@ -54,7 +54,7 @@
 
                     <p><strong>Client :</strong> {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                     <p><strong>Appartement :</strong>{{ $intervention->appartement->address }}</p>
-                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</p>
+                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i')}}</p>
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
                     @if($intervention->comment)<p><strong>Commentaire du prestataire : </strong>{{$intervention->comment}}</p>@endif
                     @foreach ($intervention->service_parameters as $parameter)

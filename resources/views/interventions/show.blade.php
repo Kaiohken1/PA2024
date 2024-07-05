@@ -58,7 +58,7 @@
 
                     <p><strong>Client :</strong> {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                     <p><strong>Appartement :</strong>{{ $intervention->appartement->address }}</p>
-                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</p>
+                    <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i')}}</p>
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
                     @foreach ($intervention->service_parameters as $parameter)
                         <div class="flex">
@@ -78,7 +78,7 @@
                             <div class="mt-5">
                                 <p><strong>Tarif : </strong>{{$estimation->price}}€</p>
                                 <p><strong>Commission conciergie : </strong>{{$estimation->commission}}€</p>
-                                <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y à H:i:s')}}</p>
+                                <p><strong>Date de fin prévue : </strong>{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y à H:i')}}</p>
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
 
                                 @if($estimation->statut_id != 8)

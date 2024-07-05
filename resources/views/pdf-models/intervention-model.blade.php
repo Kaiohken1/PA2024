@@ -111,7 +111,7 @@
         <p><span class="text-lg">INTERVENTION EFFECTUÉE PAR :</span> {{$intervention->provider->name}}</p>
         <p><span class="text-lg">À L'INTENTION DE :</span> {{$intervention->user->name}} {{$intervention->user->first_name}}</p>
         <p><span class="text-lg">SERVICE :</span> {{$intervention->service->name}}</p>
-        <p><span class="text-lg">DEBUT D'INTERVENTION :</span> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i:s')}}</p>
+        <p><span class="text-lg">DEBUT D'INTERVENTION :</span> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i')}}</p>
         <p><span class="text-lg">FIN D'INTERVENTION :</span> </p>
     </div>
 

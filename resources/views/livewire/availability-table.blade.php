@@ -54,7 +54,7 @@
                                     <td class="px-4 py-3">{{$estimation->provider->name}}</td>
                                     <td class="px-4 py-3">{{$estimation->provider->email}}</td>
                                     <td class="px-4 py-3">{{$estimation->price}}€</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y H:i:s')}}</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y H:i')}}</td>
                                     <td class="px-4 py-3">
                                         <a href="{{ Storage::url($estimation->estimate) }}" target="_blank">
                                             <button class="btn btn-warning">Télécharger le devis</button>                                    

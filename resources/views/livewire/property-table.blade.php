@@ -70,7 +70,7 @@
                                          @if($appartement->active_flag)Ouvert @else Fermé @endif
                                     </td>
                                     <td class="px-4 py-3">{{$appartement->price}}€</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($appartement->created_at)->format('d/m/Y H:i:s')}}</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($appartement->created_at)->format('d/m/Y H:i')}}</td>
                                     <td class="px-4 py-3 
                                         {{ $appartement->statut->id == 1 ? 'text-yellow-500' : '' }}
                                         {{ $appartement->statut->id == 11 ? 'text-green-500' : '' }}
