@@ -74,9 +74,6 @@
                                             <button class="btn btn-info mr-3">Voir</button>
                                         </a>
                                         @endif
-                                        @if($intervention->statut_id == 5)
-                                        <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->user_id])}}"><button class="btn btn-success mr-3">Accèder au chat</button>
-                                        @endif                                    
                                 </td>
                                 </tr>
                             @endforeach

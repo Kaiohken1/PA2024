@@ -204,6 +204,7 @@ class ProviderController extends Controller
         $currentMonthYear = Carbon::now()->translatedFormat('F Y');
 
         $providerId = $provider->id;
+        $selectedCities = $provider->selectedCities->pluck('city')->toArray();
 
         $proposals = Intervention::query()
                             ->where('service_id', $provider->services->first()->id)
@@ -211,6 +212,11 @@ class ProviderController extends Controller
                             ->where(function($query) use ($providerId) {
                                         $query->where('provider_id', NULL)
                                       ->orWhere('provider_id', $providerId);
+                            })
+                            ->when(!empty($selectedCities), function($query) use ($selectedCities) {
+                                $query->whereHas('appartement', function($query) use ($selectedCities) {
+                                    $query->whereIn('city', $selectedCities);
+                                });
                             })
                             ->latest()
                             ->take(5)
