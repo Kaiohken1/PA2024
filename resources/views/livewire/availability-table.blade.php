@@ -34,75 +34,81 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-white dark:text-gray-400">
-                        <thead class="text-xs text-white uppercase bg-gray-700 dark:bg-gray-700">
-                            <tr>
-                                <th scope="col" class="px-4 py-3">Nom</th>
-                                <th scope="col" class="px-4 py-3">Email</th>
-                                @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'TARIF'])
-                                @include('livewire.includes.table-sort', ['name' => 'end_time', 'displayName' => 'DATE DE FIN PREVUE'])
-                                <th scope="col" class="px-4 py-3">Devis</th>
-                                <th scope="col" class="px-4 py-3">Statut</th>
-                                <th scope="col" class="px-4 py-3">
-                                    <span class="sr-only">Actions</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($estimations as $estimation)
-                                <tr wire:key="{{$estimation->id}}" class="border-b border-gray-700 dark:border-gray-700">
-                                    <td class="px-4 py-3">{{$estimation->provider->name}}</td>
-                                    <td class="px-4 py-3">{{$estimation->provider->email}}</td>
-                                    <td class="px-4 py-3">{{$estimation->price}}€</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y H:i')}}</td>
-                                    <td class="px-4 py-3">
-                                        <a href="{{ Storage::url($estimation->estimate) }}" target="_blank">
-                                            <button class="btn btn-warning">Télécharger le devis</button>                                    
-                                        </a>
-                                    </td>
-                                    <td class="px-4 py-3
-                                        {{ $estimation->statut_id == 1 ? 'text-yellow-500' : '' }}
-                                        {{ $estimation->statut_id == 7 ? 'text-red-500' : '' }}">
-                                        {{ $estimation->statut->nom }}
-                                    </td>
-                                    <td class="px-4 py-3 flex items-center justify-end">
-                                        @if($intervention->user->isAdmin())
-                                            <form method="POST" action="{{route('admin.interventions.plan', $intervention->id)}}">
-                                                @csrf
-
-                                                <input type="hidden" name="price" value="{{$estimation->price}}">
-                                                <input type="hidden" name="commission" value=0>
-                                                <input type="hidden" name="provider_id" value="{{$estimation->provider->id}}">
-                                                <input type="hidden" name="planned_end_date" value="{{$estimation->end_time}}">
-
-                                                <button class="btn btn-success mr-2">Planifier</button>
-                                            </form>
-                                        @else
-                                            <form method="POST" action="{{route('admin.interventions.update', $intervention->id)}}">
-                                                @csrf
-
-                                                @method('PATCH')
-
-                                                <input type="hidden" name="price" value="{{$estimation->price}}">
-                                                <input type="hidden" name="commission" value="{{$estimation->commission}}">
-                                                <input type="hidden" name="provider_id" value="{{$estimation->provider->id}}">
-                                                <input type="hidden" name="planned_end_date" value="{{$estimation->end_time}}">
-
-                                                <button class="btn btn-success mr-2">Attribuer</button>
-                                            </form>
-                                        @endif
-                                        <a href="{{ route('admin.providers.show', $estimation->provider) }}">
-                                            <button class="btn btn-info mr-2">Voir le profil</button>                                    
-                                        </a>
-
-                                        <a href="{{ route('admin.providers.calendar', $estimation->provider->id) }}">
-                                            <button class="btn btn-active btn-warning">Voir le calendrier</button>
-                                        </a>
-                                    </td>
+                    @if($estimations->isNotEmpty())
+                        <table class="w-full text-sm text-left text-white dark:text-gray-400">
+                            <thead class="text-xs text-white uppercase bg-gray-700 dark:bg-gray-700">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3">Nom</th>
+                                    <th scope="col" class="px-4 py-3">Email</th>
+                                    @include('livewire.includes.table-sort', ['name' => 'price', 'displayName' => 'TARIF'])
+                                    @include('livewire.includes.table-sort', ['name' => 'end_time', 'displayName' => 'DATE DE FIN PREVUE'])
+                                    <th scope="col" class="px-4 py-3">Devis</th>
+                                    <th scope="col" class="px-4 py-3">Statut</th>
+                                    <th scope="col" class="px-4 py-3">
+                                        <span class="sr-only">Actions</span>
+                                    </th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach($estimations as $estimation)
+                                    <tr wire:key="{{$estimation->id}}" class="border-b border-gray-700 dark:border-gray-700">
+                                        <td class="px-4 py-3">{{$estimation->provider->name}}</td>
+                                        <td class="px-4 py-3">{{$estimation->provider->email}}</td>
+                                        <td class="px-4 py-3">{{$estimation->price}}€</td>
+                                        <td class="px-4 py-3">{{\Carbon\Carbon::parse($estimation->end_time)->format('d/m/Y H:i:s')}}</td>
+                                        <td class="px-4 py-3">
+                                            <a href="{{ Storage::url($estimation->estimate) }}" target="_blank">
+                                                <button class="btn btn-warning">Télécharger le devis</button>                                    
+                                            </a>
+                                        </td>
+                                        <td class="px-4 py-3
+                                            {{ $estimation->statut_id == 1 ? 'text-yellow-500' : '' }}
+                                            {{ $estimation->statut_id == 7 ? 'text-red-500' : '' }}">
+                                            {{ $estimation->statut->nom }}
+                                        </td>
+                                        <td class="px-4 py-3 flex items-center justify-end">
+                                            @if($intervention->user->isAdmin())
+                                                <form method="POST" action="{{route('admin.interventions.plan', $intervention->id)}}">
+                                                    @csrf
+
+                                                    <input type="hidden" name="price" value="{{$estimation->price}}">
+                                                    <input type="hidden" name="commission" value=0>
+                                                    <input type="hidden" name="provider_id" value="{{$estimation->provider->id}}">
+                                                    <input type="hidden" name="planned_end_date" value="{{$estimation->end_time}}">
+
+                                                    <button class="btn btn-success mr-2">Planifier</button>
+                                                </form>
+                                            @else
+                                                <form method="POST" action="{{route('admin.interventions.update', $intervention->id)}}">
+                                                    @csrf
+
+                                                    @method('PATCH')
+
+                                                    <input type="hidden" name="price" value="{{$estimation->price}}">
+                                                    <input type="hidden" name="commission" value="{{$estimation->commission}}">
+                                                    <input type="hidden" name="provider_id" value="{{$estimation->provider->id}}">
+                                                    <input type="hidden" name="planned_end_date" value="{{$estimation->end_time}}">
+
+                                                    <button class="btn btn-success mr-2">Attribuer</button>
+                                                </form>
+                                            @endif
+                                            <a href="{{ route('admin.providers.show', $estimation->provider) }}">
+                                                <button class="btn btn-info mr-2">Voir le profil</button>                                    
+                                            </a>
+
+                                            <a href="{{ route('admin.providers.calendar', $estimation->provider->id) }}">
+                                                <button class="btn btn-active btn-warning">Voir le calendrier</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @else
+                    <div>
+                        <p class="p-4"> Aucun devis reçu pour le moment</p>
+                    </div>
+                    @endif
                 </div>
 
                 <div class="py-4 px-3">

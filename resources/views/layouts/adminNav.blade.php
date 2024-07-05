@@ -30,6 +30,11 @@
                     <x-nav-link :href="route('admin.interventions.index')">
                         {{ __('Interventions') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index') || request()->routeIs('chat.index')">
+                        {{ __('Messagerie') }}                    
+                    </x-nav-link>
+
                 </div>
             </div>
 

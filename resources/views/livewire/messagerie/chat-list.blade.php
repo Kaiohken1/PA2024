@@ -25,15 +25,6 @@
                 </svg>
             </button>
         </div>
-
-        <div class="flex gap-3 items-center overflow-x-scroll p-2 {{ Auth::user()->isAdmin() ? 'bg-gray-800' : 'bg-white' }}">
-            <button @click="type='all'" :class="{ 'bg-yellow-500 border-0 text-white': type == 'all' }" class="inline-flex justify-center items-center rounded-full gap-x-1 text-xs font-medium px-3 lg:px-5 py-1 lg:py-2.5 border {{ Auth::user()->isAdmin() ? 'border-gray-600 text-white' : 'border-gray-200 text-black' }}">
-                Tout
-            </button>
-            <button @click="type='deleted'" :class="{ 'bg-yellow-500 border-0 text-white': type == 'deleted' }" class="inline-flex justify-center items-center rounded-full gap-x-1 text-xs font-medium px-3 lg:px-5 py-1 lg:py-2.5 border {{ Auth::user()->isAdmin() ? 'border-gray-600 text-white' : 'border-gray-200 text-black' }}">
-                Supprimés
-            </button>
-        </div>
     </header>
 
     <main class="overflow-y-scroll overflow-hidden grow h-full relative {{ Auth::user()->isAdmin() ? 'bg-gray-900 text-white' : '' }}" style="contain:content">
