@@ -67,7 +67,7 @@ foreach ($appartement->images as $image) {
                 <div class="flex justify-between mt-5">
                     <div class="mt-1 w-80">
                         @foreach ($appartement->tags as $tag)
-                        <span class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{$tag->name}}</span>
+                        <span class="text-blue-900 bg-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{$tag->name}}</span>
                         @endforeach
                         <p class="text-xl"><span>{{ $appartement->guestCount }} {{__('voyageurs')}} </span> · <span>{{ $appartement->roomCount }} {{__('chambres')}}</span></p>
                         <p class="text-xl">{{ $appartement->address }}</p>

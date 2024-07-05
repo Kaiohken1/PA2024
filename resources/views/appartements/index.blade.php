@@ -12,10 +12,10 @@
         </x-slot>
     @endif
 
-    <div class="flex flex-col sm:p-8 bg-white shadow sm:rounded-lg absolute w-1/9">
+    {{-- <div class="flex flex-col sm:p-8 bg-white shadow sm:rounded-lg absolute w-1/9">
         @include('appartements.partials.appartement-sorting')
         @include('appartements.partials.tag-filter-appartement')
-    </div>
+    </div> --}}
 
     <div class="flex justify-center mt-5">
         <livewire:search-property />

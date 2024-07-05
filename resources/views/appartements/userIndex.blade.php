@@ -11,13 +11,28 @@
     </x-slot>
 
     @foreach($appartements as $appartement)
+        @php
+        $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+        
+        $rest = 4 - $mainImages->count();
+        
+        $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
+        
+        $propertyImages = $mainImages->merge($otherImages);
+        @endphp
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex justify-between">
                 <div class="p-6 text-gray-900">
                     <article class="flex">
                         <div class="mr-10">
-                            <img class="rounded-md" src="{{ Storage::url($appartement->images->first()->image) }}" width="200px">
+                            @if ($appartement->images->isNotEmpty())
+                            <img class="rounded-md" src="{{ Storage::url($propertyImages->first()->image) }}" width="200px">
+                            @else
+                                Aucune image
+                            @endif
+                            
+                            {{-- <img class="rounded-md" src="{{ Storage::url($appartement->images->first()->image) }}" width="200px"> --}}
                             <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
                             <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{__('par nuit')}}</p>
                             <p><span class="font-extrabold">{{ $appartement->city }}</span></p>

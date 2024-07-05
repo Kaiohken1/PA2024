@@ -4,28 +4,28 @@
             <input 
                 type="text" 
                 wire:model="city" 
-                placeholder="{{__('Ville')}}" 
+                placeholder="{{ __('Ville') }}" 
                 class="input input-bordered w-full max-w-xs m-2" 
             />
             <input 
                 type="text" 
                 wire:model="start_time" 
                 id="start_time" 
-                placeholder="{{__('Départ')}}" 
+                placeholder="{{ __('Départ') }}" 
                 class="input input-bordered w-full max-w-xs m-2" 
             />
             <input 
                 type="text" 
                 wire:model="end_time" 
                 id="end_time" 
-                placeholder="{{__('Arrivée')}}" 
+                placeholder="{{ __('Arrivée') }}" 
                 readonly 
                 class="input input-bordered w-full max-w-xs m-2" 
             />
             <input 
                 type="number" 
                 wire:model="guestCount" 
-                placeholder="{{__('Voyageurs')}}" 
+                placeholder="{{ __('Voyageurs') }}" 
                 min="0" 
                 class="input input-bordered w-full max-w-xs m-2  [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
             />
@@ -33,16 +33,36 @@
                 wire:click="search" 
                 class="btn btn-warning m-2"
             >
-                {{__('Rechercher')}}
+                {{ __('Rechercher') }}
             </button>
         </div>
-        
     </div>
-    
+
+
 
     @if ($appartements)
+    <div class="flex justify-center mb-4 mt-4 space-x-4">
+        <div class="flex items-center">
+            <span class="mr-2 text-lg font-bold">{{ __('Filtrage') }} :</span> 
+            <select wire:model="sortType" wire:change="search" class="select select-warning max-w-xs">
+                <option value="latest" selected>Tri par défaut</option>
+                <option value="price_asc">Prix Croissant</option>
+                <option value="price_desc">Prix Décroissant</option>
+                <option value="surface_asc">Surface croissant</option>
+                <option value="surface_desc">Surface décroissant</option>
+                <option value="guest_count_asc">Voyageur croissant</option>
+                <option value="guest_count_desc">Voyageur décroissant</option>
+                <option value="avis_asc">Avis Croissant</option>
+                <option value="avis_desc">Avis Décroissant</option>
+            </select>
+        </div>
+
+        <div class="flex items-center">
+            <button class="btn btn-warning" wire:click="$set('showTagModal', true)">Filtrer par tags</button>
+        </div>
+    </div>
         <div class="flex justify-around mt-10">
-            <div class="grid grid-cols-4 gap-6 w-11/12 mt-10 sm:p-8 bg-white shadow sm:rounded-lg ">
+            <div class="grid grid-cols-4 gap-6 w-11/12 mx-auto sm:p-8 bg-white shadow sm:rounded-lg ">
                 @forelse ($appartements as $appartement)
                     @php
                     $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
@@ -52,7 +72,6 @@
                     $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
                     
                     $propertyImages = $mainImages->merge($otherImages);
-                    
                     @endphp
                     <div>
                         <a href="{{ route('property.show', $appartement) }}" class="block">
@@ -73,7 +92,7 @@
                                 </span>
                                 <div>
                                     @foreach ($appartement->tags as $tag)
-                                        <span class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>
+                                        <span class="text-blue-900 bg-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>
                                     @endforeach
                                 </div>
                             </article>
@@ -92,8 +111,44 @@
                 @endforelse
             </div>
         </div>
-        <div class="flex justify-center">
-            <button class="btn btn-warning mt-5 " wire:click="loadMore">Afficher plus</button>
+        <div class="flex justify-center ml-20">
+            @if($hasMorePages)
+                <button class="btn btn-warning mt-5" wire:click="loadMore">Afficher plus</button>
+            @endif
+        </div>
+    @endif
+
+    @if ($showTagModal)
+        <div class="fixed z-10 inset-0 overflow-y-auto">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                </div>
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Filtrer par tags</h3>
+                                <div class="mt-2">
+                                    <div class="grid grid-cols-1 gap-4">
+                                        @foreach ($tags as $tag)
+                                            <div class="flex items-center">
+                                                <input type="checkbox" wire:click="toggleTag('{{ $tag->name }}')" @if(in_array($tag->name, $selectedTags)) checked @endif class="checkbox checkbox-warning">
+                                                <label class="ml-2 text-sm text-gray-700">{{ $tag->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="button" class="btn btn-warning ml-3" wire:click="search">Appliquer</button>
+                        <button type="button" class="btn btn-error" wire:click="$set('showTagModal', false)">Fermer</button>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 </div>
@@ -135,4 +190,3 @@
         }
     });
 </script>
-
