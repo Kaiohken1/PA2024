@@ -11,10 +11,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 nlp = spacy.load('fr_core_news_md')
 
-intents = json.loads(open("../conversation.json", encoding="utf-8").read()) 
-words = pickle.load(open('../words.pkl', 'rb')) 
-classes = pickle.load(open('../classes.pkl', 'rb')) 
-model = ke.load_model('../chatbotmodel.keras') 
+intents = json.loads(open("./conversation.json", encoding="utf-8").read()) 
+words = pickle.load(open('./words.pkl', 'rb')) 
+classes = pickle.load(open('./classes.pkl', 'rb')) 
+model = ke.load_model('./chatbotmodel.keras') 
 
 def clean_up_sentences(sentence): 
 	sentence_words = nlp(sentence) 
