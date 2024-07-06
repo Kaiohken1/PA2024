@@ -300,7 +300,7 @@ class AppartementController extends Controller
             ];
         }
 
-        $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+        $mainImages = $appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
 
         $rest = 4 - $mainImages->count();
 
@@ -347,7 +347,7 @@ class AppartementController extends Controller
 
         $validatedData = $request->validate([
             'name' => ['required', 'string'],
-            'address' => ['required', 'max:255'],
+            // 'address' => ['required', 'max:255'],
             'surface' => ['required', 'numeric', 'min:0'],
             'guestCount' => ['required', 'numeric', 'min:0'],
             'roomCount' => ['required', 'numeric', 'min:0'],
@@ -357,9 +357,9 @@ class AppartementController extends Controller
             'image.*' => ['image'],
             'tag_id' => ['array'],
             'property_type' => ['string', 'required'],
-            'city' => ['string', 'required'],
+            // 'city' => ['string', 'required'],
             'location_type' => ['string', 'required'],
-            'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
+            // 'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
         ]);
 
         $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();

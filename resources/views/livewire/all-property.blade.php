@@ -44,7 +44,7 @@
                         @endif
             
                         <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
-                        <p>{{ $appartement->address }}</p>
+                        <p>{{ $appartement->address }} · {{$appartement->city}}</p>
                         <p>{{ __('Loué par') }} {{ $appartement->user->name }}</p>
                         <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{ __('par nuit') }}</p>
                         <span class="font-extrabold size-max inline-flex">

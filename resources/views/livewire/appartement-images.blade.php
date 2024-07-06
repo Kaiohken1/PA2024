@@ -1,8 +1,7 @@
 <div>
-    <!-- Afficher les images principales -->
     <h2>Images principales ({{ $mainImages->count() }}/4)</h2>
     <div class="flex space-x-8 mb-4">
-        @foreach ($mainImages as $image)
+        @foreach ($mainImages->sortBy('main_order') as $image)
             <div class="relative">
                 <img class="rounded-md mb-3 h-52" src="{{ Storage::url($image->image) }}" width="200px">
                 <button wire:click="unsetMain({{ $image->id }})" class="absolute top-2 right-2 text-red-500 hover:text-red-700">

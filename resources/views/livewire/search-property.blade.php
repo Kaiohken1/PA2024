@@ -64,7 +64,7 @@
         <div class="grid grid-cols-4 gap-6 w-11/12 mx-auto sm:p-8 bg-white shadow sm:rounded-lg ">
             @forelse ($appartements as $appartement)
                 @php
-                $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+                $mainImages = $appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
                 
                 $rest = 4 - $mainImages->count();
                 
@@ -82,7 +82,7 @@
                             @endif
                 
                             <h1 class="text-2xl font-extrabold">{{ $appartement->name }}</h1>
-                            <p>{{ $appartement->address }}</p>
+                            <p>{{ $appartement->address }} · {{$appartement->city}}</p>
                             <p>{{ __('Loué par') }} {{ $appartement->user->name }}</p>
                             <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{ __('par nuit') }}</p>
                             <span class="font-extrabold size-max inline-flex">

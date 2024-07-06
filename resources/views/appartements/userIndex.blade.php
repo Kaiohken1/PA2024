@@ -12,7 +12,7 @@
 
     @foreach($appartements as $appartement)
         @php
-        $mainImages = $appartement->images()->where('is_main', true)->take(4)->get();
+        $mainImages = $appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
         
         $rest = 4 - $mainImages->count();
         
