@@ -89,7 +89,7 @@
 
                 @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3 && $intervention->statut_id !== 4)
                     <div>
-                        <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention', $intervention->id])}}">
+                        <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention' => $intervention->id])}}">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-error mt-10">{{__('Annuler ma demande')}}</button>

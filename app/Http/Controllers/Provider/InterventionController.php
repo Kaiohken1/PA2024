@@ -236,10 +236,12 @@ class InterventionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($intervention)
+    public function destroy($id, $intervention)
     {
         $intervention = Intervention::findOrFail($intervention);
         $intervention->statut_id = 4;
+        $intervention->save();
+
         $intervention->delete();
 
         return redirect()->route('interventions.dashboard')
