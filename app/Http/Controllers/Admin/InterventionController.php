@@ -185,7 +185,7 @@ class InterventionController extends Controller
      */
     public function show($id)
     {
-        $intervention = Intervention::findOrfail($id);
+        $intervention = Intervention::withTrashed()->findOrfail($id);
         $refusals = InterventionRefusal::query()
                     ->where('intervention_id', $intervention->id)
                     ->paginate(5);

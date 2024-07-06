@@ -98,8 +98,9 @@ class ProviderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Provider $provider)
+    public function show($id)
     {
+        $provider = Provider::withTrashed()->findOrFail($id);
         return view('admin.providers.show', ['provider' => $provider, 'service' => $provider->services->first()]);
     }
 

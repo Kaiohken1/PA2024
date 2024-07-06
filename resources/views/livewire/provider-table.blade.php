@@ -67,22 +67,22 @@
                                     <td class="px-4 py-3">{{$provider->services->first()->name}}</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($provider->created_at)->format('d/m/Y à H:i')}}
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.providers.show', $provider->id) }}">
-                                        <button class="btn btn-info mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">Voir</button></a>
+                                        <button class="btn btn-info mr-3">Voir</button></a>
 
-                                        <a href="{{route('admin.providers.calendar', $provider->user->id)}}">
-                                            <button class="btn btn-warning mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
+                                        <a href="{{ route('admin.providers.calendar', $provider->id) }}" class="{{ $provider->deleted_at == NULL ? '' : 'pointer-events-none' }}">
+                                            <button class="btn btn-warning mr-3 {{ $provider->deleted_at == NULL ? '' : 'opacity-50 cursor-not-allowed' }}" {{ $provider->deleted_at == NULL ? '' : 'disabled' }}>
                                                 Calendrier
                                             </button>
-                                            </a>
-                                        {{-- <livewire:users :userId="$provider->user->id"> --}}
-                                            <a href="{{route('admin.provider.message', $provider->user->id)}}">
-                                                <button class="btn btn-success mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
-                                                    Message
-                                                </button>
-                                                </a>
+                                        </a>
+                                        
+                                        <a href="{{ route('admin.provider.message', $provider->user->id) }}" class="{{ $provider->deleted_at == NULL ? '' : 'pointer-events-none' }}">
+                                            <button class="btn btn-success mr-3 {{ $provider->deleted_at == NULL ? '' : 'opacity-50 cursor-not-allowed' }}" {{ $provider->deleted_at == NULL ? '' : 'disabled' }}>
+                                                Message
+                                            </button>
+                                        </a>
                                         <button onclick="confirm('Etes vous sûr de vouloir supprimer le prestataire {{$provider->name}}') ? '' : event.stopImmediatePropagation()" 
                                                 wire:click="delete({{$provider->id}})" 
-                                                class="btn btn-error mr-3 {{ $provider->interventions->where('statut_id', '==', 5)->isEmpty() && $provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
+                                                class="btn btn-error mr-3" {{ $provider->interventions->where('statut_id', '==', 5)->isEmpty() && $provider->deleted_at == NULL ? '' : 'disabled' }}>
                                             X
                                         </button>
                                     </td>
