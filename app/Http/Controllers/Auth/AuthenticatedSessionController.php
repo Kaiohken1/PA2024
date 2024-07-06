@@ -7,6 +7,11 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Models\ChatbotMessage;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
@@ -71,6 +76,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        ChatbotMessage::where('user_id', Auth()->id())->delete();
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -103,6 +110,7 @@ class AuthenticatedSessionController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => [
+                'user_id'=> $user->id,
                 'first_name' => $user->first_name,
                 'name' => $user->name,
                 'email' => $user->email,

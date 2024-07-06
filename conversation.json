@@ -1,0 +1,69 @@
+{
+  "intents": [
+    {
+      "tag": "réserver",
+      "patterns": ["comment réserver un bien", "je veux réserver un appartement", "pouvez-vous m'aider à réserver?", "appartement", "maison"],
+      "responses": ["Pour réserver cliquez sur l'image d'un appartement pour voir les détail sur la droite vous trouverez une fenêtre pour réserver votre séjour."]
+    },
+    {
+      "tag": "moyens paiement",
+      "patterns": ["pouvez-vous m'aider à payer?", "paiement", "moyens de paiement", "méthodes"],
+      "responses": ["Vous pouvez utiliser votre carte bancaire ou google pay pour payer sur le site."]
+    },
+    {
+      "tag": "réserver service",
+      "patterns": ["comment réserver un service d'un prestataire", "je veux réserver une intervention", "pouvez-vous m'aider à réserver un service?"],
+      "responses": ["Vous pouvez réserver un service d'un prestataire sur votre espace client après avoir réserver votre séjour."]
+    },
+    {
+      "tag": "date indisponible",
+      "patterns": ["pourquoi certaine date sont indisponible", "non disponibles", "bloqué", "réservation impossible", "pourquoi je ne peux pas réserver"],
+      "responses": ["Les dates grisées sont celles où le bien est occupé par d'autre locataire ou lors d'une intervention ou une fermeture demandé par le bailleur."]
+    },
+    {
+      "tag": "historique réservation",
+      "patterns": ["comment voir mon historique de réservation", "voir mes réservations"],
+      "responses": ["Vous pouvez voir votre historique de réservation dans votre espace client"]
+    },
+    {
+      "tag": "annuler réservation",
+      "patterns": ["comment faire si je dois annuler ma réservation", "procédure d'annulation", "annulation de réservation"],
+      "responses": ["Vous pouvez annuler une réservation 24h avant la date de début du séjour dans vos réservation sur votre espace clients, vous serez remboursé par la suite"]
+    },
+    {
+      "tag": "problème réservation",
+      "patterns": ["comment faire si j'ai un problème avec ma réservation", "bug ", "aide pour réservation", "assistance", "contacter"],
+      "responses": ["Si vous avez un problème de réservation ou tout autre problème cliquer <a href='http://localhost/tickets/create'>ici</a> pour contacter PCS."]
+    },
+    {
+      "tag": "modifier profil",
+      "patterns": ["comment modifier mon profil", "changer informations", "mettre à jour", "changer adresse", "ville", "mot de passe", "identifiants"],
+      "responses": ["Si vous souhaiter modifier une information sur votre profil cliquez <a href='http://localhost/profile'>ici</a>."]
+    },
+    {
+      "tag": "laisser avis appartement",
+      "patterns": ["comment laisser un avis sur un appartement", "avis sur appartement", "commentaire sur appartement", "avis après une réservation"],
+      "responses": ["Vous pouvez laisser un avis sur l'appartement que vous avez réserver à la fin du séjour."]
+    },
+    {
+      "tag": "laisser avis prestataire",
+      "patterns": ["comment laisser un avis sur un prestataire", "avis sur prestataire", "commentaire sur prestataire", "avis après une prestation"],
+      "responses": ["Vous pouvez laisser un avis sur le prestataire après avoir eu une intervention de sa part"]
+    },
+    {
+      "tag": "réservations téléphone",
+      "patterns": ["comment voir mes réservations sur téléphone", "réservations mobile", "accéder aux réservations sur téléphone"],
+      "responses": ["Vous devez télécharger l'application de PCS disponible sur Android puis vous connectez avec vos identifiants"]
+    },
+    {
+      "tag": "signaler utilisateur",
+      "patterns": ["comment signaler un utilisateur", "rapport utilisateur", "problème avec un utilisateur", "comportement"],
+      "responses": ["Vous pouvez signaler le comportement d'un utlisateur <a href='http://localhost/tickets/create'>ici</a> et en sélectionnant la catégorie Signalement"]
+    },
+    {
+      "tag": "question univers",
+      "patterns": ["quelle est la réponse à la grande question sur la vie, l'univers et le reste"],
+      "responses": ["42 😂"]
+    }
+  ]
+}

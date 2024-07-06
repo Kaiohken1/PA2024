@@ -38,6 +38,9 @@ use App\Http\Controllers\Admin\ReservationController as AdminReservationControll
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Livewire\CitySelection;
 use App\Http\Controllers\TicketCategoryController;
+use App\Livewire\Chatbot;
+use App\Models\Ticket;
+use App\Livewire\TicketChat;
 
 /*
 |--------------------------------------------------------------------------
@@ -171,6 +174,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('tickets', TicketController::class);
+    Route::get('/tickets/{ticket}/chat/{user}', TicketChat::class)->name('tickets.chat');
+    Route::get('/chatbot', Chatbot::class);
+
+    
+
+    Route::get('/provider/chat', Index::class)->name('chat.index');
+    Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+
+    Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
+    Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+
 
     
 

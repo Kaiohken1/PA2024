@@ -23,7 +23,7 @@ class DynamicInput extends Component
 
     public function submitForm()
     {
-        $this->emit('submitForm', $this->inputs);
+        $this->dispatch('submitForm', $this->inputs);
     }
 
 

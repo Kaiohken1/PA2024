@@ -105,13 +105,13 @@
                             <div class="w-full flex items-center gap-4">
                                 <input type="text" id="input_{{ $parameter->id }}_name"
                                     name="input_{{ $parameter->id }}_name"
-                                    wire:model.defer="inputs.{{ $parameter->id }}.name"
+                                    wire:model="inputs.{{ $parameter->id }}.name"
                                     class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md"
                                     autocomplete="off" value="{{$parameter->name}}">
                                     @error('inputs_' . $parameter->id . '_name')
                                     <span class="text-xs text-red-600">{{ $message }}</span>
                                 @enderror
-                                <select id="input_{{ $parameter->id }}_type" wire:model.defer="inputs.{{ $parameter->id }}.type" name="input_{{$parameter->id}}_type"
+                                <select id="input_{{ $parameter->id }}_type" wire:model="inputs.{{ $parameter->id }}.type" name="input_{{$parameter->id}}_type"
                                     class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
                                     <option value="" disabled>Sélectionnez un type de donnée</option>
                                     @foreach (\App\Models\DataType::All() as $type)

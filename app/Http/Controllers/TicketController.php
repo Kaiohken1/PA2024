@@ -6,9 +6,12 @@ use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Ticket;
+use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Models\TicketMessage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use MBarlow\Megaphone\Types\General;
 use SebastianBergmann\CodeUnit\FunctionUnit;
 
 class TicketController extends Controller
@@ -30,7 +33,7 @@ class TicketController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::where('id', '>', 5)->get();
 
         return view('ticket.create', [
             'roles' => $roles
@@ -255,7 +258,7 @@ public function apiUpdateHelper(string $ticket_id, Request $request)
     $ticket = Ticket::findOrfail($ticket_id);
     $validateData = $request->validate([
         'status' => ['required', 'string'],
-        'solution' => ['required', 'string'],
+        'solution' => ['nullable', 'string'],
         'priority' => ['required', 'numeric']
     ]);
     Log::info('updated', ['request' => $request->all()]);
@@ -392,4 +395,67 @@ public function apiUpdateAdmin(string $ticket_id, Request $request)
 
 }
 
+public function apiTicketChat(string $ticket_id, Request $request)
+{
+    $user = $request->user();
+    $user = User::where('id', $user->id)->with('roles')->first();
+    if (!($user->roles->contains('nom', 'PCS') and ($user->roles->contains('nom', 'admin')))) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $messages = TicketMessage::query()
+                ->where('ticket_id', $ticket_id)
+                ->with('fromUser')
+                ->with('toUser') //->with('toUser:id,first_name,name,email,roles')
+                ->get();
+    
+    foreach ($messages as $message){
+            $message->formatted_date = Carbon::parse($message->created_at)->format('d/m/Y');
+
+        }
+
+    Log::info('Fetch messages', ['messages' => $messages, 'ticket_id' => $ticket_id]);
+
+    return response()->json([
+        'messages' => $messages
+    ]);
+
+}
+
+public function apiTicketChatSend(Request $request)
+{
+
+    
+    $validateData = $request->validate([
+        'ticket_id' => ['required', 'numeric'],
+        'message' => ['required', 'string']
+    ]);
+
+    $user = $request->user();
+    $user = User::where('id', $user->id)->with('roles')->first();
+    
+
+    if (!($user->roles->contains('nom', 'PCS'))) {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $ticket = Ticket::findOrfail($validateData['ticket_id']);
+    
+    $message = new TicketMessage($validateData);
+    $message->from_user_id = $ticket->attributed_user_id;
+    $message->to_user_id = $ticket->asker_user_id;
+
+    $message->save();
+
+    $notification = new General(
+        'Nouveau message - Ticket #' . $ticket->asker_user_id,
+        'Un nouveau message a été envoyé',
+        url('/tickets/' . $ticket->asker_user_id . '/chat/' . $ticket->asker_user_id),
+        'Voir la conversation'
+    );
+
+    $toUser = User::findOrFail($ticket->asker_user_id);
+    $toUser->notify($notification);
+
+}
 }

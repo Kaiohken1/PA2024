@@ -47,8 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/tickets/admin/update/{id}', [TicketController::class, 'apiUpdateAdmin']);
 
     Route::get('/tickets/stats', [TicketController::class, 'apiStats']);
-
-
+    Route::get('/tickets/{id}/chat', [TicketController::class, 'apiTicketChat']);
+    Route::post('/tickets/chat/send', [TicketController::class, 'apiTicketChatSend']);
 
     route::get('/mobile/reservations/user',[ReservationController::class,'MobileIndex']);
 

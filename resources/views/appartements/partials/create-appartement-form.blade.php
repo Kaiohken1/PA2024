@@ -4,6 +4,7 @@
 
     <div>
         <x-input-label for="name" :value="__('Type de logement')" class="form-label" />
+        <x-input-label for="name" :value="__('Type de logement')" class="form-label" />
         <select name="property_type" class="form-select select select-bordered w-full max-w-xs">
             <option value="appartement">{{__('Appartement')}}</option>
             <option value="house">{{__('Maison')}}</option>
@@ -13,6 +14,7 @@
 
     <div>
         <x-input-label for="name" :value="__('Type de location')" class="form-label" />
+        <x-input-label for="name" :value="__('Type de location')" class="form-label" />
         <select name="location_type" class="form-select select select-bordered w-full max-w-xs">
             <option value="full_property">{{__('Logement complet')}}</option>
             <option value="guestroom">{{__('Chambre d\'hôte')}}</option>
@@ -20,6 +22,7 @@
     </div>
 
     <div>
+        <x-input-label for="name" :value="__('Titre')" class="form-label" />
         <x-input-label for="name" :value="__('Titre')" class="form-label" />
         <x-text-input id="name" class="form-input block mt-1 w-full" type="text" name="name" />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -91,6 +94,7 @@
         <x-input-error :messages="$errors->get('image')" class="mt-2" />
     </div>
 
+
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">{{__('Ajoutez des
             tags')}}</label>
@@ -107,7 +111,6 @@
     <x-primary-button class="ms-3 mt-5 ml-0">
         {{ __('Créer un appartement') }}
     </x-primary-button>
-    </div>
 </form>
 
 

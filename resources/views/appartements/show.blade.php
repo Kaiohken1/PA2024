@@ -139,7 +139,6 @@ foreach ($appartement->images as $image) {
             <div>@include('appartements.appartement_avis.indexAvis')</div>
         </div>
     </div>
-
 </x-app-layout>
 
 <script>
