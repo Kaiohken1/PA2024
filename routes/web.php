@@ -33,7 +33,7 @@ use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\StripeWebhookController;
+// use App\Http\Controllers\StripeWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe', [SubscriptionControllerClient::class, 'subscribe'])->name('subscribe');
     Route::get('/subscribe/checkout/success', [SubscriptionControllerClient::class, 'success'])->name('checkout.success');
     Route::get('/subscribe/checkout/cancel', [SubscriptionControllerClient::class, 'cancel'])->name('checkout.cancel');
-    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+    // Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
     // Route::resource('/subscribe',SubscriptionControllerClient ::class);
 

@@ -45,11 +45,11 @@
     <body>
         <div class="container form-container">
             <h2 class="text-center">Formules d'abonnement VIP</h2>
-    
+
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-    
+
             @if ($errors->any())
                 <div class="alert alert-danger">
                     @foreach ($errors->all() as $error)
@@ -57,17 +57,17 @@
                     @endforeach
                 </div>
             @endif
-    
+
             @if ($subscription && $subscription->stripe_status === 'active')
-                <div class="alert alert-info">
-                    <h5 class="text-center">Vous êtes actuellement abonné au plan {{ $subscription->name }}.</h5>
-                    <p class="text-center">Votre abonnement se termine le {{ $subscription->ends_at->format('d/m/Y') }}.</p>
+                <div class="alert alert-info text-center">
+                    <h5>Vous êtes actuellement abonné au plan <strong>{{ $plan['name'] }}</strong>.</h5>
+                    <p>Montant: <strong>{{ $plan['amount'] }}€ / {{ $plan['interval'] }}</strong></p>
                 </div>
             @else
                 <form action="{{ route('subscribe') }}" method="POST" id="payment-form">
                     @csrf
                     <input type="hidden" name="plan" id="plan">
-    
+
                     <div class="row text-center">
                         <div class="col-md-6">
                             <div class="card card-selection" data-plan="basic_plan">
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                     </div>
-    
+
                     <div class="form-group text-center">
                         <label for="interval">Choisir l'intervalle de facturation :</label>
                         <select name="interval" id="interval" class="form-control w-50 mx-auto">
@@ -98,12 +98,12 @@
                             <option value="yearly">Annuel</option>
                         </select>
                     </div>
-    
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary">Souscrire</button>
                     </div>
                 </form>
-    
+
                 <table class="table table-bordered mt-5">
                     <thead>
                         <tr>
@@ -160,7 +160,7 @@
                 </table>
             @endif
         </div>
-    
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -169,17 +169,17 @@
                 @if(session('error'))
                     toastr.error("{{ session('error') }}", 'Erreur de paiement');
                 @endif
-    
+
                 @if(session('success'))
                     toastr.success("{{ session('success') }}", 'Succès');
                 @endif
-    
+
                 $('.btn-select-plan').click(function() {
                     $('.btn-select-plan').removeClass('selected');
                     $(this).addClass('selected');
                     $('#plan').val($(this).data('plan'));
                 });
-    
+
                 $('.card-selection').click(function() {
                     $('.card-selection').removeClass('selected');
                     $(this).addClass('selected');

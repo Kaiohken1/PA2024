@@ -1,48 +1,37 @@
-<?
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+<?php
 
-class DropSubscriptionTables extends Migration
+use App\Models\User;
+use App\Models\Subscription;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
-        Schema::dropIfExists('subscriptions');
-        Schema::dropIfExists('subscription_items');
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('name');
-            $table->string('stripe_id');
-            $table->string('stripe_status');
-            $table->string('stripe_plan');
-            $table->integer('quantity');
-            $table->timestamp('trial_ends_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->timestamps();
-        });
-
-        Schema::create('subscription_items', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('subscription_id');
-            $table->string('stripe_id');
-            $table->string('stripe_product');
-            $table->integer('quantity');
-            $table->timestamps();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+            $table->string('name')->default('default'); 
+            $table->string('type')->default('default');
+            $table->string('stripe_id'); 
+            $table->string('stripe_status'); 
+            $table->string('stripe_price')->nullable(); 
+            $table->integer('quantity')->nullable(); 
+            $table->timestamp('trial_ends_at')->nullable(); 
+            $table->timestamp('ends_at')->nullable(); 
+            $table->integer('free_service_count')->default(0); 
+            $table->timestamp('last_free_service_date')->nullable();
+            $table->timestamps(); 
         });
     }
-}
+
+    public function down()
+    {
+        Schema::dropIfExists('subscriptions');
+    }
+};

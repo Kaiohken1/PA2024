@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Subscription;
 use App\Models\User;
+use Stripe\Webhook;
 
 class StripeWebhookController extends Controller
 {
@@ -15,7 +16,7 @@ class StripeWebhookController extends Controller
         $endpointSecret = env('STRIPE_WEBHOOK_SECRET');
 
         try {
-            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
 
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
@@ -32,8 +33,10 @@ class StripeWebhookController extends Controller
 
             return response()->json(['status' => 'success'], 200);
         } catch (\UnexpectedValueException $e) {
+            Log::error('Invalid payload: ' . $e->getMessage());
             return response()->json(['status' => 'invalid payload'], 400);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            Log::error('Invalid signature: ' . $e->getMessage());
             return response()->json(['status' => 'invalid signature'], 400);
         }
     }
@@ -55,6 +58,7 @@ class StripeWebhookController extends Controller
                 'free_service_count' => 0,
                 'last_free_service_date' => null,
             ]);
+            Log::info('Subscription created for user ID: ' . $user->id);
         } else {
             Log::error('User not found for customer ID: ' . $subscription->customer);
         }
