@@ -15,10 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Provider extends Model
 {
-    use HasFactory, Notifiable, HasMegaphone;
+    use HasFactory, Notifiable, HasMegaphone, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -56,7 +57,8 @@ class Provider extends Model
     }
 
     public function interventions() : HasMany {
-        return $this->hasMany(Intervention::class);
+        return $this->hasMany(Intervention::class)
+                    ->withTrashed();
     }
 
     public function intervention_events() : HasMany {

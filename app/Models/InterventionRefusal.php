@@ -19,11 +19,13 @@ class InterventionRefusal extends Model
 
     public function intervention()
     {
-        return $this->belongsTo(Intervention::class);
+        return $this->belongsTo(Intervention::class)
+        ->withTrashed();
     }
 
     public function provider()
     {
-        return $this->belongsTo(Provider::class);
+        return $this->belongsTo(Provider::class)
+                    ->withTrashed();
     }
 }

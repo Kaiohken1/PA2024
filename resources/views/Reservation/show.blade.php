@@ -44,7 +44,7 @@
                             {{ $reservation->appartement->city }}</span>
                         <div>
                             <a class="text-blue-500 hover:underline"
-                                href="https://www.google.com/maps/dir/?api=1&destination={{ urlencode($reservation->appartement->address) }}+ {{ urlencode($reservation->appartement->postal_code) }} +{{ urlencode($reservation->appartement->city) }}"
+                                href="https://www.google.com/maps/dir/?api=1&destination={{urlencode($reservation->appartement->address) }}+{{urlencode($reservation->appartement->postal_code) }}+{{urlencode($reservation->appartement->city) }}"
                                 target="_blank">{{__('Voir l\'itinéraire')}}</a>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                                 </form>
                             @endif
                         @endif
-                        @if (\Carbon\Carbon::now()->subHours(48)->isBefore($reservation->start_time))
+                        {{-- @if (\Carbon\Carbon::now()->subHours(48)->isBefore($reservation->start_time))
                             <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="btn btn-error"
@@ -77,7 +77,7 @@
                                     {{__('Annuler')}}
                                 </button>
                             </form>
-                        @endif
+                        @endif --}}
                     </div>
                     @if(!\Carbon\Carbon::today()->isAfter($reservation->end_time))
                     <div class="mt-5">

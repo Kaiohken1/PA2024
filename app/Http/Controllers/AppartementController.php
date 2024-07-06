@@ -95,6 +95,7 @@ class AppartementController extends Controller
         });
     
         $mostReserved = Appartement::withCount('reservations')
+            ->where('active_flag', 1)
             ->withCount('avis')
             ->withAvg('avis', 'rating_cleanness')
             ->withAvg('avis', 'rating_price_quality')
@@ -115,6 +116,7 @@ class AppartementController extends Controller
         });
     
         $bestRated = Appartement::withCount('avis')
+            ->where('active_flag', 1)
             ->withAvg('avis', 'rating_cleanness')
             ->withAvg('avis', 'rating_price_quality')
             ->withAvg('avis', 'rating_location')

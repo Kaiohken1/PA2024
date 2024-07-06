@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl  leading-tight text-white">
-            {{ __('Bien #') }}{{$appartement->id}}
+            {{ __('Logement #') }}{{$appartement->id}}
         </h2>
 
         <x-session-statut></x-session-statut>
@@ -20,7 +20,7 @@
                         <li><strong>Type de propriété:</strong> {{ $appartement->property_type }}</li>
                         <li><strong>Ville:</strong> {{ $appartement->city }}</li>
                         <li><strong>Type de location:</strong> {{ $appartement->location_type }}</li>
-                        <li><strong>Active:</strong> {{ $appartement->active_flag ? 'Oui' : 'Non' }}</li>
+                        <li><strong>Activé:</strong> {{ $appartement->active_flag ? 'Oui' : 'Non' }}</li>
                     </ul>
                 </div>
 
@@ -49,17 +49,17 @@
                     <form action="{{ route('admin.property.validate', $appartement->id) }}" method="POST" class="mr-5">
                         @csrf
                         @method('patch')
-                        <x-primary-button>
-                            Valider le bien
-                        </x-primary-button>
+                        <button class="btn btn-warning">
+                            Valider le logement
+                        </button>
                     </form>
 
                     <form action="{{ route('admin.property.destroy', $appartement->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <x-danger-button>
-                            Refuser le bien
-                        </x-danger-button>
+                        <button class="btn btn-error">
+                            Refuser le logement
+                        <button>
                     </form>
                 </div>
                 @endif

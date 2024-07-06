@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl  leading-tight text-white">
-            {{ __('Créer un type d\'abonnement') }}
+            {{ __('Gérer les logements') }}
         </h2>
 
         @if (session('success'))

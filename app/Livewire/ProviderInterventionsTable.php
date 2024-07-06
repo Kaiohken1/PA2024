@@ -56,6 +56,7 @@ class ProviderInterventionsTable extends Component
                 $query->where('statut_id', $this->statut);
             })
             ->where('provider_id', Auth::user()->provider->id)
+            ->where('statut_id', '!=', 1)
             ->orderBy($this->sortBy, $this->sortDir)
             ->paginate($this->perPage),
         ]);

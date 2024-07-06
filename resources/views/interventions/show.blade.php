@@ -59,6 +59,9 @@
                     <p><strong>Client :</strong> {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                     <p><strong>Appartement :</strong>{{ $intervention->appartement->address }}</p>
                     <p><strong>Date d'intervention souhaitée:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y à H:i')}}</p>
+                    @if($intervention->max_end_date)
+                        <p><strong>Date de fin limite:</strong> {{\Carbon\Carbon::parse($intervention->max_end_date)->format('d/m/Y à H:i')}}</p>
+                    @endif
                     <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
                     @foreach ($intervention->service_parameters as $parameter)
                         <div class="flex">
@@ -82,25 +85,27 @@
                                 <a href="{{ Storage::url($estimation->estimate) }}" target="_blank"><strong><u>Voir mon devis</u></strong></a>
 
                                 @if($estimation->statut_id != 8)
-                                    <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Supprimer</button>
-                                    </form>
+                                    @if($intervention->statut_id != 5)
+                                        <form action="{{route('estimate.destroy', $estimation->id)}}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        </form>
 
-                                    <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
-                                        @csrf
-                                        @method('PATCH')
-                                        <x-input-label>Devis</x-input-label>
-                                        <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
-                                        @error('estimate')
-                                            <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
-                                        @enderror
-            
-                                        <div class="mt-5">
-                                            <x-primary-button>Modifier</x-primary-button>
-                                        </div>
-                                    </form>
+                                        <form method="POST"action="{{route('estimate.update', $estimation->id)}}" enctype="multipart/form-data" class="mt-5">
+                                            @csrf
+                                            @method('PATCH')
+                                            <x-input-label>Devis</x-input-label>
+                                            <input type="file" name="estimate" class="file-input file-input-bordered file-input-warning w-full max-w-xs" />
+                                            @error('estimate')
+                                                <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
+                                            @enderror
+                
+                                            <div class="mt-5">
+                                                <x-primary-button>Modifier</x-primary-button>
+                                            </div>
+                                        </form>
+                                    @endif
                                 @else
                                     <p>Votre devis a été refusé par le client pour la raison suivante :</p>{{$intervention->refusals->where('provider_id',Auth::user()->provider->id)->last()->refusal_reason}}
                                     <h2 class="mt-5 text-xl font-bold">Proposer un autre devis ?</h2>
@@ -110,13 +115,13 @@
 
                                         <div>
                                             <x-input-label for="end_time" :value="__('Date de fin')" />
-                                            <x-text-input id="end_time" class="block mt-1 w-full" type="datetime-local" name="end_time"/>
+                                            <x-text-input id="end_time"  class="input input-bordered input-warning w-full max-w-xs" type="datetime-local" name="end_time"/>
                                             <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
                                         </div>
                                         @if($intervention->service->flexPrice)
                                             <div>
                                                 <x-input-label for="price" :value="__('Tarif')" />
-                                                <x-text-input id="price" class="block mt-1 w-full" type="number" name="price" min=1/>
+                                                <x-text-input id="price"  class="input input-bordered input-warning w-full max-w-xs" type="number" name="price" min=1/>
                                                 <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                             </div>
                                         @else
@@ -144,13 +149,13 @@
 
                             <div>
                                 <x-input-label for="end_time" :value="__('Date de fin')" />
-                                <input type="text" id="end_time" name="end_time" placeholder="Sélectionnez une date">
+                                <input type="text" id="end_time" name="end_time" placeholder="Sélectionnez une date"  class="input input-bordered input-warning w-full max-w-xs">
                                 <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
                             </div>
                             @if($intervention->service->flexPrice)
                                 <div>
                                     <x-input-label for="price" :value="__('Tarif')" />
-                                    <input id="price" type="number" name="price" min=1/>
+                                    <input id="price" type="number" name="price" min=1  class="input input-bordered input-warning w-full max-w-xs"/>
                                     <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                 </div>
                             @else
@@ -179,13 +184,20 @@
 
 
 <script>
-    var minDate = <?php echo json_encode(\Carbon\Carbon::parse($intervention->planned_date)->format('d.m.Y')); ?>;  
+    var minDate = <?php echo json_encode(\Carbon\Carbon::parse($intervention->planned_date)->format('d.m.Y')); ?>;
+    var maxDate = <?php echo $intervention->max_end_date ? json_encode(\Carbon\Carbon::parse($intervention->max_end_date)->format('d.m.Y')) : 'null'; ?>;
     var disabledDates = <?php echo json_encode($datesInBase); ?>;
+
+    if (maxDate === 'null') {
+        maxDate = null;
+    }
+
     flatpickr("#end_time", {
         mode: "single",
         enableTime: true,
         dateFormat: "d-m-Y H:i",
         minDate: minDate,
+        maxDate: maxDate,
         locale: "fr",
         disable: disabledDates,
     });

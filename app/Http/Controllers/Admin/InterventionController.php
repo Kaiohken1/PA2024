@@ -271,7 +271,7 @@ class InterventionController extends Controller
         $event->intervention_id = $intervention->id;
         $event->appartement_id = $intervention->appartement->id;
         $event->provider_id = $intervention->provider->id;
-        $event->title = $intervention->service->name;
+        $event->title = $intervention->service->name . " - " . $intervention->appartement->address . $intervention->appartement->city;
         $event->start = $intervention->planned_date;
         $event->end = $intervention->planned_end_date;
 

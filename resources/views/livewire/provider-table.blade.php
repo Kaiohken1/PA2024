@@ -29,6 +29,7 @@
                                 <option value="">Tout</option>
                                 <option value="En attente">En attente</option>
                                 <option value="Validé">Validé</option>
+                                <option value="Supprimé">Supprimé</option>
                             </select>
                         </div>
                     </div>
@@ -59,21 +60,31 @@
                                     <td class="px-4 py-3
                                         {{ $provider->statut == 'En attente' ? 'text-yellow-500' : '' }}
                                         {{ $provider->statut == 'Validé' ? 'text-green-500' : '' }}
-                                        {{ $provider->statut == 'Refusé' ? 'text-red-500' : '' }}">
+                                        {{ $provider->statut == 'Refusé' ? 'text-red-500' : '' }}>
+                                        {{ $provider->statut == 'Supprimé' ? 'text-red-500' : '' }}">
                                         {{ $provider->statut }}
                                     </td>
                                     <td class="px-4 py-3">{{$provider->services->first()->name}}</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($provider->created_at)->format('d/m/Y à H:i')}}
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.providers.show', $provider->id) }}">
-                                        <button class="btn btn-info mr-3">Voir</button></a>
+                                        <button class="btn btn-info mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">Voir</button></a>
 
-                                        <a href="{{route('admin.provider.message', $provider->user->id)}}">
-                                        <button class="btn btn-success mr-3">
-                                            Message
-                                        </button>
-                                        </a>
+                                        <a href="{{route('admin.providers.calendar', $provider->user->id)}}">
+                                            <button class="btn btn-warning mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
+                                                Calendrier
+                                            </button>
+                                            </a>
                                         {{-- <livewire:users :userId="$provider->user->id"> --}}
-                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer le prestataire {{$provider->name}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$provider->id}})" class="btn btn-error mr-3">X</button>
+                                            <a href="{{route('admin.provider.message', $provider->user->id)}}">
+                                                <button class="btn btn-success mr-3 {{$provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
+                                                    Message
+                                                </button>
+                                                </a>
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer le prestataire {{$provider->name}}') ? '' : event.stopImmediatePropagation()" 
+                                                wire:click="delete({{$provider->id}})" 
+                                                class="btn btn-error mr-3 {{ $provider->interventions->where('statut_id', '==', 5)->isEmpty() && $provider->deleted_at == NULL ? 'visible' : 'invisible' }}">
+                                            X
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach

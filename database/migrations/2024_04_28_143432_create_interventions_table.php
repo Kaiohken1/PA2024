@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Appartement::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Reservation::class)->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Provider::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Provider::class)->nullable()->constrained();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
             $table->enum('user_type', ['voyageur', 'bailleur']);
             $table->text("description")->nullable();
@@ -33,7 +33,9 @@ return new class extends Migration
             $table->text('fiche')->nullable();
             $table->integer('service_version');
             $table->dateTime('planned_date')->nullable();
-            $table->dateTime('planned_end_date')->nullable();;
+            $table->dateTime('planned_end_date')->nullable();
+            $table->dateTime('max_end_date')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

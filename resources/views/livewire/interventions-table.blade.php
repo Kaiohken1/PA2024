@@ -80,7 +80,11 @@
                                             {{ $intervention->appartement->city}}
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
+                                            @if($intervention->user->isAdmin())
+                                            PCS
+                                            @else
                                             {{ $intervention->user->name }}
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3 font-medium whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i') }}

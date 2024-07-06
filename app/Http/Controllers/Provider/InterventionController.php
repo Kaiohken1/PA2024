@@ -119,8 +119,9 @@ class InterventionController extends Controller
             $intervention = Intervention::where('appartement_id', $validatedData['appartement_id'])
                 ->where('service_id', $service_id)
                 ->whereDate('planned_date', '=', date('Y-m-d', strtotime($validatedData['planned_date'])))
+                ->where('statut_id', '!=', 4)
                 ->exists();
-
+            
             if ($intervention) {
                 return redirect()->back()->withErrors(['error' => 'Il y a déjà une demande pour ce service à cette date.']);
             }
@@ -131,10 +132,10 @@ class InterventionController extends Controller
 
         $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
 
-        // if(isset($validatedData['planned_date'])) {
-        //     $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+        if(isset($validatedData['max_end_date'])) {
+            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
 
-        // }
+        }
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);
@@ -238,6 +239,7 @@ class InterventionController extends Controller
     public function destroy($intervention)
     {
         $intervention = Intervention::findOrFail($intervention);
+        $intervention->statut_id = 4;
         $intervention->delete();
 
         return redirect()->route('interventions.dashboard')
@@ -314,7 +316,7 @@ class InterventionController extends Controller
         $event->intervention_id = $intervention->id;
         $event->appartement_id = $intervention->appartement->id;
         $event->provider_id = $intervention->provider->id;
-        $event->title = $intervention->service->name;
+        $event->title = $intervention->service->name . " - " . $intervention->appartement->address;
         $event->start = $intervention->planned_date;
         $event->end = $intervention->planned_end_date;
 

@@ -28,7 +28,12 @@
                         @endif
                     </p>
                     <p><strong>Date d'intervention:</strong> {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}}</p>
-                    <p><strong>Statut:</strong> {{ $intervention->statut->nom }}</p>
+                    <p><strong>Statut:</strong> <span  class="                                       
+                        {{ $intervention->statut_id == 1 ? 'text-yellow-500' : '' }}
+                        {{ $intervention->statut_id == 3 ? 'text-green-500' : '' }}
+                         {{ $intervention->statut_id == 5 ? 'text-yellow-500' : '' }}
+                         {{ $intervention->statut_id == 4 ? 'text-red-500' : '' }}">
+                        {{ $intervention->statut->nom }}</span></p>
 
                     @foreach ($intervention->service_parameters as $parameter)
                         <div class="flex items-center">
@@ -46,16 +51,18 @@
                     <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i') }}</p>
                     <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($intervention->updated_at)->format('d/m/Y H:i') }}</p>
 
-                    <form action="{{ route('providers.available', $intervention->id) }}" method="GET" class="mt-6">
-                        @csrf
-                        <input type="hidden" value="{{$intervention->id}}" name="intervention_id">
-                        <input type="hidden" value="{{$intervention->planned_date}}" name="start">
-                        <input type="hidden" value="{{$intervention->service_id}}" name="service_id">
-                    
-                        <button type="submit" class="btn btn-info text-white font-bold py-2 px-4 rounded">
-                            Rechercher
-                        </button>
-                    </form>
+                    @if($intervention->statut_id == 1 )
+                        <form action="{{ route('providers.available', $intervention->id) }}" method="GET" class="mt-6">
+                            @csrf
+                            <input type="hidden" value="{{$intervention->id}}" name="intervention_id">
+                            <input type="hidden" value="{{$intervention->planned_date}}" name="start">
+                            <input type="hidden" value="{{$intervention->service_id}}" name="service_id">
+                        
+                            <button type="submit" class="btn btn-info text-white font-bold py-2 px-4 rounded">
+                                Rechercher
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

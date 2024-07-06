@@ -6,11 +6,11 @@
         <x-input-error class="mt-2 text-red-500" :messages="$errors->get('planned_date')" />
     </div>
 
-    {{-- <div>
+    <div>
         <x-input-label for="max_end_date" :value="__('Date de fin limite (facultatif)')" class="text-white"/>
-        <input type="text" id="max_end_date" name="max_end_date" placeholder="Sélectionnez une date" class="input input-bordered input-warning w-full max-w-xs" disabled>
+        <input type="text" id="max_end_date" name="max_end_date" placeholder="Sélectionnez une date" class="input input-bordered input-warning w-full max-w-xs">
         <x-input-error class="mt-2 text-red-500" :messages="$errors->get('max_end_date')" />
-    </div> --}}
+    </div>
 
     <x-input-label for="max_end_date" :value="__('Envoyer la proposition à :')" class="text-white" />
     <select class="select select-warning w-full max-w-xs" wire:model.live="selectedProvider" name="provider_id">
@@ -39,14 +39,15 @@
             locale: "fr",
             onChange: function(selectedDates, dateStr, instance) {
                 if (selectedDates.length > 0) {
-                    document.getElementById('max_end_date').disabled = false;
+                    // document.getElementById('max_end_date').disabled = false;
                     maxEndDatePicker.set('minDate', selectedDates[0]);
                 } else {
-                    document.getElementById('max_end_date').disabled = false;
+                    // document.getElementById('max_end_date').disabled = false;
                 }
             },
             onClose: function(selectedDates, dateStr) {
                 @this.set('date', dateStr);
+                // document.getElementById('max_end_date').disabled = false;
             }
         });
 
@@ -54,8 +55,6 @@
             mode: "single",
             enableTime: true,
             dateFormat: "d-m-Y H:i",
-            minDate: start_time ? new Date(start_time) : "today",
-            maxDate: end_time ? new Date(end_time) : null,
             locale: "fr",
         });
     });
