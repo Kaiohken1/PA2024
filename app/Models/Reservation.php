@@ -39,15 +39,6 @@ class Reservation extends Model
 
     }
 
-    public function avis(): HasOne
-    {
-        return $this->hasOne(AppartementAvis::class);
-    }
-    public function UserAvis()
-    {
-    return $this->hasMany(UserAvis::class);
-    }
-
     public function scopeSearch($query, $value)
     {
         return $query->where('id', 'like', "%{$value}%")
