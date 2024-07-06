@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
 
 
-    Route::resource('property', AppartementController::class)->except(['index']);
+    Route::resource('property', AppartementController::class)->except(['index', 'show']);
     Route::get('/dashboard', [AppartementController::class, 'userIndex'])->name('dashboard');
     Route::get('/calendar/{appartement_id}', [CalendarController::class, 'show'])->name('calendar.show');
 
@@ -159,7 +159,7 @@ Route::middleware('auth')->group(function () {
     })->name('espace-client');
     Route::prefix('property/{appartement}/')->group(function () {
         Route::resource('avis', AppartementAvisController::class)->except('create', 'edit');
-        Route::post('avis/{avis}/edit', [AppartementAvisController::class, 'edit'])->name('avis.edit');
+        Route::get('avis/{avis}/edit', [AppartementAvisController::class, 'edit'])->name('avis.edit');
 
     });
 
@@ -176,6 +176,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
 
     Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
+    Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
 
 });
@@ -266,9 +267,8 @@ Route::prefix('estimation')->group(function () {
 });
 
 
-Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
-
+Route::get('/property/{id}', [AppartementController::class, 'show'])->name('property.show');
 
 Route::get('set-locale/{locale}', function ($locale) {
     App::setLocale($locale);

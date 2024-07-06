@@ -191,9 +191,9 @@ class ReservationController extends Controller
             ->latest('created_at')
             ->paginate(15);
 
-        $appartement_name = Appartement::findOrFail($appartement_id)->name;
+        $appartement = Appartement::findOrFail($appartement_id);
 
-        return view('Reservation.showAll', compact('reservations', 'appartement_name'));
+        return view('Reservation.showAll', compact('reservations', 'appartement'));
     }
 
     public function pay(Request $request)

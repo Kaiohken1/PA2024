@@ -21,18 +21,6 @@
                         </div>
                     </div>
                     <div class="flex space-x-3">
-                        <div class="flex space-x-3 items-center">
-                            <label class="w-40 text-sm font-medium text-black">{{__('Statut')}} :</label>
-                            <select 
-                                wire:model.live="statut"
-                                class="bg-gray-100 border border-gray-300 text-black text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
-                                <option value="">{{__('Tout')}}</option>
-                                <option value="1">{{__('En attente')}}</option>
-                                <option value="2">{{__('Payée')}}</option>
-                                <option value="3">{{__('Terminée')}}</option>
-                                <option value="4">{{__('Refusée')}}</option>
-                            </select>
-                        </div>
                         <button wire:click="exportCsv" class="btn btn-warning">{{__('Exporter')}} CSV</button>
                     </div>
                 </div>
@@ -40,9 +28,7 @@
                     <table class="w-full text-sm text-left text-black">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
-                                @include('livewire.includes.table-sort', ['name' => 'id', 'displayName' => 'ID'])
                                 <th scope="col" class="px-4 py-3">{{__('Locataire')}}</th>
-                                @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'PRIX'])
                                 @include('livewire.includes.table-sort', ['name' => 'start_time', 'displayName' => 'DATE D\'ARRIVEE'])
                                 @include('livewire.includes.table-sort', ['name' => 'end_time', 'displayName' => 'DATE DE DEPART'])
                                 @include('livewire.includes.table-sort', ['name' => 'prix', 'displayName' => 'TARIF'])
@@ -56,11 +42,7 @@
                         <tbody>
                             @foreach($reservations as $reservation)
                                 <tr wire:key="{{$reservation->id}}" class="border-b border-gray-200">
-                                    <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
-                                        {{$reservation->id}}
-                                    </th>
                                     <td class="px-4 py-3"><a href="{{route('users.show', ['user' => $reservation->user->id])}}" class="underline">{{$reservation->user->name}} {{$reservation->user->first_name}}</td></a>
-                                    <td class="px-4 py-3">{{$reservation->prix}}€</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y')}}</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y')}}</td>
                                     <td class="px-4 py-3">{{$reservation->prix}}€</td>

@@ -45,7 +45,7 @@
                                 @endfor
                                 </div>
                                 <span>{{Illuminate\Support\Carbon::parse($avis->reservation->end_time)->translatedFormat('F Y')}}</span>
-                                @if($avis->reservation->user_id == auth()->user()->id)
+                                @if(Auth::check() && $avis->reservation->user_id == auth()->user()->id)
                                     <div>
                                         <form action="{{ route('avis.destroy', ['appartement' => $avis->appartement_id, 'avi' => $avis->id]) }}" method="POST">
                                             @csrf

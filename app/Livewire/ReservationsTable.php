@@ -28,6 +28,8 @@ class ReservationsTable extends Component
     #[Url(history:true)]
     public $sortDir = 'DESC';
 
+    public $appartementId;
+
 
     public function delete(Reservation $reservation) {
         $reservation->delete();
@@ -88,6 +90,7 @@ class ReservationsTable extends Component
             ->when($this->statut !== '', function($query) {
                 $query->where('statut_id', $this->statut);
             })
+            ->where('appartement_id', $this->appartementId)
             ->orderBy($this->sortBy, $this->sortDir)
             ->paginate($this->perPage),
         ]);

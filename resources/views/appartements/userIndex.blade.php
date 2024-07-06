@@ -37,7 +37,7 @@
                             <p><span class="font-extrabold">{{ $appartement->price }}€</span> {{__('par nuit')}}</p>
                             <p><span class="font-extrabold">{{ $appartement->city }}</span></p>
                             @foreach ($appartement->tags as $tag)
-                                <span class="bg-blue-900 text-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>
+                                <span class="text-blue-900 bg-blue-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-100 dark:text-blue-800">{{ $tag->name }}</span>
                             @endforeach
                         </div>
                         <div class="stats shadow">
@@ -57,8 +57,11 @@
                         <button class="btn btn-warning w-full">{{__('Réservations')}}</button>
                     </a>
 
-                    <a href="{{ route('calendar.show', $appartement->id) }}" class="col-span-2">
+                    <a href="{{ route('calendar.show', $appartement->id) }}">
                         <button class="btn btn-warning w-full">{{__('Calendrier')}}</button>
+                    </a>
+                    <a href="{{ route('fermeture.index', $appartement->id) }}" >
+                        <button class="btn btn-warning w-full">{{__('Fermetures')}}</button>
                     </a>
                     <form action="{{ route('property.active-flag', $appartement) }}" method="POST" class="col-span-2">
                         @csrf
