@@ -149,10 +149,11 @@ class User extends Authenticatable
         return $this->number;
     }
 
-    public function hasRole($role)
+    public function hasRole($role, $id)
     {
         return $this->roles()->where('role_id', $role)
                             ->orWhere('nom', $role)
+                            ->where('user_id', $id)
                             ->exists();
     }
 }
