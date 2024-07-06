@@ -88,7 +88,7 @@ class AppartementController extends Controller
         $appartement->statut_id = 11;
         $appartement->update();
 
-        // Notification::send($appartement->user, new PropertyValidated);
+        Notification::send($appartement->user, new PropertyValidated);
         
         return redirect()->route('admin.property.show', ['property' => $appartement])
         ->with('success', 'Le bien a été validé avec succès');
