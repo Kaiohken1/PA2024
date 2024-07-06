@@ -10,19 +10,21 @@ class Subscription extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'monthly_price',
-        'annual_price',
-        'permanent_discount',
-        'renewal_bonus',
-        'logo',
+        'user_id', 
+        'name', 
+        'stripe_id', 
+        'stripe_status', 
+        'stripe_price', 
+        'quantity', 
+        'trial_ends_at', 
+        'ends_at', 
+        'free_service_count', 
+        'last_free_service_date',
+        'type'
     ];
 
-    public function users()
+    public function user()
     {
-        return $this->belongsToMany(User::class)
-                    ->withPivot('free_service_count', 'last_free_service_date')
-                    ->withTimestamps();
+        return $this->belongsTo(User::class);
     }
-    
 }

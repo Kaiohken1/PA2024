@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\user;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Laravel\Cashier\Exceptions\InvalidPaymentMethod;
@@ -10,7 +12,10 @@ class SubscriptionControllerClient extends Controller
 {
     public function showSubscriptionForm(Request $request)
     {
-        return view('subscribe');
+        $user = $request->user();
+        $subscription = $user->subscriptions()->first(); 
+
+        return view('subscribe', compact('subscription'));
     }
 
     public function subscribe(Request $request)
@@ -50,13 +55,31 @@ class SubscriptionControllerClient extends Controller
         }
     }
 
-    public function success()
+    public function success(Request $request)
     {
-        return redirect()->route('home')->with('Payment was success.');
+       
+
+        return redirect()->route('subscribe')->with('Payment was success.');
+
+        $user = $request->user();
+
+        $stripeSubscription = $user->subscriptions()->latest()->first();
+
+        Subscription::create([
+            'user_id' => $user->id,
+            'name' => 'default',
+            'stripe_id' => $stripeSubscription->stripe_id,
+            'stripe_status' => $stripeSubscription->stripe_status,
+            'stripe_price' => $stripeSubscription->stripe_price,
+            'quantity' => 1,
+            'trial_ends_at' => $stripeSubscription->trial_ends_at,
+            'ends_at' => $stripeSubscription->ends_at,
+            'type' => 'default'
+        ]);
     }
 
     public function cancel()
     {
-        return redirect()->route('home')->with('error', 'Payment was cancelled.');
+        return redirect()->route('subscribe')->with('error', 'Payment was cancelled.');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Chat;
+use Illuminate\Http\Request;
 use App\Livewire\DynamicInput;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +10,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\UserAvisController;
@@ -24,13 +26,14 @@ use App\Http\Controllers\AppartementAvisController;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Admin\AvailabilityController;
+use App\Http\Controllers\SubscriptionControllerClient;
 use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\InterventionEstimateController;
 use App\Http\Controllers\Provider\InterventionController;
 use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
-use App\Http\Controllers\SubscriptionControllerClient;
+use App\Http\Controllers\StripeWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +83,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe', [SubscriptionControllerClient::class, 'subscribe'])->name('subscribe');
     Route::get('/subscribe/checkout/success', [SubscriptionControllerClient::class, 'success'])->name('checkout.success');
     Route::get('/subscribe/checkout/cancel', [SubscriptionControllerClient::class, 'cancel'])->name('checkout.cancel');
+    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
+    // Route::resource('/subscribe',SubscriptionControllerClient ::class);
 
 
     Route::prefix('property/{appartement}/edit')->group(function () {

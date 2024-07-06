@@ -107,9 +107,7 @@ class User extends Authenticatable
 
     public function subscriptions()
     {
-        return $this->belongsToMany(Subscription::class)
-                    ->withPivot('free_service_count', 'last_free_service_date')
-                    ->withTimestamps();
+        return $this->hasMany(Subscription::class);
     }
     
     public function sentAvis()
