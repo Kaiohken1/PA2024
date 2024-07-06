@@ -63,11 +63,14 @@
                     <a href="{{ route('fermeture.index', $appartement->id) }}" >
                         <button class="btn btn-warning w-full">{{__('Fermetures')}}</button>
                     </a>
-                    <form action="{{ route('property.active-flag', $appartement) }}" method="POST" class="col-span-2">
-                        @csrf
-                        @method('PATCH')
-                        @if($appartement->active_flag == 1)<button class="btn btn-error w-full">{{__('Désactiver')}}</button>@else<button class="btn  btn-success w-full">{{__('Activer')}}</button>@endif
-                    </form>
+
+                    @if($appartement->statut_id == 11)
+                        <form action="{{ route('property.active-flag', $appartement) }}" method="POST" class="col-span-2">
+                            @csrf
+                            @method('PATCH')
+                            @if($appartement->active_flag == 1)<button class="btn btn-error w-full">{{__('Désactiver')}}</button>@else<button class="btn  btn-success w-full">{{__('Activer')}}</button>@endif
+                        </form>
+                    @endif
 
                     @if($appartement->active_flag == 0)
                         <form action="{{ route('property.destroy', $appartement) }}" method="POST" class="col-span-2">
