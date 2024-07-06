@@ -33,5 +33,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Cashier::calculateTaxes();
+
+        if($this->app->environment('production')) {
+            \URL::forceScheme('https');
+        }
     }
 }
