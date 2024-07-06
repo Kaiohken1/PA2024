@@ -54,6 +54,12 @@
         </div>
 
         <div>
+            <x-input-label for="number" class="form-label">{{ __('Numéro de téléphone') }}</x-input-label>
+            <x-text-input id="number" name="number" type="tel" class="form-input mt-1 block w-full" :value="'+' . old('number', $user->number)" required autofocus autocomplete="number" />
+            <x-input-error class="mt-2" :messages="$errors->get('number')" />
+        </div>
+
+        <div>
             <x-input-label for="bio" :value="__('Bio')" />
             <textarea name="bio" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm">{{ $user->bio }}</textarea>
             <x-input-error :messages="$errors->get('bio')" class="mt-2" />

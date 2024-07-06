@@ -9,7 +9,9 @@ class AppartementImage extends Model
     protected $table = 'appartement_image';
 
     protected $fillable = [
-        'image'
+        'image',
+        'is_main',
+        'main_order',
     ];
 
     public function appartement()

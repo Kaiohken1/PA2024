@@ -17,14 +17,7 @@
     </x-slot>
 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="mt-6">
-                <x-primary-button class="ms-3 mt-5 ml-0">
-                    <a href="{{ route('fermeture.index', ['appartement' => $appartement->id]) }}">
-                        Voir les fermetures de cet appartement
-                    </a>
-                </x-primary-button>
-            </div>
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mt-6">
                 <div class="max-w-xl">
                     <x-auth-session-status class="mb-4" :status="session('status')" />
                     <form method="post" action="{{ route('property.update', $appartement->id) }}" class="mt-6 space-y-6"
@@ -58,16 +51,23 @@
 
                         <div>
                             <x-input-label for="address" :value="__('Addresse')" />
-                            <x-text-input id="address" class="form-input block mt-1 w-full" type="text" name="address"
-                                :value="old('address', $appartement->address)" />
+                            <x-text-input id="address" class="form-input block mt-1 w-full bg-gray-200" type="text" name="address"
+                                :value="old('address', $appartement->address)" disabled/>
                             <x-input-error :messages="$errors->get('address')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="city" :value="__('Ville')" />
-                            <x-text-input id="city" class="form-input block mt-1 w-full" type="text" name="city"
-                                :value="old('city', $appartement->city)" />
+                            <x-text-input id="city" class="form-input block mt-1 w-full bg-gray-200" type="text" name="city"
+                                :value="old('city', $appartement->city)" disabled/>
                             <x-input-error :messages="$errors->get('city')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="postal_code" :value="__('Code postal')" />
+                            <x-text-input id="postal_code" class="form-input block mt-1 w-full bg-gray-200" type="text" name="postal_code"
+                                :value="old('postal_code', $appartement->postal_code)" disabled/>
+                            <x-input-error :messages="$errors->get('postal_code')" class="mt-2" />
                         </div>
 
                         <div>
@@ -114,7 +114,7 @@
                             </select>
                         </div>
 
-                        @if ($appartement->images->count() <= 5)
+                        @if ($appartement->images->count() <= 15)
                             <div>
                                 <x-input-label for="price" :value="__('Ajouter une nouveau image')" />
                                 <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file" name='image[]'
@@ -124,26 +124,30 @@
                         @endif
 
 
-                        <x-primary-button class="ms-3 mt-5 ml-0">
+                        <button class="btn btn-warning">
                             {{ __('Modifier mon appartement') }}
-                        </x-primary-button>
+                        </button>
                     </form>
 
                     <div>
                         <x-input-label for="price" :value="__('Vos images activées')" class="mt-5" />
-                        <div class="flex space-x-8">
+                        <livewire:appartement-images :appartementId="$appartement->id">
+                        {{-- <div class="flex space-x-8">
                             @foreach ($appartement->images as $image)
                                 <div class="relative">
-                                    <img class="rounded-md mb-3 h-52" src="{{ Storage::url($image->image) }}"
-                                        width="200px">
+                                    <img class="rounded-md mb-3 h-52" src="{{ Storage::url($image->image) }}" width="200px">
+                                    <form method="POST" action="{{ route('property.setMainImg', $image) }}" class="absolute bottom-2 left-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="checkbox" name="is_main" value="1" {{ $image->is_main ? 'checked' : '' }} onchange="this.form.submit()">
+                                        <label for="is_main" class="text-white">Principale</label>
+                                    </form>
                                     @if($appartement->images->count() > 1)
-                                    <form method="POST" action="{{ route('property.destroyImg', $image) }}"
-                                        class="absolute top-2 right-2">
+                                    <form method="POST" action="{{ route('property.destroyImg', $image) }}" class="absolute top-2 right-2">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                                fill="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd"
                                                     d="M6 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zM5.293 9.293a1 1 0 011.414 0L10 13.586l3.293-3.293a1 1 0 111.414 1.414L11.414 15l3.293 3.293a1 1 0 01-1.414 1.414L10 16.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 15 5.293 11.707a1 1 0 010-1.414z"
                                                     clip-rule="evenodd" />
@@ -153,7 +157,7 @@
                                     @endif
                                 </div>
                             @endforeach
-                        </div>
+                        </div>                         --}}
                     </div>
                 </div>
             </div>

@@ -32,8 +32,12 @@
                         {{ __('Absences') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('interventions.messagerie')" :active="request()->routeIs('interventions.messagerie') || request()->routeIs('interventions.chat')">
+                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index') || request()->routeIs('chat.index')">
                         {{ __('Messagerie') }}                    
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('provider.invoices.index')" :active="request()->routeIs('provider.invoices.index')">
+                        {{ __('Factures') }}                    
                     </x-nav-link>
                     
                 </div>

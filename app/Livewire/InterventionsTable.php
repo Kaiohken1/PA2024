@@ -29,10 +29,12 @@ class InterventionsTable extends Component
 
     public $provider;
     public $showHidden = false;
+    public $selectedCities = [];
 
     public function mount()
     {
         $this->provider = Provider::findOrFail(Auth::user()->provider->id);
+        $this->selectedCities = $this->provider->selectedCities->pluck('city')->toArray();
     }
 
     public function hideIntervention($interventionId)
@@ -70,6 +72,7 @@ class InterventionsTable extends Component
 
     public function getInterventionsProperty()
     {
+        $providerId = $this->provider->id;
         $query = Intervention::search($this->search)
             ->when($this->hasEstimate !== '', function($query) {
                 if ($this->hasEstimate === '1') {
@@ -84,7 +87,16 @@ class InterventionsTable extends Component
             })
             ->orderBy($this->sortBy, $this->sortDir)
             ->where('service_id', $this->provider->services->first()->id)
-            ->where('statut_id', 1);
+            ->where('statut_id', 1)
+            ->where(function($query) use ($providerId) {
+                $query->where('provider_id', NULL)
+              ->orWhere('provider_id', $providerId);
+            })
+            ->when(!empty($this->selectedCities), function($query) {
+                $query->whereHas('appartement', function($query) {
+                    $query->whereIn('city', $this->selectedCities);
+                });
+            });
 
         if (!$this->showHidden) {
             $query->whereDoesntHave('hidden', function ($query) {

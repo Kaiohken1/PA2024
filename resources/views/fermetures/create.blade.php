@@ -1,5 +1,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -10,81 +14,152 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                <h1 class="text-2xl font-semibold mb-4">Choisir une période de fermeture</h1>
-            <div class="overflow-x-auto">
-                <form action="{{ route('fermeture.store', $appartement) }}" method="POST">
-                    @csrf
+                    <h1 class="text-2xl font-semibold mb-4">Choisir une période de fermeture</h1>
+                    <div class="overflow-x-auto">
+                        <h2 class="text-xl font-semibold mb-4">Ajouter une période de fermeture</h2>
+                        <form action="{{ route('fermeture.store', $appartement->id) }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="period_comment" class="block text-sm font-medium text-gray-700">Raison</label>
+                                <input type="text" id="period_comment" name="comment" class="input input-bordered input-warning w-full max-w-xs" placeholder="Entrez la raison">
+                                <x-input-error class="mt-2" :messages="$errors->get('comment')" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="datePicker" class="block text-sm font-medium text-gray-700">Sélectionnez une période</label>
+                                <input type="text" id="datePicker" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une période">
+                                <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
+                            </div>
+                            <input type="hidden" id="start_time" name="start_time">
+                            <input type="hidden" id="end_time" name="end_time">
+                            <div class="mt-4 flex justify-between">
+                                <button type="submit" class="btn btn-warning">Enregistrer</button>
+                            </div>
+                        </form>
 
-                    <x-input-label for="start_time" :value="__('Date de début')" />
-                    <x-text-input id="start_time" class="form-input block mt-1 w-full" type="date" name="start_time"/>
-                    <x-input-error :messages="$errors->get('start_time')" class="mt-2" />
+                        <h2 class="text-xl font-semibold mb-4">Ajouter un jour de fermeture exceptionnelle</h2>
+                        <form action="{{ route('fermeture.store', $appartement->id) }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="single_comment" class="block text-sm font-medium text-gray-700">Raison</label>
+                                <input type="text" id="single_comment" name="comment" class="input input-bordered input-warning w-full max-w-xs" placeholder="Entrez la raison">
+                                <x-input-error class="mt-2" :messages="$errors->get('comment')" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="datePickerSingle" class="block text-sm font-medium text-gray-700">Sélectionnez une date</label>
+                                <input type="text" id="datePickerSingle" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une date">
+                                <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
+                            </div>
+                            <input type="hidden" id="singleStart" name="start_time">
+                            <input type="hidden" id="singleEnd" name="end_time">
+                            <div class="mt-4 flex justify-between">
+                                <button type="submit" class="btn btn-warning">Enregistrer</button>
+                            </div>
+                        </form>
 
-                    <x-input-label for="end_time" :value="__('Date de fin')" />
-                    <x-text-input id="end_time" class="form-input block mt-1 w-full" type="date" name="end_time"/>
-                    <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
-
-                    <x-primary-button class="ms-3 mt-5 ml-0">
-                    {{ __('Ajouter une période de fermeture') }}
-                    </x-primary-button>
-                </form>
-            </div>
+                        <h2 class="text-xl font-semibold mb-4">Ajouter une fermeture récurrente</h2>
+                        <form action="{{ route('fermeture.createRecurring', ['appartement' => $appartement->id, 'id' => $appartement->id]) }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="monthPicker" class="block text-sm font-medium text-gray-700">Sélectionnez une période</label>
+                                <input type="text" id="monthPicker" class="input input-bordered input-warning w-full max-w-xs" placeholder="Sélectionnez une période">
+                                <x-input-error class="mt-2" :messages="$errors->get('start_time')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('end_time')" />
+                            </div>
+                            <input type="hidden" id="month_start" name="month_start">
+                            <input type="hidden" id="month_end" name="month_end">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Sélectionnez les jours de la semaine</label>
+                                <div class="mt-2 space-y-2">
+                                    @foreach(['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as $index => $day)
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="days[]" value="{{ $index + 1}}" class="checkbox checkbox-warning">
+                                            <span class="ml-2">{{ $day }}</span>
+                                        </label>
+                                    @endforeach
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="days[]" value="0" class="checkbox checkbox-warning">
+                                        <span class="ml-2">Dimanche</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex justify-between">
+                                <button type="submit" class="btn btn-warning">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
 <script>
-    function estDansIntervalle(date, intervalles, fermetures) {
+    document.addEventListener('DOMContentLoaded', function() {
+        var disabledDates = <?php echo json_encode($datesInBase); ?>;
 
-        var currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        flatpickr("#datePicker", {
+            mode: "range",
+            dateFormat: "d-m-Y",
+            minDate: "today",
+            maxDate: new Date().fp_incr(),
+            locale: "fr",
+            disable: disabledDates,
+            onChange: function(selectedDates, dateStr, instance) {
+                var startDateFormatted = selectedDates[0] ? formatDate(selectedDates[0]) : "";
+                var endDateFormatted = selectedDates[1] ? formatDate(selectedDates[1]) : "";
+                document.getElementById("start_time").value = startDateFormatted;
+                document.getElementById("end_time").value = endDateFormatted;
+            },
+        });
 
-        for (var i = 0; i < intervalles.length; i++) {
-            var startDate = new Date(intervalles[i].start_time);
-            var endDate = new Date(intervalles[i].end_time);
-            var intervalleStartDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-            var intervalleEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
-            if (currentDate >= intervalleStartDate && currentDate <= intervalleEndDate) {
-                return true;
+        flatpickr("#datePickerSingle", {
+            mode: "single",
+            dateFormat: "d-m-Y",
+            minDate: "today",
+            maxDate: new Date().fp_incr(),
+            locale: "fr",
+            disable: disabledDates,
+            onChange: function(selectedDate, dateStr, instance) {
+                document.getElementById("singleStart").value = dateStr;
+                document.getElementById("singleEnd").value = dateStr;
             }
-        }
-        for (var i = 0; i < fermetures.length; i++) {
-            var fermetureStart = new Date(fermetures[i].start_time);
-            var fermetureEnd = new Date(fermetures[i].end_time);
-            var trueFermetureStart = new Date(fermetureStart.getFullYear(), fermetureStart.getMonth(), fermetureStart.getDate());
-            var trueFermetureEnd = new Date(fermetureEnd.getFullYear(), fermetureEnd.getMonth(), fermetureEnd.getDate());
-            if (currentDate >= trueFermetureStart && currentDate <= trueFermetureEnd) {
-                return true;
+        });
+
+        flatpickr("#monthPicker", {
+            mode: "range",
+            dateFormat: "m-Y", 
+            minDate: "today",
+            maxDate: new Date().fp_incr(365),
+            locale: "fr",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, 
+                    dateFormat: "m-Y", 
+                    altFormat: "F Y"
+                })
+            ],
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates.length === 2) {
+                    var startDate = new Date(selectedDates[0]);
+                    var endDate = new Date(selectedDates[1]);
+
+                    startDate.setDate(1);
+
+                    endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+
+                    var startFormatted = startDate.toISOString().slice(0, 10);
+                    var endFormatted = endDate.toISOString().slice(0, 10);
+
+                    document.getElementById("month_start").value = startFormatted;
+                    document.getElementById("month_end").value = endFormatted;
+                }
             }
-        }
-        return false;
+        });
+    });
+
+
+    function formatDate(date) {
+        return date.toLocaleDateString("en-EN");
     }
-
-    var intervallesADesactiver = @json($intervalles);
-    var fermeturesADesactiver = @json($fermetures);
-
-    console.log(intervallesADesactiver);
-    console.log(fermeturesADesactiver);
-
-    var demain = new Date();
-    demain.setDate(demain.getDate() + 1);
-
-    flatpickr('#start_time', {
-        dateFormat: 'Y-m-d',
-        minDate: demain,
-        disable:[
-            function(date) {
-                return estDansIntervalle(date, intervallesADesactiver, fermeturesADesactiver);
-            }
-            ]
-    });
-
-    flatpickr('#end_time', {
-        dateFormat: 'Y-m-d',
-        minDate: demain,
-        disable:[
-            function(date) {
-                return estDansIntervalle(date, intervallesADesactiver, fermeturesADesactiver);
-            }
-        ]
-    });
 </script>

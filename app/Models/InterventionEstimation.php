@@ -41,4 +41,13 @@ class InterventionEstimation extends Model
     {
         return $this->belongsTo(Statut::class);
     }
+
+    public function scopeSearch($query, $value)
+    {
+        return $query->where('id', 'like', "%{$value}%")
+                ->orWhereHas('provider', function ($query) use ($value) {
+                    $query->where('email', 'like', "%{$value}%")
+                            ->orWhere('name', 'like', "%{$value}%");
+                });
+    }
 }

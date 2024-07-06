@@ -38,6 +38,9 @@ class ProviderController extends Controller
      */
     public function create()
     {
+        if(!Auth::check()) {
+            return redirect()->route('provider-register');
+        }
         $services = Service::query()
             ->select(['id', 'name'])
             ->get();
@@ -98,6 +101,8 @@ class ProviderController extends Controller
             'price_scale' => $validateData['bareme'],
             'description' => $validateData['provider_description'],
         ]);
+
+        Auth::logout();
 
         return redirect('/')
             ->with('success', "Votre demande a bien été prise en compte, elle sera soumise à validation par un administrateur");
@@ -198,9 +203,21 @@ class ProviderController extends Controller
         Carbon::setLocale('fr');
         $currentMonthYear = Carbon::now()->translatedFormat('F Y');
 
+        $providerId = $provider->id;
+        $selectedCities = $provider->selectedCities->pluck('city')->toArray();
+
         $proposals = Intervention::query()
                             ->where('service_id', $provider->services->first()->id)
                             ->where('statut_id', 1)
+                            ->where(function($query) use ($providerId) {
+                                        $query->where('provider_id', NULL)
+                                      ->orWhere('provider_id', $providerId);
+                            })
+                            ->when(!empty($selectedCities), function($query) use ($selectedCities) {
+                                $query->whereHas('appartement', function($query) use ($selectedCities) {
+                                    $query->whereIn('city', $selectedCities);
+                                });
+                            })
                             ->latest()
                             ->take(5)
                             ->get();

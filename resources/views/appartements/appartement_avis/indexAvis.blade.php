@@ -1,21 +1,21 @@
 <div class="w-full bg-white shadow-md rounded my-4">
-<h1 class=" py-3 px-6 text-2xl font-extrabold">Avis des voyageurs</h1>
-<h2 class=" px-6 text-xl font-extrabold size-max inline-flex"><x-ri-star-fill class="size-1/12"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} Avis</h2>
+<h1 class=" py-3 px-6 text-2xl font-extrabold">{{__('Avis des voyageurs')}}</h1>
+<h2 class=" px-6 text-xl font-extrabold size-max inline-flex"><x-ri-star-fill class="size-1/12"/>{{ $appartement->overall_rating }} | {{ $appartement->avis_count }} {{__('Avis')}}</h2>
 <div class="py-3 flex flex-row">
     <div class="flex flex-col">
-        <span class="px-6 text-xl font-extrabold">Propreté</span>
+        <span class="px-6 text-xl font-extrabold">{{__('Propreté')}}</span>
         <span class="px-6 text-xl font-extrabold">{{ number_format($appartement->avis_avg_rating_cleanness, 2) }}</span>
     </div>
     <div class="flex flex-col">
-        <span class="px-6 text-xl font-extrabold">Qualité/Prix</span>
+        <span class="px-6 text-xl font-extrabold">{{__('Qualité/Prix')}}</span>
         <span class="px-6 text-xl font-extrabold">{{ number_format($appartement->avis_avg_rating_price_quality, 2) }}</span>
     </div>
     <div class="flex flex-col">
-        <span class="px-6 text-xl font-extrabold">Emplacement</span>
+        <span class="px-6 text-xl font-extrabold">{{__('Emplacement')}}</span>
         <span class="px-6 text-xl font-extrabold">{{ number_format($appartement->avis_avg_rating_location, 2) }}</span>
     </div>
     <div class="flex flex-col">
-        <span class="px-6 text-xl font-extrabold">Communication</span>
+        <span class="px-6 text-xl font-extrabold">{{__('Communication')}}</span>
         <span class="px-6 text-xl font-extrabold">{{ number_format($appartement->avis_avg_rating_communication, 2) }}</span>
     </div>
 </div>
@@ -45,7 +45,7 @@
                                 @endfor
                                 </div>
                                 <span>{{Illuminate\Support\Carbon::parse($avis->reservation->end_time)->translatedFormat('F Y')}}</span>
-                                @if($avis->reservation->user_id == auth()->user()->id)
+                                @if(Auth::check() && $avis->reservation->user_id == auth()->user()->id)
                                     <div>
                                         <form action="{{ route('avis.destroy', ['appartement' => $avis->appartement_id, 'avi' => $avis->id]) }}" method="POST">
                                             @csrf

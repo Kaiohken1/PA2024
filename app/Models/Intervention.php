@@ -15,15 +15,17 @@ use App\Models\InterventionRefusal;
 use App\Models\InterventionEstimation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Intervention extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'description',
         'comment',
         'appartement_id',
+        'reservation_id',
         'service_id',
         'statut_id',
         'price',
@@ -33,6 +35,7 @@ class Intervention extends Model
         'fiche',
         'refusal_reason',
         'commission',
+        'max_end_date',
     ];
 
     protected $dispatchesEvents = [
@@ -51,7 +54,8 @@ class Intervention extends Model
 
     public function provider()
     {
-        return $this->belongsTo(Provider::class);
+        return $this->belongsTo(Provider::class)
+        ->withTrashed();
     }
 
     public function reservation()

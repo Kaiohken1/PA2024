@@ -20,8 +20,9 @@ return new class extends Migration
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->integer('nombre_de_personne');
-            $table->string('status')->default('en attente');
+            $table->string('status')->default('Payée');
             $table->integer('prix');
+            $table->integer('commission');
             $table->timestamps();
         });
     }

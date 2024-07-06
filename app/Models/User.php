@@ -8,10 +8,15 @@ use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
 use App\Models\Subscription;
+use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use MBarlow\Megaphone\HasMegaphone;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -43,7 +48,8 @@ class User extends Authenticatable
         'ville',
         'iban',
         'display_city',
-        'bio'
+        'bio',
+        'number',
     ];
 
     /**
@@ -80,6 +86,10 @@ class User extends Authenticatable
     }
 
     public function getImageUrl() {
+        if($this->provider) {
+            return Storage::url($this->provider->avatar);
+        }
+
         if($this->avatar) {
             return Storage::url($this->avatar);
         } else {
@@ -126,5 +136,28 @@ class User extends Authenticatable
 
     public function askedTickets(): HasMany {
         return $this->hasMany(Ticket::class, 'asker_user_id');
+    }
+
+    public function conversations()
+    {   
+        return $this->hasMany(Conversation::class,'sender_id')->orWhere('receiver_id',$this->id)->whereNotDeleted();
+    }
+
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'users.'.$this->id;
+    }
+
+    public function routeNotificationForVonage(Notification $notification): string
+    {
+        return $this->number;
+    }
+
+    public function hasRole($role, $id)
+    {
+        return $this->roles()->where('role_id', $role)
+                            ->orWhere('nom', $role)
+                            ->where('user_id', $id)
+                            ->exists();
     }
 }

@@ -17,7 +17,7 @@
 
     </x-slot>
 
-    @if ($reservations->isEmpty())
+    {{-- @if ($reservations->isEmpty())
         <div class="py-8">
             <h1 class="text-2xl font-semibold mb-4">Récapitulatif de mes réservations</h1>
             <p class="text-gray-600">Vous n'avez aucune réservation pour le moment.</p>
@@ -40,7 +40,7 @@
                     @foreach ($reservations as $reservation)
              <tbody class="text-gray-600 text-sm font-light">
                             <tr class="border-b border-gray-200">
-                                <td class="py-3 px-6 text-left">{{ $reservation->appartement->name }}</td>
+                                <td class="py-3 px-6 text-left">{{ $reservation->reservation->name }}</td>
                                 <td class="py-3 px-6 text-left">{{ $reservation->prix }}€</td>
                                 <td class="py-3 px-6 text-left">{{ \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y') }}</td>
                                 <td class="py-3 px-6 text-left">{{ \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y') }}</td>
@@ -57,7 +57,7 @@
                                     @endif
                                     @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time))
                                         @if (!\App\Models\AppartementAvis::where('user_id', auth()->user()->id)
-                                                ->where('appartement_id', $reservation->appartement_id)
+                                                ->where('reservation_id', $reservation->reservation_id)
                                                 ->exists())
                                                 <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
                                                 @csrf
@@ -68,9 +68,9 @@
 
                                         @endif 
                                     @endif
-
-
-                                    
+                                    <a href="{{route('reservation.generate', $reservation->id)}}">
+                                        <button class="btn btn-info">Facture</button>
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -79,5 +79,31 @@
                 {{ $reservations->links() }}
             </div>
         </div>
-    @endif
+    @endif --}}
+
+
+        @foreach($reservations as $reservation)
+        <a href="{{route('reservation.show', $reservation->id)}}" class="hover:shadow-md">
+            <div class="py-5">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex justify-between hover:shadow-md">
+                        <div class="p-6 text-gray-900">
+                            <article class="flex">
+                                <div class="mr-10">
+                                    <img class="rounded-md" src="{{ Storage::url($reservation->appartement->images->first()->image) }}" width="200px">
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-extrabold">{{ $reservation->appartement->name }}</h1>
+                                    <p><span class="font-extrabold">{{ \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y') }} - {{$reservation->appartement->city}}</span></p>
+                                    <p><span class="font-extrabold text-green-500">{{__('Confirmée')}}</span></p>
+                                </div>
+                            </article>
+                        </div>
+                        <div class="flex font-bold text-3xl mr-5 mt-6">{{$reservation->prix}}€</div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    @endforeach
+
 </x-app-layout>

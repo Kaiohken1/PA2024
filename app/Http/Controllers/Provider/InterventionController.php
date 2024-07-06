@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
+use App\Models\Reservation;
 
 class InterventionController extends Controller
 {
@@ -41,17 +42,32 @@ class InterventionController extends Controller
     public function create(Request $request)
     {
         $appartement_id = $request->route('id');
-        $selectedAppartement = Appartement::find($appartement_id);
+        $selectedAppartement = Appartement::withTrashed()->findOrFail($appartement_id);
+        $reservation_id = $request->route('reservationId');
         $appartements = Appartement::all();
         $selectedServices = [];
 
-        $services = Service::All()->where('active_flag', 1);
+        $reservation = null;
+
+        if ($reservation_id) {
+            $reservation = Reservation::find($reservation_id);
+        }
+        $user = Auth::user();
+    
+        $userRoles = $user->roles->pluck('id'); 
+    
+        $services = Service::whereIn('role_id', $userRoles)
+                        ->where('active_flag', 1)
+                        ->get();
 
         return view('interventions.create', [
             'selectedAppartement' => $selectedAppartement,
             'services' => $services,
             'appartements' => $appartements,
             'selectedServices' => $selectedServices,
+            'reservation' => $reservation,
+            'start_time' => $reservation ? $reservation->start_time : null,
+            'end_time' => $reservation ? $reservation->end_time : null,
         ]);
     }
 
@@ -62,6 +78,7 @@ class InterventionController extends Controller
     {
         $validatedData = $request->validate([
             'appartement_id' => ['required', 'exists:appartements,id'],
+            'reservation_id' => ['nullable', 'exists:reservations,id'],
             'text' => ['nullable', 'array'],
             'text.*' => ['array'],
             'text.*.*' => ['string', 'max:255'],
@@ -93,13 +110,32 @@ class InterventionController extends Controller
             'checkbox.*' => ['array'],
             'services' => ['required', 'array'],
             'services.*' => ['exists:services,id'],
-            'planned_date' => ['required', 'date', 'after:now']
+            'planned_date' => ['required', 'date', 'after:now'],
+            'max_end_date' => ['nullable', 'date', 'after:planned_date'],
         ]);
+
+
+        foreach ($validatedData['services'] as $service_id) {
+            $intervention = Intervention::where('appartement_id', $validatedData['appartement_id'])
+                ->where('service_id', $service_id)
+                ->whereDate('planned_date', '=', date('Y-m-d', strtotime($validatedData['planned_date'])))
+                ->where('statut_id', '!=', 4)
+                ->exists();
+            
+            if ($intervention) {
+                return redirect()->back()->withErrors(['error' => 'Il y a déjà une demande pour ce service à cette date.']);
+            }
+        }
 
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
         $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
+
+        if(isset($validatedData['max_end_date'])) {
+            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+
+        }
 
         foreach ($validatedData['services'] as $id) {
             $service = Service::findOrfail($id);
@@ -142,7 +178,7 @@ class InterventionController extends Controller
                 }
             }
         }
-        return redirect()->route('property.index')->with('success', 'Intervention en attente de validation');
+        return redirect()->route('interventions.dashboard')->with('success', 'Intervention en attente de validation');
     }
 
     /**
@@ -200,12 +236,16 @@ class InterventionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Intervention $intervention)
+    public function destroy($id, $intervention)
     {
+        $intervention = Intervention::findOrFail($intervention);
+        $intervention->statut_id = 4;
+        $intervention->save();
+
         $intervention->delete();
 
-        return redirect()->route('interventions.index')
-            ->with('success', 'Intervention deleted successfully.');
+        return redirect()->route('interventions.dashboard')
+            ->with('success', 'Intervention annulée.');
     }
 
 
@@ -276,26 +316,19 @@ class InterventionController extends Controller
 
         $event = new InterventionEvent();
         $event->intervention_id = $intervention->id;
+        $event->appartement_id = $intervention->appartement->id;
         $event->provider_id = $intervention->provider->id;
-        $event->title = $intervention->service->name;
+        $event->title = $intervention->service->name . " - " . $intervention->appartement->address;
         $event->start = $intervention->planned_date;
         $event->end = $intervention->planned_end_date;
 
         $event->save();
 
-        $invoice = new Invoice();
-        $invoice->intervention_id = $intervention->id;
-        $invoice->provider_id = $intervention->provider->id;
-        $invoice->user_id = $request->user()->id;
-        $invoice->price = $intervention->price;
-
-        $invoice->save();
-
         event(new InterventionPaid($intervention));
 
         $estimation = InterventionEstimation::findOrFail($intervention->estimations->where('statut_id', 9)->first()->id);
         return redirect()->route('interventions.clientShow', ['id' => $intervention->id]);
-        }
+    }
 
 
     public function showProvider($id)
@@ -337,3 +370,4 @@ class InterventionController extends Controller
 
     }
 }
+

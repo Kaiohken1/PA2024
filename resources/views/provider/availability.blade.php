@@ -1,5 +1,5 @@
 <x-admin-layout>
-    <div class="py-12">
+    {{-- <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-5">
                 @if(!$providers->isEmpty())
@@ -44,7 +44,7 @@
                                             <button class="btn btn-info">Voir le profil</button>                                    
                                         </a>
 
-                                        <a href="{{ route('test', $provider) }}">
+                                        <a href="{{ route('admin.providers.calendar', $provider->id) }}">
                                             <button class="btn btn-active btn-primary">Voir le calendrier</button>
                                         </a>
                                     </td>
@@ -57,5 +57,7 @@
                 @endif           
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    <livewire:availability-table :interventionId="$intervention->id">
 </x-admin-layout>

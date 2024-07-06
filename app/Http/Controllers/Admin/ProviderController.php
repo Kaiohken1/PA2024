@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Role;
 use App\Models\Service;
 use App\Models\Provider;
+use App\Models\Conversation;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -97,8 +98,9 @@ class ProviderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Provider $provider)
+    public function show($id)
     {
+        $provider = Provider::withTrashed()->findOrFail($id);
         return view('admin.providers.show', ['provider' => $provider, 'service' => $provider->services->first()]);
     }
 
@@ -177,5 +179,34 @@ class ProviderController extends Controller
     
         
         return view('provider.availability', ['id' => $intervention->id, 'intervention' => $intervention,'providers' => $providers]);
+    }
+
+
+    public function message($userId)
+    {
+      //  $createdConversation =   Conversation::updateOrCreate(['sender_id' => auth()->id(), 'receiver_id' => $userId]);
+
+      $authenticatedUserId = auth()->id();
+
+      $existingConversation = Conversation::where(function ($query) use ($authenticatedUserId, $userId) {
+                $query->where('sender_id', $authenticatedUserId)
+                    ->where('receiver_id', $userId);
+                })
+            ->orWhere(function ($query) use ($authenticatedUserId, $userId) {
+                $query->where('sender_id', $userId)
+                    ->where('receiver_id', $authenticatedUserId);
+            })->first();
+        
+      if ($existingConversation) {
+        return redirect()->route('admin.chat', ['query' => $existingConversation->id]);
+      }
+  
+      $createdConversation = Conversation::create([
+          'sender_id' => $authenticatedUserId,
+          'receiver_id' => $userId,
+      ]);
+ 
+        return redirect()->route('chat', ['query' => $createdConversation->id]);
+        
     }
 }

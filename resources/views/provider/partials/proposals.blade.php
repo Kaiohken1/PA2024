@@ -3,7 +3,7 @@
     <div class="stat-value text-amber-600 text-3xl font-bold">{{ $interventions->count() }}</div>
     <ul class="list-disc list-inside text-gray-600">
         @foreach ($interventions as $intervention)
-            <li>{{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}} - {{$intervention->appartement->address}}</li>
+            <li>{{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}} - {{$intervention->appartement->address}}</li>
         @endforeach
         @if($interventions->count() !=0)...@endif
     </ul>

@@ -6,14 +6,17 @@ use App\Models\Service;
 use Livewire\Component;
 use App\Models\Category;
 use App\Models\Appartement;
+use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceForm extends Component
 {
     public $appartement;
     public $categories;
+    public $id;
     public $services = [];
     public $selectedCategory = null;
+
     public $selectedService = null;
 
     public function mount()
@@ -21,7 +24,7 @@ class ServiceForm extends Component
         $user = Auth::user();
         $roleIds = $user->roles->pluck('id')->toArray();
 
-        $this->appartement = Appartement::findOrFail(request()->route('id'));
+        $this->appartement = Appartement::withTrashed()->findOrFail($this->id);
         $this->categories = Category::whereHas('services', function($query) use ($roleIds) {
             $query->where('active_flag', 1)
                 ->whereIn('role_id', $roleIds);
@@ -57,6 +60,8 @@ class ServiceForm extends Component
     public function updatedSelectedService()
     {
         $this->dispatch('servicesUpdated', hasService: $this->selectedService);
+        $this->dispatch('selected-service', serviceId : $this->selectedService);
+
     }
 
     public function render()

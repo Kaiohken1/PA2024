@@ -28,97 +28,144 @@ class AppartementController extends Controller
             'tag_id' => ['array'],
             'sort_type' => ['string']
         ]);
-
-        
-
-        $appartements = Appartement::query()
-    ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
-    ->with(['user:id,name'])
-    ->with(['avis'])
-    ->with(['images:*'])
-    ->withCount('avis')
-    ->withAvg('avis', 'rating_cleanness')
-    ->withAvg('avis', 'rating_price_quality')
-    ->withAvg('avis', 'rating_location')
-    ->withAvg('avis', 'rating_communication');
-
-if (isset($validateData['tag_id'])) {
-    $tags_id = $validateData['tag_id'];
-    foreach($tags_id as $tag_id){
-        $appartements->whereHas('tags', function ($query) use ($tag_id) {
-            $query->where('tags.id', $tag_id);
+    
+        $appartementsQuery = Appartement::query()
+            ->select(['id', 'name', 'address', 'price', 'image', 'user_id'])
+            ->where('active_flag', 1)
+            ->with(['user:id,name'])
+            ->with(['avis'])
+            ->with(['images:*'])
+            ->withCount('avis')
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication');
+    
+        if (isset($validateData['tag_id'])) {
+            $tags_id = $validateData['tag_id'];
+            foreach ($tags_id as $tag_id) {
+                $appartementsQuery->whereHas('tags', function ($query) use ($tag_id) {
+                    $query->where('tags.id', $tag_id);
+                });
+            }
+        }
+    
+        if (isset($validateData['sort_type'])) {
+            $sortType = $validateData['sort_type'];
+            
+            switch ($sortType) {
+                case 'price_asc':
+                    $appartementsQuery->orderBy('price', 'asc');
+                    break;
+    
+                case 'price_desc':
+                    $appartementsQuery->orderBy('price', 'desc');
+                    break;
+    
+                case 'surface_asc':
+                    $appartementsQuery->orderBy('surface', 'asc');
+                    break;
+    
+                case 'surface_desc':
+                    $appartementsQuery->orderBy('surface', 'desc');
+                    break;
+    
+                case 'guest_count_asc':
+                    $appartementsQuery->orderBy('guestCount', 'asc');
+                    break;
+    
+                case 'guest_count_desc':
+                    $appartementsQuery->orderBy('guestCount', 'desc');
+                    break;
+            }
+        } else {
+            $appartementsQuery->latest();
+        }
+    
+        $appartements = $appartementsQuery->paginate(10);
+    
+        $appartements->getCollection()->transform(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
+            return $appartement;
         });
-    }
     
-}
-if (isset($validateData['sort_type'])) {
-    $sortType = $validateData['sort_type'];
-
-    switch ($sortType) {
-        case 'price_asc':
-            $appartements->orderBy('price', 'asc');
-            break;
-
-        case 'price_desc':
-            $appartements->orderBy('price', 'desc');
-            break;
-
-        case 'surface_asc':
-            $appartements->orderBy('surface', 'asc');
-            break;
-
-        case 'surface_desc':
-            $appartements->orderBy('surface', 'desc');
-            break;
-        
-        case 'guest_count_asc':
-            $appartements->orderBy('guestCount', 'asc');
-            break;
-
-        case 'guest_count_desc':
-            $appartements->orderBy('guestCount', 'desc');
-            break;
-    } 
-} else {
-    $appartements->latest();
-}
+        $mostReserved = Appartement::withCount('reservations')
+            ->where('active_flag', 1)
+            ->withCount('avis')
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->orderBy('reservations_count', 'desc')
+            ->take(4)
+            ->get();
     
-
-
-$appartements = $appartements->paginate(10);
-
-$appartements = $appartements->each(function ($appartement) {
-    $appartement->overall_rating = ($appartement->avis_avg_rating_cleanness + $appartement->avis_avg_rating_price_quality  + $appartement->avis_avg_rating_location  + $appartement->avis_avg_rating_communication) / 4;
-    return $appartement;
-});
-
-        $tags = Tag::all(); 
-
+        $mostReserved->each(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
+            return $appartement;
+        });
+    
+        $bestRated = Appartement::withCount('avis')
+            ->where('active_flag', 1)
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->take(4)
+            ->get();
+    
+        $bestRated->each(function ($appartement) {
+            $appartement->overall_rating = (
+                $appartement->avis_avg_rating_cleanness +
+                $appartement->avis_avg_rating_price_quality +
+                $appartement->avis_avg_rating_location +
+                $appartement->avis_avg_rating_communication
+            ) / 4;
+            return $appartement;
+        });
+    
+        $bestRated = $bestRated->sortByDesc('overall_rating')->take(10);
+    
+        $tags = Tag::all();
+    
         return view('appartements.index', [
             'appartements' => $appartements,
+            'mostReserved' => $mostReserved,
+            'bestRated' => $bestRated,
             'tags' => $tags,
         ]);
-        
     }
+    
 
     public function userIndex()
-{
-    $user = Auth::user();
+    {
 
-    $appartements = $user->appartement;
-    
-    return view('appartements.userIndex', [
-        'appartements' => $appartements
-    ]);
-}
+        $appartements = Appartement::query()
+                        ->where('user_id', Auth::user()->id)
+                        ->paginate(3);
+
+        return view('appartements.userIndex', [
+            'appartements' => $appartements
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $tags = Tag::all();    
-        return view('appartements.create',[
+        $tags = Tag::all();
+        return view('appartements.create', [
             'tags' => $tags
         ]);
     }
@@ -131,48 +178,55 @@ $appartements = $appartements->each(function ($appartement) {
         $validateData = $request->validate([
             'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s]*$/'],
             'address' => ['required', 'max:255'],
-            'surface' => ['required', 'numeric'],   
-            'guestCount' => ['required', 'numeric'],   
-            'roomCount' => ['required', 'numeric'],   
-            'description' => ['required', 'max:255'],   
+            'surface' => ['required', 'numeric'],
+            'guestCount' => ['required', 'numeric'],
+            'roomCount' => ['required', 'numeric'],
+            'description' => ['required', 'max:255'],
             'price' => ['required', 'numeric'],
             'image' => ['array'],
             'image.*' => ['image'],
             'tag_id' => ['array'],
             'property_type' => ['string', 'required'],
             'city' => ['string', 'required'],
-            'location_type' => ['string', 'required']
+            'location_type' => ['string', 'required'],
+            'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
         ]);
 
+        $images = $request->file('image');
+        if (count($images) < 4) {
+            return back()->withErrors(['image' => 'Vous devez télécharger au moins 4 images.'])->withInput();
+        }
+
         unset($validateData['image']);
-    
+
         $validateData['user_id'] = Auth()->id();
-    
+
         $appartement = new Appartement($validateData);
-        
+
         $appartement->user()->associate($validateData['user_id']);
+        $appartement->statut_id = 1;
         $appartement->save();
-        if(isset($validateData['tag_id'])){
+        if (isset($validateData['tag_id'])) {
             $appartement->tags()->sync($validateData['tag_id']);
         }
 
         if ($request->hasFile('image')) {
             $images = $request->file('image');
-            
+
             foreach ($images as $image) {
                 $path = $image->store('imagesAppart', 'public');
-                
+
                 $appartementImage = new AppartementImage();
                 $appartementImage->image = $path;
-                $appartementImage->appartement_id = $appartement->id; 
+                $appartementImage->appartement_id = $appartement->id;
                 $appartementImage->save();
             }
         }
-         
-    
+
+
         return redirect()->route('property.index')
-            ->with('success', "Appartement créé avec succès");
-    }    
+            ->with('success', "Appartement créé avec succès et en attente de validation");
+    }
 
     /**
      * Display the specified resource.
@@ -180,41 +234,40 @@ $appartements = $appartements->each(function ($appartement) {
     public function show($id)
     {
         $appartement = Appartement::with('avis')
-        ->withAvg('avis', 'rating_cleanness')
-        ->withAvg('avis', 'rating_price_quality')
-        ->withAvg('avis', 'rating_location')
-        ->withAvg('avis', 'rating_communication')
-        ->withCount('avis')
-        ->findOrFail($id);
+            ->withAvg('avis', 'rating_cleanness')
+            ->withAvg('avis', 'rating_price_quality')
+            ->withAvg('avis', 'rating_location')
+            ->withAvg('avis', 'rating_communication')
+            ->withCount('avis')
+            ->findOrFail($id);
 
         $total_avg = ($appartement->avis_avg_rating_cleanness +
-        $appartement->avis_avg_rating_price_quality +
-        $appartement->avis_avg_rating_location  + 
-        $appartement->avis_avg_rating_communication) / 4;
+            $appartement->avis_avg_rating_price_quality +
+            $appartement->avis_avg_rating_location  +
+            $appartement->avis_avg_rating_communication) / 4;
 
         $appartement->overall_rating = round($total_avg, 2);
 
 
-    
 
-        $intervalle = Reservation::where("appartement_id", $appartement->id)
-            ->select("start_time","end_time")
+
+        $intervalles = Reservation::where("appartement_id", $appartement->id)
+            ->select("start_time", "end_time")
             ->get();
 
-        $fermeture = Fermeture::where("appartement_id", $appartement->id)
-            ->select("start_time","end_time")
+        $fermetures = Fermeture::where("appartement_id", $appartement->id)
+            ->select("start", "end")
             ->get();
 
-                    // Récupérer les dates déjà réservées pour cet appartement
         $reservedDates = Reservation::where('appartement_id', $id)
-        ->get() // Récupérez toutes les réservations
-        ->map(function ($reservation) {
-            return [
-                'start' => Carbon::parse($reservation->start_time)->toDateString(),
-                'end' => Carbon::parse($reservation->end_time)->toDateString(),
-            ];
-        })
-        ->toArray();
+            ->get()
+            ->map(function ($reservation) {
+                return [
+                    'start' => Carbon::parse($reservation->start_time)->toDateString(),
+                    'end' => Carbon::parse($reservation->end_time)->toDateString(),
+                ];
+            })
+            ->toArray();
 
         $appartementAvisSessionUser = AppartementAvis::where('appartement_id', $id)
             ->where('user_id', auth()->id())
@@ -232,12 +285,39 @@ $appartements = $appartements->each(function ($appartement) {
             return $avis;
         });
 
+        $dateInBase = [];
+
+        foreach ($fermetures as $fermeture) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($fermeture->start)),
+                'to' => date("d-m-Y", strtotime($fermeture->end))
+            ];
+        }
+
+
+        foreach ($intervalles as $intervalle) {
+            $dateInBase[] = [
+                'from' => date("d-m-Y", strtotime($intervalle->start_time)),
+                'to' => date("d-m-Y", strtotime($intervalle->end_time))
+            ];
+        }
+
+        $mainImages = $appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
+
+        $rest = 4 - $mainImages->count();
+
+        $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
+
+        $propertyImages = $mainImages->merge($otherImages);
+
         return view('appartements.show', [
             'appartement' => $appartement,
-            'fermetures' => $fermeture,
-            'intervalles' => $intervalle,
+            'fermetures' => $fermetures,
+            'intervalles' => $intervalles,
             'reservedDates' => $reservedDates,
-            'appartementAvis' => $appartementAvis
+            'appartementAvis' => $appartementAvis,
+            'datesInBase' => $dateInBase,
+            'propertyImages' => $propertyImages
         ]);
     }
     /**
@@ -269,50 +349,51 @@ $appartements = $appartements->each(function ($appartement) {
 
         $validatedData = $request->validate([
             'name' => ['required', 'string'],
-            'address' => ['required', 'max:255'],
-            'surface' => ['required', 'numeric', 'min:0'], 
-            'guestCount' => ['required', 'numeric', 'min:0'], 
-            'roomCount' => ['required', 'numeric', 'min:0'], 
+            // 'address' => ['required', 'max:255'],
+            'surface' => ['required', 'numeric', 'min:0'],
+            'guestCount' => ['required', 'numeric', 'min:0'],
+            'roomCount' => ['required', 'numeric', 'min:0'],
             'description' => ['required', 'max:255'],
-            'price' => ['required', 'numeric', 'min:0'], 
+            'price' => ['required', 'numeric', 'min:0'],
             'image' => ['array'],
             'image.*' => ['image'],
             'tag_id' => ['array'],
             'property_type' => ['string', 'required'],
-            'city' => ['string', 'required'],
-            'location_type' => ['string', 'required']
+            // 'city' => ['string', 'required'],
+            'location_type' => ['string', 'required'],
+            // 'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
         ]);
-        
+
+        $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();
+
+        if ($appartementImages->count() >= 15) {
+            return redirect()->route('property.edit', $appartement->id)
+                ->with('error', "Il y a déjà 15 images pour votre appartement. Pour en ajouter une nouvelle, veuillez en supprimer une autre.");
+        }
 
         unset($validatedData['image']);
 
         if ($request->hasFile('image')) {
             $images = $request->file('image');
-            
-            $appartementImages = AppartementImage::where('appartement_id', $appartement->id)->get();
-    
-            if($appartementImages->count() >= 4) {
-                return redirect()->route('property.edit', $appartement->id)
-                    ->with('error', "Il y a déjà 4 images pour votre appartement. Pour en ajouter une nouvelle, veuillez en supprimer une autre.");
-            }
+
 
             foreach ($images as $image) {
                 $path = $image->store('imagesAppart', 'public');
-                
+
                 $appartementImage = new AppartementImage();
                 $appartementImage->image = $path;
                 $appartementImage->appartement_id = $appartement->id;
                 $appartementImage->save();
             }
-        }  
-    
+        }
+
         $appartement->update($validatedData);
-        if(isset($validatedData['tag_id'])){
+        if (isset($validatedData['tag_id'])) {
             $appartement->tags()->sync($validatedData['tag_id']);
         } else {
-                $appartement->tags()->detach();
+            $appartement->tags()->detach();
         }
-    
+
         return redirect()->route('property.edit', $appartement->id)
             ->with('success', "Appartement mis à jour avec succès");
     }
@@ -320,23 +401,36 @@ $appartements = $appartements->each(function ($appartement) {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) : RedirectResponse
+    public function destroy($id): RedirectResponse
     {
         $appartement = Appartement::findOrFail($id);
 
         Gate::authorize('delete', $appartement);
 
+        $appartement->statut_id = 12;
+
         $appartement->delete();
 
-        return redirect(url('/'));
+        return redirect()->route('dashboard')
+        ->with('success', "Appartement supprimé");
     }
 
-    public function destroyImg($id) : RedirectResponse {
+    public function destroyImg($id): RedirectResponse
+    {
         $appartementImages = AppartementImage::findOrFail($id);
 
         $appartementImages->delete();
 
         return redirect()->route('property.edit', $appartementImages->appartement_id)
-        ->with('success', "Appartement mis à jour avec succès");
+            ->with('success', "Appartement mis à jour avec succès");
+    }
+
+    public function updateActiveFlag($id) {
+        $appartement = Appartement::findOrFail($id);
+        $appartement->active_flag == 1 ? $appartement->active_flag = 0 : $appartement->active_flag = 1;
+        $appartement->update();
+
+        return redirect()->route('dashboard')
+        ->with('success', "Statut de l'appartement mis à jour avec succès");
     }
 }

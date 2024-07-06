@@ -60,9 +60,15 @@
                                         {{ $intervention->statut->id == 5 ? 'text-yellow-500' : '' }}">
                                         {{ $intervention->statut->nom }}
                                     </td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i:s')}}</td>
-                                    <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i:s')}}</td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i')}}</td>
+                                    <td class="px-4 py-3 font-medium whitespace-nowrap">
+                                        @if($intervention->user->isAdmin())
+                                        PCS
+                                        @else
+                                        {{ $intervention->user->name }}
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}}</td>
                                     <td class="px-4 py-3">@if($intervention->price){{$intervention->price + ($intervention->price*0.20)}}€@endif</td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
@@ -74,9 +80,6 @@
                                             <button class="btn btn-info mr-3">Voir</button>
                                         </a>
                                         @endif
-                                        @if($intervention->statut_id == 5)
-                                        <a href="{{route('interventions.chat', ['intervention' => $intervention->id, 'user' => $intervention->user_id])}}"><button class="btn btn-success mr-3">Accèder au chat</button>
-                                        @endif                                    
                                 </td>
                                 </tr>
                             @endforeach

@@ -28,6 +28,18 @@ class ProviderTable extends Component
 
 
     public function delete(Provider $provider) {
+        $provider->statut = "Supprimé";
+        $provider->save();
+
+        foreach($provider->interventions->where('statut_id', '!=', 5)->where('statut_id', '!=', 3) as $intervention) {
+            $intervention->provider_id = NULL;
+            $intervention->price = NULL;
+            $intervention->commission = NULL;
+            $intervention->statut_id = 1;
+            $intervention->save();
+            $intervention->estimations->where('provider_id', $provider->id)->first()->delete();
+        }
+
         $provider->delete();
     }
 
@@ -49,7 +61,8 @@ class ProviderTable extends Component
     {
         return view('livewire.provider-table',
         [
-            'providers' => provider::search($this->search)
+            'providers' => provider::withTrashed()
+            ->search($this->search)
             ->when($this->statut !== '', function($query) {
                 $query->where('statut', $this->statut);
             })

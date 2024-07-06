@@ -10,8 +10,8 @@
                     <p><strong>Montant de la remise permanante :</strong> {{ $subscription->permanent_discount }}€</p>
                     <p><strong>Montant du bonus de renouvellement :</strong> {{ $subscription->renewal_bonus }}€</p>
 
-                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($subscription->created_at)->format('d/m/Y H:i:s') }}</p>
-                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($subscription->updated_at)->format('d/m/Y H:i:s') }}</p>
+                    <p><strong>Créé le:</strong> {{ \Carbon\Carbon::parse($subscription->created_at)->format('d/m/Y H:i') }}</p>
+                    <p><strong>Edité le:</strong> {{ \Carbon\Carbon::parse($subscription->updated_at)->format('d/m/Y H:i') }}</p>
 
                     <a href="{{route('subscriptions.edit', $subscription)}}">
                         <button class="btn btn-success mt-5">Modifier</button>
