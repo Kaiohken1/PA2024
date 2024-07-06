@@ -384,6 +384,21 @@
     "Commencer la simulation": "Start simulation",
     "Mes réservation":"My reservations",
     "Devenir prestataire":"Register as a provider",
-    "Voyageurs":"Travelers"
+    "Voyageurs":"Travelers",
+    "Les plus réservés":"Most booked",
+    "Filtrer par tags":"Filter by tag",
+    "Les mieux notés":"Top rated",
+    "Tous les logements":"All properties",
+    "Filtrage":"Filter",
+    "Tri par défaut": "Default sorting",
+    "Prix croissant": "Price ascending",
+    "Prix décroissant": "Price descending",
+    "Surface décroissant": "Area descending",
+    "Surface croissant": "Area ascending",
+    "Voyageur croissant": "Traveler ascending",
+    "Voyageur décroissant": "Traveler descending",
+    "Avis croissant": "Review ascending",
+    "Avis décroissant": "Review descending",
+    "Afficher plus":"Load more"
 
 }

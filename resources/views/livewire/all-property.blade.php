@@ -1,24 +1,24 @@
 <div x-data="{ showModal: false }">
-    <h2 class="text-3xl font-extrabold mt-8 mb-4 text-center">Tous les appartements</h2>
+    <h2 class="text-3xl font-extrabold mt-8 mb-4 text-center">{{__('Tous les logements')}}</h2>
 
     <div class="flex justify-center mb-4 mt-4 space-x-4">
         <div class="flex items-center">
             <span class="mr-2 text-lg font-bold">{{ __('Filtrage') }} :</span> 
             <select wire:model="sortType" wire:change="search" class="select select-warning max-w-xs">
-                <option value="latest" selected>Tri par défaut</option>
-                <option value="price_asc">Prix Croissant</option>
-                <option value="price_desc">Prix Décroissant</option>
-                <option value="surface_asc">Surface croissant</option>
-                <option value="surface_desc">Surface décroissant</option>
-                <option value="guest_count_asc">Voyageur croissant</option>
-                <option value="guest_count_desc">Voyageur décroissant</option>
-                <option value="avis_asc">Avis Croissant</option>
-                <option value="avis_desc">Avis Décroissant</option>
+                <option value="latest" selected>{{__('Tri par défaut')}}</option>
+                <option value="price_asc">{{__('Prix croissant')}}</option>
+                <option value="price_desc">{{__('Prix décroissant')}}</option>
+                <option value="surface_asc">{{__('Surface croissant')}}</option>
+                <option value="surface_desc">{{__('Surface décroissant')}}</option>
+                <option value="guest_count_asc">{{__('Voyageur croissant')}}</option>
+                <option value="guest_count_desc">{{__('Voyageur décroissant')}}</option>
+                {{-- <option value="avis_asc">{{__('Avis croissant')}}</option> --}}
+                <option value="avis_desc">{{__('Avis décroissant')}}</option>
             </select>
         </div>
 
         <div class="flex items-center">
-            <button class="btn btn-warning" @click="showModal = true">Filtrer par tags</button>
+            <button class="btn btn-warning" @click="showModal = true">{{__('Filtrer par tags')}}</button>
         </div>
     </div>
     
@@ -74,7 +74,7 @@
 
     <div class="flex justify-center">
         @if($hasMorePages)
-            <button class="btn btn-warning mt-5" wire:click="loadMore">Afficher plus</button>
+            <button class="btn btn-warning mt-5" wire:click="loadMore">{{__('Afficher plus')}}</button>
         @endif
     </div>
 
@@ -89,7 +89,7 @@
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Filtrer par tags</h3>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">{{__('Filtrer par tags')}}</h3>
                             <div class="mt-2">
                                 <div class="grid grid-cols-1 gap-4">
                                     @foreach ($tags as $tag)
@@ -105,7 +105,7 @@
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     {{-- <button type="button" class="btn btn-warning ml-3" wire:click="search" @click="showModal = false">Appliquer</button> --}}
-                    <button type="button" class="btn btn-error" @click="showModal = false">Fermer</button>
+                    <button type="button" class="btn btn-error" @click="showModal = false">{{__('Fermer')}}</button>
                 </div>
             </div>
         </div>

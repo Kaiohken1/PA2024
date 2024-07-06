@@ -380,5 +380,20 @@
     "Commencer la simulation": "Iniciar la simulación",
     "Mes réservations":"Mis reservas",
     "Devenir prestataire":"Regístrate como proveedor",
-    "Voyageurs":"Viajeros"
+    "Voyageurs": "Viajeros",
+    "Les plus réservés": "Más reservados",
+    "Filtrer par tags": "Filtrar por etiqueta",
+    "Les mieux notés": "Mejor valorados",
+    "Tous les logements": "Todas las propiedades",
+    "Filtrage": "Filtrar",
+    "Tri par défaut": "Orden predeterminado",
+    "Prix croissant": "Precio ascendente",
+    "Prix décroissant": "Precio descendente",
+    "Surface décroissant": "Superficie descendente",
+    "Surface croissant": "Superficie ascendente",
+    "Voyageur croissant": "Viajero ascendente",
+    "Voyageur décroissant": "Viajero descendente",
+    "Avis croissant": "Opiniones ascendentes",
+    "Avis décroissant": "Opiniones descendentes",
+    "Afficher plus": "Mostrar más"
 }

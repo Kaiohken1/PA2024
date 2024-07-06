@@ -120,7 +120,6 @@ class SearchProperty extends Component
                 });
             });
 
-        // Logique de tri
         switch ($this->sortType) {
             case 'price_asc':
                 $appartementsQuery->orderBy('price', 'asc');
