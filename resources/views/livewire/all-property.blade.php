@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ showModal: false }">
     <h2 class="text-3xl font-extrabold mt-8 mb-4 text-center">Tous les appartements</h2>
 
     <div class="flex justify-center mb-4 mt-4 space-x-4">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="flex items-center">
-            <button class="btn btn-warning" wire:click="$set('showTagModal', true)">Filtrer par tags</button>
+            <button class="btn btn-warning" @click="showModal = true">Filtrer par tags</button>
         </div>
     </div>
     
@@ -78,8 +78,8 @@
         @endif
     </div>
 
-    @if ($showTagModal)
-    <div class="fixed z-10 inset-0 overflow-y-auto">
+    <!-- Modal -->
+    <div x-show="showModal" class="fixed z-10 inset-0 overflow-y-auto" style="display: none;">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true">
                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -104,11 +104,10 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" class="btn btn-warning ml-3" wire:click="search">Appliquer</button>
-                    <button type="button" class="btn btn-error" wire:click="$set('showTagModal', false)">Fermer</button>
+                    {{-- <button type="button" class="btn btn-warning ml-3" wire:click="search" @click="showModal = false">Appliquer</button> --}}
+                    <button type="button" class="btn btn-error" @click="showModal = false">Fermer</button>
                 </div>
             </div>
         </div>
     </div>
-@endif
 </div>

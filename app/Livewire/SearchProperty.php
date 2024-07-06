@@ -39,6 +39,36 @@ class SearchProperty extends Component
         }
     }
 
+    public function updatedCity()
+    {
+        $this->search();
+    }
+
+    public function updatedStartTime()
+    {
+        $this->search();
+    }
+
+    public function updatedEndTime()
+    {
+        $this->search();
+    }
+
+    public function updatedGuestCount()
+    {
+        $this->search();
+    }
+
+    public function updatedSortType()
+    {
+        $this->search();
+    }
+
+    public function updatedSelectedTags()
+    {
+        $this->search();
+    }
+
     public function loadMore()
     {
         $this->pagination += 8;
@@ -142,7 +172,6 @@ class SearchProperty extends Component
         $this->dispatch('search');
 
         $this->showTagModal = false; 
-
     }
 
     public function render()
@@ -159,5 +188,6 @@ class SearchProperty extends Component
         } else {
             $this->selectedTags[] = $tagName;
         }
+        $this->search();
     }
 }

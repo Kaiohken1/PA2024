@@ -20,7 +20,6 @@ class AllProperty extends Component
     public $sortType = 'latest';
 
     public $selectedTags = []; 
-    public $showTagModal = false; 
 
     public function mount()
     {
@@ -31,20 +30,6 @@ class AllProperty extends Component
     {
         $this->pagination += 8;
         $this->search();
-    }
-
-    public function placeholder()
-    {
-        return <<<'HTML'
-        <div>
-            <h2 class="text-3xl font-extrabold mt-8 mb-4 text-center">Tous les appartements</h2>
-            <div class="grid grid-cols-4 mx-auto sm:p-8 w-lvh bg-white shadow sm:rounded-lg">
-                @for($i = 0; $i < 4; $i++)
-                <div class="skeleton h-32 w-32"></div>
-                @endfor
-            </div>
-        </div>
-        HTML;
     }
 
     public function search()
@@ -65,35 +50,27 @@ class AllProperty extends Component
             case 'price_asc':
                 $appartementsQuery->orderBy('price', 'asc');
                 break;
-
             case 'price_desc':
                 $appartementsQuery->orderBy('price', 'desc');
                 break;
-
             case 'surface_asc':
                 $appartementsQuery->orderBy('surface', 'asc');
                 break;
-
             case 'surface_desc':
                 $appartementsQuery->orderBy('surface', 'desc');
                 break;
-
             case 'guest_count_asc':
                 $appartementsQuery->orderBy('guestCount', 'asc');
                 break;
-
             case 'guest_count_desc':
                 $appartementsQuery->orderBy('guestCount', 'desc');
                 break;
-
             case 'avis_asc':
                 $appartementsQuery->orderBy('avis_count', 'asc');
                 break;
-    
             case 'avis_desc':
                 $appartementsQuery->orderBy('avis_count', 'desc');
                 break;
-
             default:
                 $appartementsQuery->orderBy('created_at', 'desc');
                 break;
@@ -106,30 +83,12 @@ class AllProperty extends Component
 
         foreach ($this->appartements as $appartement) {
             $appartement->overall_rating = (
-                $appartement->avis_avg_rating_cleanness +
-                $appartement->avis_avg_rating_price_quality +
-                $appartement->avis_avg_rating_location +
-                $appartement->avis_avg_rating_communication
+                ($appartement->avis_avg_rating_cleanness ?? 0) +
+                ($appartement->avis_avg_rating_price_quality ?? 0) +
+                ($appartement->avis_avg_rating_location ?? 0) +
+                ($appartement->avis_avg_rating_communication ?? 0)
             ) / 4;
         }
-
-        $this->showTagModal = false; 
-
-    }
-
-    public function render()
-    {
-        return view('livewire.all-property', [
-            'appartements' => $this->appartements,
-            'hasMorePages' => $this->hasMorePages,
-            'tags' => Tag::all(),
-        ]);
-    }
-
-    public function updateSortType($sortType)
-    {
-        $this->sortType = $sortType;
-        $this->search();
     }
 
     public function toggleTag($tagName)
@@ -139,5 +98,15 @@ class AllProperty extends Component
         } else {
             $this->selectedTags[] = $tagName;
         }
+        $this->search();
+    }
+
+    public function render()
+    {
+        return view('livewire.all-property', [
+            'appartements' => $this->appartements,
+            'hasMorePages' => $this->hasMorePages,
+            'tags' => Tag::all(),
+        ]);
     }
 }
