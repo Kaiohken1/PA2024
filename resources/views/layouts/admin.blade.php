@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{ asset('vendor/megaphone/css/megaphone.css') }}">
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-900">
