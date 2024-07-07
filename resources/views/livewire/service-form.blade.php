@@ -105,6 +105,17 @@
                                     </div>
                                 @break
 
+                                @case(11)
+                                <div>
+                                    <p class="{{ Auth()->user()->isAdmin() ? 'text-white' :'text-gray-700'}}">{{ $parameter->name }}</p>
+                                    <select name="select[{{ $service->id }}][{{ $parameter->id }}]" class="select select-warning w-full max-w-xs">
+                                        <option value="Aller">Aller</option>
+                                        <option value="Retour">Retour</option>
+                                    </select>
+
+                                </div>
+                                @break
+
                                 @default
                                     <p>Erreur lors de la récupération du formulaire</p>
                                 @break

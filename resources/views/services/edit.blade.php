@@ -38,7 +38,7 @@
 
                         <div>
                             <x-input-label for="flexPrice" :value="__('Tarif évolutif')" class="text-white" />
-                            <input type="checkbox" id="flexPrice" name="flexPrice" value="{{$service->flexPrice}}">
+                            <input type="checkbox" id="flexPrice" name="flexPrice" value="{{$service->flexPrice}}" class="checkbox checkbox-warning">
                         </div>
 
                         {{-- <div>
@@ -58,13 +58,23 @@
                         </div>
 
                         <div>
+                            <x-input-label for="category" :value="__('Catégorie')" class="text-white" />
                             <select id="category_id"  name ="category_id"
-                            class="shadow-sm border-0 focus:outline-none p-3 block sm:text-sm border-gray-300 rounded-md mb-2">
+                            class="select select-warning w-full max-w-xs">
                             <option value="">Sélectionnez un type de catégorie</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @if($category->id === $service->category_id) selected @endif>{{ $category->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+
+                        <div>
+                            <x-input-label for="restriction" :value="__('Restrictions de périodes pour les voyageurs')" class="text-white" />
+                                <select id="hasRange"  name ="hasRange"
+                                class="select select-warning w-full max-w-xs">
+                                        <option value="0" @if(!$service->hasRange) selected @endif>Toute la période de réservation</option>
+                                        <option value="1" @if($service->hasRange) selected @endif>Premier et dernier jour de réservation seulement</option>
+                                </select>
                         </div>
 
                         <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>

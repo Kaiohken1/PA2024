@@ -30,6 +30,7 @@ return new class extends Migration
             ['name' => 'texte long', 'validation_rule' => 'required|string|max:255'],
             ['name' => 'date', 'validation_rule' => 'required|date'],
             ['name' => 'case à cocher', 'validation_rule' => 'required|boolean'],
+            ['name' => 'Sens de destination (Aller ou Retour)', 'validation_rule' => 'required|string'],
         ]);
         
     }

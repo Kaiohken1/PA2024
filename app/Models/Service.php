@@ -23,6 +23,7 @@ class Service extends Model
         'active_flag',
         'category_id',
         'role_id',
+        'hasRange',
     ];
 
     public function providers(): BelongsToMany

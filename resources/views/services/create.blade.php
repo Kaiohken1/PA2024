@@ -27,20 +27,20 @@
                             <div>
                                 <x-input-label for="name" :value="__('Nom du service')" class="text-white" />
                                 <input id="name" name="name" type="text"
-                                    class="input input-bordered w-full max-w-xs" />
+                                class="input input-bordered input-warning w-full max-w-xs" />
                                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             </div>
 
                             <div>
                                 <x-input-label for="price" :value="__('Prix du service')" class="text-white" />
                                 <input type="number" id="price" name="price"
-                                    class="input input-bordered w-full max-w-xs" min="1" />
+                                class="input input-bordered input-warning w-full max-w-xs" min="1" />
                                 <x-input-error class="mt-2" :messages="$errors->get('price')" />
                             </div>
 
                             <div>
                                 <x-input-label for="flexPrice" :value="__('Tarif évolutif')" class="text-white" />
-                                <input type="checkbox" id="flexPrice" name="flexPrice">
+                                <input type="checkbox" id="flexPrice" name="flexPrice" class="checkbox checkbox-warning">
                             </div>
 
                             <div>
@@ -61,13 +61,23 @@
                             </div>
 
                             <div>
+                                <x-input-label for="category" :value="__('Catégorie')" class="text-white" />
                                 <select id="category_id"  name ="category_id"
-                                class="shadow-sm border-0 focus:outline-none p-3 block sm:text-sm border-gray-300 rounded-md mb-2">
+                                class="select select-warning w-full max-w-xs">
                                 <option value="">Sélectionnez un type de catégorie</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div>
+                                <x-input-label for="restriction" :value="__('Restrictions de périodes pour les voyageurs')" class="text-white" />
+                                    <select id="hasRange"  name ="hasRange"
+                                    class="select select-warning w-full max-w-xs">
+                                            <option value="0" selected>Toute la période de réservation</option>
+                                            <option value="1">Premier et dernier jour de réservation seulement</option>
+                                    </select>
                             </div>
 
                             <h1 class="text-white text-2xl font-bold">Ajouter des paramètres aux service</h1>

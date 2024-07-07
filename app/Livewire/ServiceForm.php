@@ -49,7 +49,7 @@ class ServiceForm extends Component
 
     public function updatedSelectedService()
     {
-        $this->dispatch('servicesUpdated', hasService: $this->selectedService);
+        $this->dispatch('servicesUpdated', hasService: $this->selectedService, range :$this->services->where('id', $this->selectedService)->first()->hasRange);
         $this->dispatch('selected-service', serviceId : $this->selectedService);
 
     }

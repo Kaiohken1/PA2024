@@ -111,8 +111,10 @@ class InterventionController extends Controller
             'services.*' => ['exists:services,id'],
             'planned_date' => ['required', 'date', 'after:now'],
             'max_end_date' => ['nullable', 'date', 'after:planned_date'],
+            'select' => ['nullable', 'array'],
+            'select.*' => ['array'],
+            'select.*.*' => ['string', 'max:255'],
         ]);
-
 
         foreach ($validatedData['services'] as $service_id) {
             $intervention = Intervention::where('appartement_id', $validatedData['appartement_id'])
@@ -167,7 +169,9 @@ class InterventionController extends Controller
                     $parameters = $value[$id];
                     foreach ($parameters as $key => $content) {
                         $parameter = ServiceParameter::findOrfail($key);
-                        $dd($parameter);
+                        if($parameter->data_type_id == 10) {
+                            $content = "Oui";
+                        }
                         $intervention->service_parameters()->attach($key, [
                             'value' => $content,
                             'intervention_id' => $intervention->id,
