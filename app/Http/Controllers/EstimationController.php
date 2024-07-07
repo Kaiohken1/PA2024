@@ -34,13 +34,14 @@ class EstimationController extends Controller
             ->select(['id', 'name', 'valorisation_coeff'])
             ->WhereIn('id', $tags_id)
             ->get();
+            foreach($tags as $tag){
+                $priceEstimation *= $tag->valorisation_coeff;
+            }
         }
 
 
-        ;
-        foreach($tags as $tag){
-            $priceEstimation *= $tag->valorisation_coeff;
-        }
+        
+        
 
         return view('estimation.result', [
             'priceEstimation' => $priceEstimation,

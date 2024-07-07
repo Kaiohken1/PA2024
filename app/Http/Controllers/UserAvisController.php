@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
+use App\Models\Intervention;
 use Illuminate\Http\Request;
 
 class UserAvisController extends Controller
@@ -46,19 +47,38 @@ class UserAvisController extends Controller
         $sender_user_id = Auth()->id();
         $userAvis->sender_user_id = $sender_user_id;
        
+        $receiverUser = User::with('roles')
+                            ->findOrFail($receiver_user_id);
+                            
+        if($receiverUser->roles->contains('nom', 'prestataire')){
+            $alreadyintervened = Intervention::where('provider_id', $receiver_user_id)
+                                                ->where('user_id', $sender_user_id)
+                                                ->get();
+            if($alreadyintervened->isNotEmpty()){
+                $userAvis->save();
+                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                ->with('success', "Avis créé avec succès");
+            }
+            else{
+                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                ->with('error', "Vous ne pouvez pas donner votre avis sur ce prestataire");
+            }
 
-        $receiver_reservation = Reservation::where('user_id', $receiver_user_id)->get();
-        
-        $sender_appartement = Appartement::where('user_id', $sender_user_id)->get();
-        $alreadyReserved = $receiver_reservation->intersect($sender_appartement);
-        if($alreadyReserved->isNotEmpty()){
-            $userAvis->save();
-            return redirect()->route('users.show', ['user' => $receiver_user_id])
-            ->with('success', "Avis créé avec succès");
         }
         else{
-            return redirect()->route('users.show', ['user' => $receiver_user_id])
-            ->with('error', "Vous ne pouvez pas donner votre avis sur cet utilisateur");
+            $receiver_reservation = Reservation::where('user_id', $receiver_user_id)->get();
+            
+            $sender_appartement = Appartement::where('user_id', $sender_user_id)->get();
+            $alreadyReserved = $receiver_reservation->intersect($sender_appartement);
+            if($alreadyReserved->isNotEmpty()){
+                $userAvis->save();
+                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                ->with('success', "Avis créé avec succès");
+            }
+            else{
+                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                ->with('error', "Vous ne pouvez pas donner votre avis sur cet utilisateur");
+            }
         }
 
 

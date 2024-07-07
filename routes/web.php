@@ -29,6 +29,7 @@ use App\Http\Controllers\InterventionEstimationController;
 use App\Http\Controllers\Admin\ProviderController as AdminProviderController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Http\Controllers\TicketCategoryController;
+use App\Livewire\Estimation;
 use App\Livewire\Chatbot;
 use App\Models\Ticket;
 use App\Livewire\TicketChat;
@@ -104,6 +105,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
     Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
     Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
+    Route::get('/providers/profile', [ProviderController::class, 'edit'])->name('provider.edit');
+    Route::patch('/provider', [ProviderController::class, 'update'])->name('provider.update');
+    Route::get('/provider/public-profile', [ProviderController::class, 'show'])->name('provider.show');
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
     Route::get('/interventions/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
@@ -111,6 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/interventions/{id}/checkout', [InterventionController::class, 'checkout'])->name('interventions.checkout');
     Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
     Route::get('interventions/{id}/redirect/{token}', [InterventionController::class, 'redirect'])->name('interventions.redirect');
+    
     
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
@@ -192,11 +197,7 @@ Route::get('/admin', function () {
 Route::resource('providers', ProviderController::class)->middleware(['auth']);
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
 
-Route::prefix('estimation')->group(function () {
-    Route::get('/', [EstimationController::class, 'index'])->name('estimation.index');
-    Route::post('/result', [EstimationController::class, 'result'])->name('estimation.result');
-});
-
+Route::get('/estimation', Estimation::class)->name('property.estimation');
 
 Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
