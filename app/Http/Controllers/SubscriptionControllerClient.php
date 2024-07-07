@@ -2,41 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use Stripe\Plan;
-use Carbon\Carbon;
-use Stripe\Stripe;
-use Stripe\Product;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Laravel\Cashier\Exceptions\InvalidPaymentMethod;
+use Stripe\Stripe;
+use Stripe\Plan;
+use Stripe\Product;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionControllerClient extends Controller
 {
+    protected $products;
+
+    public function __construct()
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        $this->products = $this->getProducts();
+    }
+
+    protected function getProducts()
+    {
+        $products = Product::all();
+        $productList = [];
+
+        foreach ($products->data as $product) {
+            $productList[$product->id] = $product->name;
+        }
+
+        return $productList;
+    }
+
     public function showSubscriptionForm(Request $request)
     {
         $user = $request->user();
         $subscription = $user->subscriptions()->first();
-
+    
         // Récupérer les informations des abonnements depuis Stripe
-        Stripe::setApiKey(env('STRIPE_SECRET'));
         $plan = null;
         if ($subscription) {
             $stripePlan = Plan::retrieve($subscription->stripe_price);
+            
+            // Correspondance des clés aux noms des plans
+            $planNames = [
+                env('STRIPE_PRICE_BASIC_MONTHLY') => 'Bag Packer',
+                env('STRIPE_PRICE_BASIC_YEARLY') => 'Bag Packer',
+                env('STRIPE_PRICE_PREMIUM_MONTHLY') => 'Explorator',
+                env('STRIPE_PRICE_PREMIUM_YEARLY') => 'Explorator',
+            ];
+    
+            $planName = $planNames[$stripePlan->id] ?? 'Unknown Plan';
             $plan = [
-                'name' => $stripePlan->nickname,
+                'name' => $planName,
                 'amount' => $stripePlan->amount / 100, // assuming the amount is in cents
                 'interval' => $stripePlan->interval,
             ];
-
-            if ($subscription->ends_at) {
-                $subscription->ends_at = Carbon::parse($subscription->ends_at);
-            }
         }
-
+    
         return view('subscribe', compact('subscription', 'plan'));
     }
+    
 
     public function subscribe(Request $request)
     {
@@ -65,10 +91,6 @@ class SubscriptionControllerClient extends Controller
                     'success_url' => route('checkout.success').'?session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url' => route('checkout.cancel'),
                 ]);
-
-            // Ajouter une logique pour gérer l'engagement d'un an
-            $endOfCommitmentPeriod = Carbon::now()->addYear();
-            $user->subscription('default')->update(['commitment_ends_at' => $endOfCommitmentPeriod]);
 
             return redirect($checkoutSession->url);
         } catch (InvalidPaymentMethod $e) {
@@ -126,10 +148,9 @@ class SubscriptionControllerClient extends Controller
 
         if ($user) {
             // Récupérer les informations du produit
-            Stripe::setApiKey(env('STRIPE_SECRET'));
             $stripeProduct = Product::retrieve($subscription->items->data[0]->price->product);
 
-            $planName = $stripeProduct->name;
+            $planName = $this->products[$stripeProduct->id] ?? 'Unknown Product';
 
             Subscription::create([
                 'user_id' => $user->id,

@@ -10,14 +10,19 @@
             .plan-header {
                 font-weight: bold;
                 text-align: center;
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px;
             }
             .plan-price {
                 font-size: 1.2em;
                 font-weight: bold;
                 color: #007bff;
+                padding: 10px 0;
             }
             .plan-feature {
                 text-align: center;
+                padding: 10px;
             }
             .form-container {
                 max-width: auto;
@@ -40,6 +45,20 @@
             .card-selection.selected {
                 border: 2px solid #007bff;
             }
+            .advantage-table {
+                margin-top: 30px;
+            }
+            .advantage-table th, .advantage-table td {
+                border: none;
+                text-align: center;
+                padding: 10px;
+            }
+            .advantage-table thead {
+                background-color: #f8f9fa;
+            }
+            .advantage-table tbody tr:nth-child(odd) {
+                background-color: #e9ecef;
+            }
         </style>
     </head>
     <body>
@@ -60,8 +79,70 @@
 
             @if ($subscription && $subscription->stripe_status === 'active')
                 <div class="alert alert-info text-center">
-                    <h5>Vous êtes actuellement abonné au plan <strong>{{ $plan['name'] }}</strong>.</h5>
-                    <p>Montant: <strong>{{ $plan['amount'] }}€ / {{ $plan['interval'] }}</strong></p>
+                    <h5 class="text-center mb-4">Vous êtes actuellement abonné à la formule <strong>{{ $plan['name'] }}</strong>.</h5>
+                    @if (in_array($plan['name'], ['Bag Packer', 'Explorator']))
+                        <table class="table advantage-table mt-5">
+                            <thead>
+                                <tr>
+                                    <th>Avantages</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($plan['name'] === 'Bag Packer')
+                                    {{-- <tr>
+                                        <td>Présence de publicités dans le contenu consulté</td>
+                                        <td class="plan-feature">❌</td>
+                                    </tr> --}}
+                                    <tr>
+                                        <td>Commenter, publier des avis</td>
+                                        <td class="plan-feature">✔️</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Réduction permanente de 5% sur les prestations</td>
+                                        <td class="plan-feature">❌</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Prestations offertes</td>
+                                        <td class="plan-feature">1 par an dans la limite d’une prestation d’un montant inférieur à 80€</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Accès prioritaire à certaines prestations et aux prestations VIP</td>
+                                        <td class="plan-feature">❌</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bonus renouvellement de l’abonnement</td>
+                                        <td class="plan-feature">❌</td>
+                                    </tr>
+                                @elseif ($plan['name'] === 'Explorator')
+                                    <tr>
+                                        <td>Présence de publicités dans le contenu consulté</td>
+                                        <td class="plan-feature">❌</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Commenter, publier des avis</td>
+                                        <td class="plan-feature">✔️</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Réduction permanente de 5% sur les prestations</td>
+                                        <td class="plan-feature">✔️</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Prestations offertes</td>
+                                        <td class="plan-feature">1 par semestre, sans limitation du montant</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Accès prioritaire à certaines prestations et aux prestations VIP</td>
+                                        <td class="plan-feature">✔️</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bonus renouvellement de l’abonnement</td>
+                                        <td class="plan-feature">Réduction de 10% du montant de l'abonnement en cas de renouvellement, valable uniquement sur le tarif annuel.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    @endif
                 </div>
             @else
                 <form action="{{ route('subscribe') }}" method="POST" id="payment-form">
@@ -104,25 +185,17 @@
                     </div>
                 </form>
 
-                <table class="table table-bordered mt-5">
+                <table class="table advantage-table mt-5">
                     <thead>
                         <tr>
                             <th></th>
-                            <th class="plan-header">Free</th>
                             <th class="plan-header">Bag Packer</th>
                             <th class="plan-header">Explorator</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th class="plan-price">Gratuit</th>
-                            <th class="plan-price">9,90€/mois ou 113€/an</th>
-                            <th class="plan-price">19€/mois ou 220€/an</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Présence de publicités dans le contenu consulté</td>
-                            <td class="plan-feature">✔️</td>
                             <td class="plan-feature">❌</td>
                             <td class="plan-feature">❌</td>
                         </tr>
@@ -130,29 +203,24 @@
                             <td>Commenter, publier des avis</td>
                             <td class="plan-feature">✔️</td>
                             <td class="plan-feature">✔️</td>
-                            <td class="plan-feature">✔️</td>
                         </tr>
                         <tr>
                             <td>Réduction permanente de 5% sur les prestations</td>
-                            <td class="plan-feature">❌</td>
                             <td class="plan-feature">❌</td>
                             <td class="plan-feature">✔️</td>
                         </tr>
                         <tr>
                             <td>Prestations offertes</td>
-                            <td class="plan-feature">❌</td>
                             <td class="plan-feature">1 par an dans la limite d’une prestation d’un montant inférieur à 80€</td>
                             <td class="plan-feature">1 par semestre, sans limitation du montant</td>
                         </tr>
                         <tr>
                             <td>Accès prioritaire à certaines prestations et aux prestations VIP</td>
                             <td class="plan-feature">❌</td>
-                            <td class="plan-feature">❌</td>
                             <td class="plan-feature">✔️</td>
                         </tr>
                         <tr>
                             <td>Bonus renouvellement de l’abonnement</td>
-                            <td class="plan-feature">❌</td>
                             <td class="plan-feature">❌</td>
                             <td class="plan-feature">Réduction de 10% du montant de l'abonnement en cas de renouvellement, valable uniquement sur le tarif annuel.</td>
                         </tr>

@@ -1,11 +1,14 @@
-<?
+<?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Subscription;
 use App\Models\User;
-use Stripe\Webhook;
+use Stripe\Stripe;
+use Stripe\Product;
+use Carbon\Carbon;
 
 class StripeWebhookController extends Controller
 {
@@ -16,8 +19,9 @@ class StripeWebhookController extends Controller
         $endpointSecret = env('STRIPE_WEBHOOK_SECRET');
 
         try {
-            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
 
+            // Handle the event
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
                     $invoice = $event->data->object;
@@ -33,9 +37,11 @@ class StripeWebhookController extends Controller
 
             return response()->json(['status' => 'success'], 200);
         } catch (\UnexpectedValueException $e) {
+            // Invalid payload
             Log::error('Invalid payload: ' . $e->getMessage());
             return response()->json(['status' => 'invalid payload'], 400);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
             Log::error('Invalid signature: ' . $e->getMessage());
             return response()->json(['status' => 'invalid signature'], 400);
         }
@@ -46,18 +52,25 @@ class StripeWebhookController extends Controller
         $user = User::where('stripe_id', $subscription->customer)->first();
 
         if ($user) {
+            // Récupérer les informations du produit
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $stripeProduct = Product::retrieve($subscription->items->data[0]->price->product);
+
+            $planName = $stripeProduct->name;
+
             Subscription::create([
                 'user_id' => $user->id,
-                'name' => 'default',
+                'name' => $planName,
                 'stripe_id' => $subscription->id,
                 'stripe_status' => $subscription->status,
                 'stripe_price' => $subscription->items->data[0]->price->id,
                 'quantity' => $subscription->quantity,
-                'trial_ends_at' => $subscription->trial_end ? \Carbon\Carbon::createFromTimestamp($subscription->trial_end) : null,
-                'ends_at' => $subscription->cancel_at ? \Carbon\Carbon::createFromTimestamp($subscription->cancel_at) : null,
+                'trial_ends_at' => $subscription->trial_end ? Carbon::createFromTimestamp($subscription->trial_end) : null,
+                'ends_at' => $subscription->cancel_at ? Carbon::createFromTimestamp($subscription->cancel_at) : null,
                 'free_service_count' => 0,
                 'last_free_service_date' => null,
             ]);
+
             Log::info('Subscription created for user ID: ' . $user->id);
         } else {
             Log::error('User not found for customer ID: ' . $subscription->customer);
