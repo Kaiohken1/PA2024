@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe', [SubscriptionControllerClient::class, 'subscribe'])->name('subscribe');
     Route::get('/subscribe/checkout/success', [SubscriptionControllerClient::class, 'success'])->name('checkout.success');
     Route::get('/subscribe/checkout/cancel', [SubscriptionControllerClient::class, 'cancel'])->name('checkout.cancel');
-    // Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+  
 
     // Route::resource('/subscribe',SubscriptionControllerClient ::class);
 
