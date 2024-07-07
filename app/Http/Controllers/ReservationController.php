@@ -106,6 +106,13 @@ class ReservationController extends Controller
             'commission' => ['required', 'numeric']
         ]);
 
+        $user = Auth::user();
+
+        // Appliquer une réduction de 5% si l'utilisateur a un abonnement Explorator
+        if ($this->hasExploratorSubscription($user)) {
+            $validatedData['prix'] = $validatedData['prix'] * 0.95;
+        }
+
         $request->session()->put('validatedData', $validatedData);
 
         $validatedData['start_time'] = date('Y-m-d', strtotime($validatedData['start_time']));
@@ -129,7 +136,6 @@ class ReservationController extends Controller
             ],
             'mode' => 'payment',
             'success_url' => route('reservation.pay', ['id' => $validatedData['appartement_id']]),
-
             'cancel_url' => route('property.show', $validatedData['appartement_id']),
         ]);
 
@@ -243,4 +249,20 @@ class ReservationController extends Controller
     
         return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');
     }
+
+
+    private function hasExploratorSubscription($user)
+    {
+        $exploratorKeys = [
+            env('STRIPE_PRICE_PREMIUM_MONTHLY'),
+            env('STRIPE_PRICE_PREMIUM_YEARLY')
+        ];
+
+        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        if ($subscription && in_array($subscription->stripe_price, $exploratorKeys)) {
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -33,6 +33,9 @@
                     <x-nav-link :href="route('tickets.create')" :active="request()->routeIs('ticket.create')">
                         {{ __('Aide') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('subscribe')" :active="request()->routeIs('subscribe')">
+                        {{ __('Abonnement') }}
+                    </x-nav-link>
 
                 </div>
             </div>

@@ -3,8 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ReservationController;
+
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware('guest:sanctum')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
@@ -51,6 +55,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     route::get('/mobile/reservations/user',[ReservationController::class,'MobileIndex']);
+
+    // Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
+
+  
 
 
 });
