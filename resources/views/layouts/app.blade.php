@@ -43,7 +43,7 @@
                         <div class="drawer-side drawer-side-sticky z-30">
                             <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                             <div class="bg-base-200 text-base-content h-2/3 absolute right-0 bottom-0 w-1/4 sm:rounded-t-lg">
-                                @livewire('chatbot')
+                                <livewire:chatbot>
                             </div>
                         </div>
                     </div>

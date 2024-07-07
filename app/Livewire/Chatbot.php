@@ -27,7 +27,7 @@ class Chatbot extends Component
             $lastMessageOfChatbot = $lastMessage->is_chatbot_message;
         }
 
-        $this->dispatch('refreshComponent');
+        // $this->dispatch('refreshComponent');
         return view('livewire.chatbot', [
             'messages' => $messages,
             'lastMessageOfChatbot' => $lastMessageOfChatbot

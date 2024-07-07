@@ -73,17 +73,18 @@
                             @endif
 
                             @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
-
-                            
-                            <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">{{__('Refuser le devis')}}</button>   
+                            <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">{{__('Refuser le devis')}}</button> 
+                            @endif
+                    @endif  
                 </div>
  
-
-                        <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
-                            @csrf
-                                
-                            <button class="btn btn-warning mt-10 text-lg">{{__('Valider et payer')}}</button>
-                        </form>                          
+                    @if($intervention->provider) 
+                        @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
+                            <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
+                                @csrf
+                                    
+                                <button class="btn btn-warning mt-10 text-lg">{{__('Valider et payer')}}</button>
+                            </form>                          
                         @endif     
                     @endif
 

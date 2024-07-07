@@ -6,7 +6,6 @@ use App\Models\Service;
 use Livewire\Component;
 use App\Models\Category;
 use App\Models\Appartement;
-use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceForm extends Component
@@ -16,32 +15,23 @@ class ServiceForm extends Component
     public $id;
     public $services = [];
     public $selectedCategory = null;
-
     public $selectedService = null;
 
     public function mount()
     {
-        $user = Auth::user();
-        $roleIds = $user->roles->pluck('id')->toArray();
-
         $this->appartement = Appartement::withTrashed()->findOrFail($this->id);
-        $this->categories = Category::whereHas('services', function($query) use ($roleIds) {
-            $query->where('active_flag', 1)
-                ->whereIn('role_id', $roleIds);
+        $this->categories = Category::whereHas('services', function($query) {
+            $query->where('active_flag', 1);
         })->get();
         $this->updateServices();
     }
 
     public function updateServices()
     {
-        $user = Auth::user();
-        $roleIds = $user->roles->pluck('id')->toArray();
-        
         if ($this->selectedCategory) {
-            $this->services = Service::whereIn('role_id', $roleIds)
-            ->where('category_id', $this->selectedCategory)
-            ->where('active_flag', 1)
-            ->get();
+            $this->services = Service::where('category_id', $this->selectedCategory)
+                ->where('active_flag', 1)
+                ->get();
             $this->selectedService = null;
         } else {
             $this->services = [];

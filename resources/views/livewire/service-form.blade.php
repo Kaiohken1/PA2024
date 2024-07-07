@@ -100,8 +100,8 @@
 
                                 @case(10)
                                     <div>
+                                        <p class="{{ Auth()->user()->isAdmin() ? 'text-white' :'text-gray-700'}}">{{ $parameter->name }}</p>
                                         <input type="checkbox" name="checkbox[{{ $service->id }}][{{ $parameter->id }}]" class="checkbox checkbox-warning">
-                                        {{ $parameter->name }}
                                     </div>
                                 @break
 

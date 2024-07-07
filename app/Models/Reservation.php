@@ -24,7 +24,7 @@ class Reservation extends Model
     ];
 
     protected $dispatchesEvents = [
-        'created' => EventsReservation::class,
+        // 'created' => EventsReservation::class,
     ];
 
     public function user()

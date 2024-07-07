@@ -18,6 +18,15 @@ return new class extends Migration
             $table->decimal('percentage', 5, 2);
             $table->timestamps();
         });
+
+        DB::table('statuts')->insert([
+            ['min_amount' => 0, 'max_amount' => 5, 'percentage' => 20],
+            ['min_amount' => 5, 'max_amount' => 45, 'percentage' => 15],
+            ['min_amount' => 45, 'max_amount' => 75, 'percentage' => 11],
+            ['min_amount' => 75, 'max_amount' => 140, 'percentage' => 9],
+            ['min_amount' => 140, 'max_amount' => null, 'percentage' => 7],
+        ]);
+
     }
 
     /**

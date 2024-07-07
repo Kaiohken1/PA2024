@@ -3,7 +3,7 @@
     $hasAdress = false;
     @endphp
     <section class="mt-10">
-        <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+        <div class="mx-auto max-w-screen-2xl px-4 lg:px-12">
             <div class="bg-white text-gray-900 relative shadow-md sm:rounded-lg overflow-hidden border border-gray-300">
                 <div class="flex items-center justify-between p-4 border-b border-gray-300">
                     <div class="flex">

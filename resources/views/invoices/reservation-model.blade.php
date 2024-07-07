@@ -109,7 +109,7 @@
       <tbody>
         <tr class="bg-white">
           <th scope="row" class="border px-4 py-2">{{ $reservation->id }}</th>
-          <td class="border px-4 py-2 text-center">{{ $reservation->appartement->name }} <br> {{$reservation->appartement->address}}</td>
+          <td class="border px-4 py-2">{{ $reservation->appartement->name }} <br> {{$reservation->appartement->address}} <br> {{$reservation->appartement->city}}</td>
           <td class="border px-4 py-2 text-center">{{ \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y') }}</td>
           <td class="border px-4 py-2 text-center">{{ \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y') }}</td>
           <td class="border px-4 py-2 text-right">{{ number_format($reservation->prix / 1.20, 2) }} €</td>          

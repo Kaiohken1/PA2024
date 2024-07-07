@@ -29,7 +29,7 @@
                         <select id="input_{{ $key }}_type" wire:model="inputs.{{ $key }}.type" name ="input_{{$key}}_type"
                             class="shadow-sm border-0 focus:outline-none p-3 block w-full sm:text-sm border-gray-300 rounded-md">
                             <option value="" disabled>Sélectionnez un type de donnée</option>
-                            @foreach (\App\Models\DataType::All() as $type)
+                            @foreach (\App\Models\DataType::where('id', '!=', 8)->get() as $type)
                                 <option value="{{ $type->id }}">{{ $type->name }}</option>
                             @endforeach
                         </select>

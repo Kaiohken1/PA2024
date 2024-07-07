@@ -21,38 +21,41 @@ class ReservationsInvoices extends Command
 
     public function handle()
     {
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('nom', 'bailleur');
-        })->get();   
-
-        foreach ($users as $user) {
-            $this->generateInvoice($user->id);
-        }
+        $this->generateInvoice();
+        
     }
 
-    private function generateInvoice($userId)
+    private function generateInvoice()
     {
-        $month = Carbon::now()->month;
-        $year = Carbon::now()->year;
-        $reservations = Reservation::where('user_id', $userId)
-                        ->whereMonth('created_at', $month)
-                        ->whereYear('created_at', $year)
-                        ->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('nom', 'bailleur');
+        })->get();  
 
-        $pdf = app('dompdf.wrapper');
-        
-        $pdf->loadView('pdf-models.reservations-gains', compact('reservations'));
+        foreach($users as $user) {
+            $month = Carbon::now()->month;
+            $year = Carbon::now()->year;
+            $reservations = Reservation::whereHas('appartement', function ($query) use ($user) {
+                                $query->where('user_id', $user->id);
+                            })->whereMonth('created_at', $month)
+                            ->whereYear('created_at', $year)
+                            ->get();
+            if($reservations->isNotEmpty()) {
+                $pdf = app('dompdf.wrapper');
+                
+                $pdf->loadView('pdf-models.reservations-gains', compact('reservations'));
 
-        $filePath = 'factures/' . 'facture_reservation_' . $userId . '_' . $year . '_' . $month . '.pdf';
+                $filePath = 'factures/' . 'facture_reservation_' . $user->id . '_' . $year . '_' . $month . '.pdf';
 
-        Storage::put($filePath, $pdf->output());
-        
-        $invoice = new Invoice();
-        $invoice->user_id = $userId;
-        $invoice->pdf = $filePath;
-        $invoice->role = "Bailleur";
-        $invoice->save();
+                Storage::put($filePath, $pdf->output());
+                
+                $invoice = new Invoice();
+                $invoice->user_id = $user->id;
+                $invoice->pdf = $filePath;
+                $invoice->role = "Bailleur";
+                $invoice->save();
+            }
+        }
     
-        $this->info('Le PDF pour les réservations a été généré et stocké avec succès pour l\'utilisateur ' . $userId);
+        $this->info('Les PDF pour les factures de réservations ont étés générés et stockées avec succès');
     }
 }

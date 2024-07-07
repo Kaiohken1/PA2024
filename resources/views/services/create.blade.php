@@ -44,7 +44,7 @@
                             </div>
 
                             <div>
-                                <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
+                                {{-- <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
                                     <select name="role_id" id="role">
                                         <option value="">Selectionez un rôle</option>
                                         @foreach($roles as $role)
@@ -52,7 +52,7 @@
                                         @endforeach
                                     </select>
                                 <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
-                            </div>
+                            </div> --}}
 
                             <div>
                                 <x-input-label for="description" :value="__('Description du service')" class="text-white" />

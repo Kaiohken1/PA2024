@@ -41,7 +41,7 @@
                             <input type="checkbox" id="flexPrice" name="flexPrice" value="{{$service->flexPrice}}">
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
                                 <select name="role_id" id="role">
                                     <option value="">Selectionez un rôle</option>
@@ -50,7 +50,7 @@
                                     @endforeach
                                 </select>
                             <x-input-error class="mt-2" :messages="$errors->get('role_id')" />
-                        </div>
+                        </div> --}}
 
                         <div>
                             <x-input-label for="description" :value="__('Description du service')" class="text-white" />
@@ -178,3 +178,21 @@
     </div>
 
 </x-app-layout>
+<script>
+    const priceInput = document.getElementById('price');
+    const flexPriceCheckbox = document.getElementById('flexPrice');
+    
+    if (flexPriceCheckbox.value == 1) {
+        flexPriceCheckbox.checked = true;
+        priceInput.disabled = true;
+    }
+    
+    flexPriceCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            priceInput.disabled = true;
+            priceInput.value = '';
+        } else {
+            priceInput.disabled = false;
+        }
+    });
+</script>

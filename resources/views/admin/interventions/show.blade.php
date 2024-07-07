@@ -63,6 +63,12 @@
                             </button>
                         </form>
                     @endif
+
+                    @if($intervention->fiche)
+                        <a href="{{Storage::url($intervention->fiche)}}" target="_blank"><button class="btn btn-success mt-5">
+                            Télécharger la fiche d'intervention envoyée</button>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

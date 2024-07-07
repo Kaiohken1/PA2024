@@ -76,7 +76,9 @@
                                     <td class="px-4 py-3">@if($intervention->estimations->where('statut_id', 9)->first()){{$intervention->estimations->first()->commission}}€@endif</td>
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.interventions.show', $intervention->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a>
-                                        {{-- <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'intervention #{{$intervention->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$intervention->id}})" class="btn btn-error mr-3">X</button> --}}
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'intervention #{{$intervention->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$intervention->id}})" class="btn btn-error mr-3"
+                                            {{ $intervention->statut_id == 1 && $intervention->deleted_at == NULL ? '' : 'disabled' }}
+                                            >X</button>
                                     </td>
                                 </tr>
                             @endforeach

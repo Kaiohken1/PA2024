@@ -30,8 +30,9 @@ class InterventionTable extends Component
 
     public function delete(Intervention $intervention) {
         $intervention->statut_id = 4;
+        $intervention->save();
 
-        // $intervention->delete();
+        $intervention->delete();
     }
 
     public function updatedSearch() {
@@ -49,7 +50,8 @@ class InterventionTable extends Component
     }
 
     public function exportCsv() {
-        $interventions = Intervention::search($this->search)
+        $interventions = Intervention::withTrashed()
+            ->search($this->search)
             ->when($this->statut !== '', function($query) {
                 $query->where('statut_id', $this->statut);
             })

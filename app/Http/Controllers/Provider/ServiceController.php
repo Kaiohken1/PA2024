@@ -49,7 +49,7 @@ class ServiceController extends Controller
             'documentsId' => ['required', 'array'],
             'documentsId*' => ['exists:documents,id'],
             'category_id' => ['required', 'exists:categories,id'],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_id' => ['nullable', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
@@ -125,7 +125,7 @@ class ServiceController extends Controller
             'documentsId' => ['array'],
             'documentsId*' => ['exists:documents,id'],
             'category_id' => ['required', 'exists:categories,id'],
-            'role_id' => ['required', 'exists:roles,id'],
+            'role_id' => ['nullable', 'exists:roles,id'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;

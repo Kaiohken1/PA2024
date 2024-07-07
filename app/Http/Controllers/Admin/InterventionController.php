@@ -54,8 +54,7 @@ class InterventionController extends Controller
     
         $userRoles = $user->roles->pluck('id'); 
     
-        $services = Service::whereIn('role_id', $userRoles)
-                        ->where('active_flag', 1)
+        $services = Service::where('active_flag', 1)
                         ->get();
 
         return view('admin.interventions.create', [
@@ -167,6 +166,9 @@ class InterventionController extends Controller
                     $parameters = $value[$id];
                     foreach ($parameters as $key => $content) {
                         $parameter = ServiceParameter::findOrfail($key);
+                        if($parameter->data_type_id == 10) {
+                            $content = "Oui";
+                        }
                         $intervention->service_parameters()->attach($key, [
                             'value' => $content,
                             'intervention_id' => $intervention->id,

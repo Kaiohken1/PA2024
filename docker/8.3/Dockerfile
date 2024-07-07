@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php8.3-tokenizer \
     php8.3-mysql \
     php8.3-pdo \
+    php8.3-gd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

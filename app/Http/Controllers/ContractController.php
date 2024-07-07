@@ -88,10 +88,8 @@ class ContractController extends Controller
         $pdf = app('dompdf.wrapper');
         
         $pdf->loadView('invoices.reservation-model', compact('reservation'));
-        
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, 'facture_reservation#' . $reservation->id . '.pdf', ['Content-Type' => 'application/pdf']);
+
+        return $pdf->download('facture_reservation#' . $reservation->id . '.pdf');
     }
 
     public function generateFiche($interventionId)
