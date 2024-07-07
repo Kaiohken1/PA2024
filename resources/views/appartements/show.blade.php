@@ -14,8 +14,6 @@ foreach ($appartement->images as $image) {
 }
 @endphp
 
-
-
 <x-app-layout>
     <x-slot name="header">
         @if (session('success'))
@@ -33,16 +31,16 @@ foreach ($appartement->images as $image) {
         <div class="mt-9 ml-11">
             <article>
                 <h1 class="text-3xl font-extrabold">{{ $appartement->name }}</h1>
-                    <div class="grid grid-cols-2 gap-2"
-                    class="btn btn-info flex justify-end"
-                        x-data=""
-                        x-on:click.prevent="$dispatch('open-modal', 'images-show')">
-                        @foreach ($propertyImages as $image)
-                            <div class="w-full">
-                                <img class="h-72 max-w-full rounded-lg" src="{{ Storage::url($image->image) }}" width="100%">
-                            </div>
-                        @endforeach
-                    </div>
+                <div class="grid grid-cols-2 gap-2"
+                     class="btn btn-info flex justify-end"
+                     x-data=""
+                     x-on:click.prevent="$dispatch('open-modal', 'images-show')">
+                    @foreach ($propertyImages as $image)
+                        <div class="w-full">
+                            <img class="h-72 max-w-full rounded-lg" src="{{ Storage::url($image->image) }}" width="100%">
+                        </div>
+                    @endforeach
+                </div>
 
                 <x-modal name="images-show" focusable maxWidth="fit" maxHeight="full">
                     <div class="p-4 w-full h-full">
@@ -118,14 +116,34 @@ foreach ($appartement->images as $image) {
                             </div>
 
                             <div class="mb-4" id="total_price_container">
-                                <p><span id="priceInfos" hidden>{{$appartement->price}}€ *</span> <span id="numberOfNights"></span> <span id="priceInfos" hidden>:</span> <span id="total_price"></span></p>
-                                <p id="fee" hidden name="commission"></p>
-                                <p id="price" class="border-t mt-5 font-bold" hidden></p>
-
-                                <input type="hidden" name="prix" id="prix">
-                                <input type="hidden" name="commission" id="commission">
-
+                                @if ($hasPremiumSubscription)
+                                    <p>
+                                        <span id="priceInfos" hidden>{{$appartement->price}}€ *</span> 
+                                        <span id="numberOfNights"></span> 
+                                        <span id="priceInfos" hidden>:</span> 
+                                        <span id="total_price" ></span>
+                                    </p>
+                                    <p id="discount" class="text-red-500 font-bold"></p>
+                                    <p id="fee" hidden name="commission"></p>
+                                    <p id="price" class="line-through border-t mt-5 font-bold" hidden></p>
+                                    <p id="afterprice" class="text-red-500 font-bold"></p>
+                                    <div class="border-t mt-5"></div>
+                                    <input type="hidden" name="prix" id="prix">
+                                    <input type="hidden" name="commission" id="commission">
+                                @else
+                                    <p>
+                                        <span id="priceInfos" hidden>{{$appartement->price}}€ *</span> 
+                                        <span id="numberOfNights"></span> 
+                                        <span id="priceInfos" hidden>:</span> 
+                                        <span id="total_price"></span>
+                                    </p>
+                                    <p id="fee" hidden name="commission"></p>
+                                    <p id="price" class="border-t mt-5 font-bold" hidden></p>
+                                    <input type="hidden" name="prix" id="prix">
+                                    <input type="hidden" name="commission" id="commission">
+                                @endif
                             </div>
+                            
 
                             <div class="mb-4">
                                 <x-primary-button type="submit"
@@ -144,6 +162,7 @@ foreach ($appartement->images as $image) {
 
 <script>
     var disabledDates = <?php echo json_encode($datesInBase); ?>;
+    var hasPremiumSubscription = {{ $hasPremiumSubscription ? 'true' : 'false' }};
 
     const lightbox = new PhotoSwipeLightbox({
         gallery: '.flex',
@@ -197,6 +216,9 @@ foreach ($appartement->images as $image) {
         if (start.isValid() && end.isValid()) {
             var numberOfNights = end.diff(start, 'days');
             var totalPrice = numberOfNights * pricePerNight;
+
+           
+
             var fee = parseFloat((totalPrice * 0.20).toFixed(2));
             var tva = parseFloat(((totalPrice + fee) * 0.20).toFixed(2));
             var finalPrice = parseFloat((totalPrice + fee + tva).toFixed(2));
@@ -214,6 +236,12 @@ foreach ($appartement->images as $image) {
 
             document.getElementById('prix').value = finalPrice;
             document.getElementById('commission').value = fee;
+            if (hasPremiumSubscription) {
+                var discount = (finalPrice * 0.05).toFixed(2);
+                var afterprice = (finalPrice - discount).toFixed(2);
+                document.getElementById('afterprice').textContent = 'Prix total(TTC) : ' + afterprice + '€';
+                document.getElementById('discount').textContent = 'Vous économisé ' + discount + '€ grâce à votre abonnement premium!';
+            }
 
         } 
     }
