@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\AppartementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('guest:sanctum')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
     Route::post('/mobile/login', [AuthenticatedSessionController::class, 'apiMobileLogin']);
+    Route::post('/nfc-writer/login', [AuthenticatedSessionController::class, 'nfcWriterLogin']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -49,9 +51,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tickets/stats', [TicketController::class, 'apiStats']);
     Route::get('/tickets/{id}/chat', [TicketController::class, 'apiTicketChat']);
     Route::post('/tickets/chat/send', [TicketController::class, 'apiTicketChatSend']);
-    
+
     route::get('/mobile/reservations/user',[ReservationController::class,'MobileIndex']);
 
+    Route::get('/nfc-writer/tokken{id}', [AppartementController::class, 'nfcWritterTokken']);
+    Route::put('/nfc-update', [ReservationController::class, 'nfcUpdateReservation']);
+
+    Route::get('/nfc-reader/{id}', [ReservationController::class, 'nfcReader']);
+    
 
 });
 

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Stripe\Stripe;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Illuminate\Auth\Events\Validated;
 
 class ReservationController extends Controller
 {
@@ -241,5 +242,21 @@ class ReservationController extends Controller
     
         // Rediriger vers une page de confirmation ou une autre page appropriée
         return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');
+    }
+
+    public function nfcUpdateReservation(Request $request)
+    {
+
+        $arrived_at = time();
+        $arrived_at = date('Y-m-d H:i:s', $arrived_at);
+        $reservation = Reservation::query()
+                                ->with('appartement')
+                                ->whereRelation('appartement', 'tokken', $request->appartement_tokken)
+                                ->where('start_time', '<', $arrived_at)
+                                ->where('end_time', '>', $arrived_at)
+                                ->get();
+        
+        Log::info('reservation obtenu : ', ['reservation' => $reservation]);
+
     }
 }

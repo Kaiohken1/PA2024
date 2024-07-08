@@ -154,5 +154,38 @@ public function apiMobileLogout(Request $request)
         return response()->json(['message' => 'Internal Server Error'], 500);
     }
 } 
+
+public function nfcWriterLogin(LoginRequest $request)
+{
+    try {
+        $request->authenticate();
+
+        $user = Auth::user();
+        Log::info('User authenticated', ['user_id' => $user->id]);
+
+        $user = User::where('id', $user->id)->with('roles')->first();
+        Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
+
+        if (!($user->roles->contains('nom', 'PCS') or ($user->roles->contains('nom', 'admin')))) {
+            Log::warning('Unauthorized role', ['user_id' => $user->id]);
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+        Log::info('Token created', ['token' => $token]);
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => [
+                'first_name' => $user->first_name,
+                'name' => $user->name,
+            ]
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Login error: ' . $e->getMessage());
+        return response()->json(['message' => 'Internal Server Error'], 500);
+    }
+}
  
 }

@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\AppartementAvis;
 use App\Models\AppartementImage;
@@ -150,6 +151,8 @@ $appartements = $appartements->each(function ($appartement) {
     
         $appartement = new Appartement($validateData);
         
+        $appartement->tokken = Str::random(32);
+
         $appartement->user()->associate($validateData['user_id']);
         $appartement->save();
         if(isset($validateData['tag_id'])){
@@ -338,5 +341,16 @@ $appartements = $appartements->each(function ($appartement) {
 
         return redirect()->route('property.edit', $appartementImages->appartement_id)
         ->with('success', "Appartement mis à jour avec succès");
+    }
+
+    public function nfcWritterTokken($id)
+    {
+        auth()->user();
+
+        $appartement = Appartement::findOrFail($id);
+
+    return response()->json([
+        'appartement_tokken' => $appartement->tokken
+    ]);
     }
 }
