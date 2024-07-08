@@ -26,10 +26,9 @@ services:
       - app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nginx.rule=Host(`www.paris-caretaker-services.store`)"
+      - traefik.http.routers.nginx.rule=Host(`paris-caretaker-services.store`) || Host(`www.paris-caretaker-services.store`) || Host(`admin.paris-caretaker-services.store`)  || Host(`prestataire.paris-caretaker-services.store`)       
       - "traefik.http.routers.nginx.entrypoints=websecure"
       - "traefik.http.routers.nginx.tls.certresolver=myresolver"
-      - "traefik.http.services.nginx.loadbalancer.server.port=80"
 
   db:
     image: mysql:8.0
@@ -51,13 +50,14 @@ services:
     image: traefik:v2.9
     container_name: traefik
     command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=false"
       - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=raygsm@live.fr"
+      # - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=raygsm2001@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
