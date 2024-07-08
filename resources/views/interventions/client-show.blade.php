@@ -65,27 +65,43 @@
 
                 <div class="mt-4 flex flex-col ">
                     @if($intervention->provider) 
-                    
-                        <button class="btn max-w-fit">
-                            <a class="" href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">Télécharger le devis</a>
-                        </button>                                    
-                    
-                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
-                        <button class="btn mt-3 max-w-fit">
-                            <a href="{{route('interventions.generate', $intervention->id)}}">Télécharger la facture</a>
-                        </button> 
                         
+
+
+                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
+                            <div>
+                                <a href="{{route('interventions.generate', $intervention->id)}}">
+                                    <button class="btn mt-3 btn-success">
+                                        Télécharger la facture
+                                    </button> 
+                                </a>
+                            </div>
                         @endif
+
                         @if($intervention->statut_id == 3)
-                        <button class="btn mt-3 max-w-fit">
-                            <a href="{{ route('users.avis.create', ['user' => $intervention->provider->user_id]) }}">Donner son avis sur le prestataire</a>
-                        </button>
+                            <div>
+                                <a href="{{ route('users.avis.create', ['user' => $intervention->provider->user_id]) }}">
+                                    <button class="btn mt-3 btn-warning">
+                                        Donner son avis sur le prestataire
+                                    </button>
+                                </a>
+                            </div>
                         @endif
-                        @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
-                            <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">{{__('Refuser le devis')}}</button> 
+
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <a href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">
+                                    <button class="btn mt-3 btn-info">Télécharger le devis</button>
+                                </a>
+                            </div>
+                        
+                            @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
+                                <div>
+                                    <button class="btn mt-3 btn-error" onclick="document.getElementById('my_modal_1').showModal()">{{__('Refuser le devis')}}</button> 
+                                </div>
                             @endif
+                        </div>                        
                     @endif  
-                </div>
  
                     @if($intervention->provider) 
 
@@ -93,20 +109,21 @@
                         <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
                             @csrf
                                 
-                            <button class="btn btn-warning mt-10 text-lg">Valider et payer</button>
+                            <button class="btn btn-warning mt-10">Valider et payer</button>
                         </form>                          
                         @endif     
                     @endif
 
-                @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3 && $intervention->statut_id !== 4)
-                    <div>
-                        <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention' => $intervention->id])}}">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-error mt-10">{{__('Annuler ma demande')}}</button>
-                        </form> 
-                    </div>  
-                @endif
+                    @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3 && $intervention->statut_id !== 4)
+                        <div>
+                            <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention' => $intervention->id])}}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-error mt-10">{{__('Annuler ma demande')}}</button>
+                            </form> 
+                        </div>  
+                    @endif
+                </div>
             </div>
         </div>
     </div>
