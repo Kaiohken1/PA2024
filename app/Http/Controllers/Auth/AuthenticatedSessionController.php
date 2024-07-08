@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-<<<<<<<<< Temporary merge branch 1
-=========
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Models\ChatbotMessage;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\RedirectResponse;
+
+
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\View\View;
->>>>>>>>> Temporary merge branch 2
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
