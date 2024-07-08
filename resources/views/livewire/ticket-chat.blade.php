@@ -8,7 +8,7 @@
                 {{$user->name}} {{$user->first_name}}
             - #{{$ticket->id}}
         </h1>
-        <div class="overcontainer p-6 bg-white shadow-sm sm:rounded-lg"
+        <div class="flex-grow overcontainer p-6 bg-white shadow-sm sm:rounded-lg"
              x-data="{ scroll: () => { $el.scrollTo(0, $el.scrollHeight); }}"
              x-intersect="scroll()"
              id="conversation">

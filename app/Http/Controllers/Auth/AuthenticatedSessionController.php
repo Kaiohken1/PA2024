@@ -55,7 +55,7 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             if (Auth::user()->roles->contains('nom', 'admin')) {
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
             }
 
             Auth::logout();
@@ -187,6 +187,6 @@ public function apiMobileLogout(Request $request)
 
         $request->session()->regenerateToken();
         
-        return redirect('/admin');
+        return redirect()->route('admin.login');
     }
 }

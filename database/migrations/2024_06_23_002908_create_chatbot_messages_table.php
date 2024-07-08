@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('chatbot_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->boolean('is_chatbot_message');
             $table->text('message');
             $table->timestamps();

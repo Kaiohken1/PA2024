@@ -112,23 +112,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('property/{id}/interventions', InterventionController::class)->except(['delete']);
     Route::get('/reservation/{reservationId}/interventions/{id}', [InterventionController::class, 'create'])->name('interventions.reservation-create');
     Route::get('/contract/{providerId}', [ContractController::class, 'generateContract'])->name('contract.generate');
-    Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
-    Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
     Route::get('/interventions/invoice/{id}', [ContractController::class, 'generateInvoice'])->name('interventions.generate');
     Route::get('/reservation/invoice/{id}', [ContractController::class, 'reservationInvoice'])->name('reservation.generate');
 
     Route::get('/invoice/download/{id}', [ContractController::class, 'downloadInvoice'])->name('invoice.download');
-
-    Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
-    Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
-    Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
-    Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('proposals.show');
-    Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
-    Route::get('/providers/availability', [ProviderController::class, 'availability'])->name('provider.availability');
-    Route::post('/providers/availability', [ProviderController::class, 'availabilityCreate'])->name('provider.availabilityCreate');
-    Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
-    Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
-    Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
     Route::get('/interventions/client/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
@@ -145,9 +132,6 @@ Route::middleware('auth')->group(function () {
         return view('Reservation.invoices.index');
     })->name('reservations.invoices.index');
 
-    Route::get('/providers/invoices', function () {
-        return view('provider.invoices.index');
-    })->name('provider.invoices.index');
 
     Route::get('/messagerie', function() {
         if(Auth::user()->provider) {
@@ -185,22 +169,36 @@ Route::middleware('auth')->group(function () {
     Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
     Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
+});
 
-    
+Route::domain('prestataire.'. env('APP_URL'))->middleware(['auth'])->group(function () {
 
-    Route::get('/provider/chat', Index::class)->name('chat.index');
-    Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+    Route::get('/providers/chat', Index::class)->name('chat.index');
+    Route::get('/providers/chat/{query}', MessagerieChat::class)->name('chat');
 
     Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
     Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
+    Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
+    Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
+    Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
+    Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('proposals.show');
+    Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
+    Route::get('/providers/availability', [ProviderController::class, 'availability'])->name('provider.availability');
+    Route::post('/providers/availability', [ProviderController::class, 'availabilityCreate'])->name('provider.availabilityCreate');
+    Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
+    Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
+    Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
 
-
+    Route::get('/providers/invoices', function () {
+        return view('provider.invoices.index');
+    })->name('provider.invoices.index');
+    Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
+    Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
 });
 
 
 
-
-Route::prefix('admin')->middleware(['admin'])->group(function () {
+Route::domain('admin.'. env('APP_URL'))->prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
     Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
@@ -260,16 +258,6 @@ Route::get('/avis/{avis}/edit', [UserAvisController::class, 'edit'])->name('user
 Route::delete('/avis/{avis}', [UserAvisController::class, 'destroy'])->name('users.avis.destroy');
 });
 
-Route::get('admin', function () {
-    return view('auth.admin-login');
-})->name('admin.login');
-
-
-Route::get('/admin/dashboard', function () {
-    return view('admin.index');
-})->middleware(['admin'])->name('admin');
-
-
 Route::resource('providers', ProviderController::class)->middleware(['auth'])->except(['create, store']);
 Route::get('/providers/create', [ProviderController::class, 'create'])->name('providers.create');
 Route::post('/providers/store', [ProviderController::class, 'store'])->name('providers.store');
@@ -287,8 +275,16 @@ Route::prefix('estimation')->group(function () {
 Route::get('/property/{id}', [AppartementController::class, 'show'])->name('property.show');
 
 
+Route::domain('admin.'. env('APP_URL'))->group(function () {
+    Route::get('/login', function () {
+        return view('auth.admin-login');
+    })->name('admin.login');
 
-
+    
+Route::get('/admin/dashboard', function () {
+    return view('admin.index');
+})->middleware(['admin'])->name('admin');
+});
 
 
 Route::get('set-locale/{locale}', function ($locale) {
