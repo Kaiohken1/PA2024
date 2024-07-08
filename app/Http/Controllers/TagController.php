@@ -38,7 +38,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validateData = $request->validate([
-            'name' => ['required', 'alpha'],
+            'name' => ['required', 'string'],
             'valorisation_coeff' => ['required', 'numeric', 'between:1,1.99']
         ]);
 

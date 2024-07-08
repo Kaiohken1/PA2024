@@ -78,7 +78,7 @@
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                                 <div class="avatar mr-3">
                                     <div class="w-11 rounded-full ring ring-yellow-500 ring-offset-base-100 ring-offset-2">
-                                        <img src={{ Auth::user()->getImageUrl() }} />
+                                        <img src={{ Auth::user()->provider->avatar ? Storage::url(Auth::user()->provider->avatar) : 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?w=300&ssl=1' }} />
                                     </div>
                                 </div>
                                 <div>{{ Auth::user()->first_name }} {{ Auth::user()->name }}</div>
@@ -95,8 +95,12 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
+                            <x-dropdown-link :href="route('provider.show')">
                                 {{ __('Profil') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('provider.edit')">
+                                {{ __('Modifier son profil') }}
                             </x-dropdown-link>
 
                             <!-- Authentication -->

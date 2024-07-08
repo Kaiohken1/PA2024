@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\ReservationController as AdminReservationControll
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Livewire\CitySelection;
 use App\Http\Controllers\TicketCategoryController;
+use App\Livewire\Estimation;
 use App\Livewire\Chatbot;
 use App\Models\Ticket;
 use App\Livewire\TicketChat;
@@ -126,6 +127,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/interventions/{id}/refused', [InterventionController::class, 'refusal'])->name('interventions.refused');
     Route::get('interventions/{id}/redirect/{token}', [InterventionController::class, 'redirect'])->name('interventions.redirect');
     
+    
     Route::get('/interventions/{intervention}/chat/{user}', Chat::class)->name('interventions.chat');
 
     Route::get('/dashboard/invoices', function () {
@@ -188,6 +190,9 @@ Route::domain('prestataire.'. env('APP_URL'))->middleware(['auth'])->group(funct
     Route::delete('/providers/availability/{id}', [ProviderController::class, 'availabilityDestroy'])->name('provider.availabilityDestroy');
     Route::get('/providers/interventions', [ProviderController::class, 'interventionsIndex'])->name('provider.interventionIndex');
     Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
+    Route::get('/providers/profile', [ProviderController::class, 'edit'])->name('provider.edit');
+    Route::patch('/provider', [ProviderController::class, 'update'])->name('provider.update');
+    Route::get('/provider/public-profile', [ProviderController::class, 'show'])->name('provider.show');
 
     Route::get('/providers/invoices', function () {
         return view('provider.invoices.index');
@@ -265,11 +270,27 @@ Route::post('/providers/store', [ProviderController::class, 'store'])->name('pro
 
 Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
 
-Route::prefix('estimation')->group(function () {
-    Route::get('/', [EstimationController::class, 'index'])->name('estimation.index');
-    Route::post('/result', [EstimationController::class, 'result'])->name('estimation.result');
+Route::get('/estimation', Estimation::class)->name('property.estimation');
+
+
+Route::get('/property/{id}', [AppartementController::class, 'show'])->name('property.show');
+
+
+Route::domain('admin.'. env('APP_URL'))->group(function () {
+    Route::get('/login', function () {
+        return view('auth.admin-login');
+    })->name('admin.login');
+
+    
+Route::get('/admin/dashboard', function () {
+    return view('admin.index');
+})->middleware(['admin'])->name('admin');
 });
 
+
+Route::resource('notifcations', NotificationsController::class)->middleware(['auth']);
+
+Route::get('/estimation', Estimation::class)->name('property.estimation');
 
 
 Route::get('/property/{id}', [AppartementController::class, 'show'])->name('property.show');

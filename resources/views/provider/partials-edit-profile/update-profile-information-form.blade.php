@@ -9,25 +9,19 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
+    <form method="post" action="{{ route('provider.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
         <div>
             <x-input-label for="name" class="form-label">{{ __('Nom') }}</x-input-label>
-            <x-text-input id="name" name="name" type="text" class="form-input mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="form-input mt-1 block w-full" :value="old('name', $user->provider->name)" disabled required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
-            <x-input-label for="first_name" class="form-label">{{ __('Prénom') }}</x-input-label>
-            <x-text-input id="first_name" name="first_name" type="text" class="form-input mt-1 block w-full" :value="old('first_name', $user->first_name)" required autofocus autocomplete="first_name" />
-            <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
-        </div>
-
-        <div>
             <x-input-label for="email" class="form-label">{{ __('Email') }}</x-input-label>
-            <x-text-input id="email" name="email" type="email" class="form-input mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="form-input mt-1 block w-full" :value="old('email', $user->provider->email)" disabled required autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -50,22 +44,28 @@
         </div>
 
         <div>
-            <x-input-label for="number" class="form-label">{{ __('Numéro de téléphone') }}</x-input-label>
-            <x-text-input id="number" name="number" type="tel" class="form-input mt-1 block w-full" :value="'+' . old('number', $user->number)" required autofocus autocomplete="number" />
-            <x-input-error class="mt-2" :messages="$errors->get('number')" />
+            <x-input-label for="phone" :value="__('Téléphone')" />
+            <x-text-input id="phone" name="phone" type="text" class="form-input mt-1 block w-full" :value="old('phone', $user->provider->phone ?? '')" required autofocus autocomplete="phone" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
         <div>
-            <x-input-label for="bio" :value="__('Bio')" />
-            <textarea name="bio" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm">{{ $user->bio }}</textarea>
-            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
+            <x-input-label for="address" :value="__('Adresse')" />
+            <x-text-input id="address" name="address" type="text" class="form-input mt-1 block w-full" :value="old('address', $user->provider->address ?? '')" required autofocus autocomplete="address" />
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
+        </div>
+
+        <div>
+            <x-input-label for="description" :value="__('Description')" />
+            <textarea name="description" class="form-input form-textarea block mt-1 w-full border-gray-300 focus:border-yellow-500 focus:ring-yellow-500 rounded-md shadow-sm">{{ $user->provider->description }}</textarea>
+            <x-input-error :messages="$errors->get('description')" class="mt-2" />
         </div>
 
         <div>
             <x-input-label for="avatar" class="form-label">{{ __('Avatar') }}</x-input-label>
             <div class="avatar flex mb-3 mt-3">
                 <div class="w-32 rounded">
-                    <img src="{{  $user->getImageUrl() }}" alt="Avatar">
+                    <img src="{{ $user->provider->avatar ? Storage::url($user->provider->avatar) : 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?w=300&ssl=1'}}" alt="Avatar">
                 </div>
             </div>
             <input type="file" name="avatar" id="avatar" class="file-input file-input-ghost w-full max-w-xs border-gray-300">

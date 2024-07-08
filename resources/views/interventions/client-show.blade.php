@@ -63,28 +63,38 @@
                     <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Montant à payer')}}</label> @if($intervention->price) <strong>{{$intervention->price + ($intervention->price*0.20)}}€</strong> @else{{__('À définir')}}  @endif</p>
                 </div>
 
-                <div class="mt-4 flex">
+                <div class="mt-4 flex flex-col ">
                     @if($intervention->provider) 
-                    <a href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">
-                        <button class="btn btn-info mr-3 text-white">{{__('Télécharger le devis')}}</button>                                    
-                    </a>
-                            @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
-                                <a href="{{route('interventions.generate', $intervention->id)}}"><button class="btn btn-info mr-3 text-white">{{__('Télécharger la facture')}}</button> </a>
-                            @endif
-
-                            @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
+                    
+                        <button class="btn max-w-fit">
+                            <a class="" href="{{ Storage::url($intervention->provider->estimations->first()->estimate) }}" target="_blank">Télécharger le devis</a>
+                        </button>                                    
+                    
+                        @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
+                        <button class="btn mt-3 max-w-fit">
+                            <a href="{{route('interventions.generate', $intervention->id)}}">Télécharger la facture</a>
+                        </button> 
+                        
+                        @endif
+                        @if($intervention->statut_id == 3)
+                        <button class="btn mt-3 max-w-fit">
+                            <a href="{{ route('users.avis.create', ['user' => $intervention->provider->user_id]) }}">Donner son avis sur le prestataire</a>
+                        </button>
+                        @endif
+                        @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
                             <button class="btn btn-error" onclick="document.getElementById('my_modal_1').showModal()">{{__('Refuser le devis')}}</button> 
                             @endif
                     @endif  
                 </div>
  
                     @if($intervention->provider) 
+
                         @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
-                            <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
-                                @csrf
-                                    
-                                <button class="btn btn-warning mt-10 text-lg">{{__('Valider et payer')}}</button>
-                            </form>                          
+                        <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
+                            @csrf
+                                
+                            <button class="btn btn-warning mt-10 text-lg">Valider et payer</button>
+                        </form>                          
                         @endif     
                     @endif
 
