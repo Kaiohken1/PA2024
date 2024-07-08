@@ -115,10 +115,10 @@
                                         <td class="plan-feature">❌</td>
                                     </tr>
                                 @elseif ($plan['name'] === 'Explorator')
-                                    <tr>
+                                    {{-- <tr>
                                         <td>Présence de publicités dans le contenu consulté</td>
                                         <td class="plan-feature">❌</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
                                         <td>Commenter, publier des avis</td>
                                         <td class="plan-feature">✔️</td>
