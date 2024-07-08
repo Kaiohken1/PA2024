@@ -29,6 +29,7 @@
                     <div>
                         <x-input-label for="location_rating" :value="__('Noté la localisation du bien')" />
                         <div class="rating">
+                            <input type="radio" name="location_rating" class="mask mask-star" value="" checked hidden/>
                             @for ($i = 1; $i
                             <= 5; $i++) <input type="radio" name="location_rating" class="mask mask-star" value="{{ $i }}" wire:model="location_rating" />
                             @endfor
@@ -44,6 +45,7 @@
                     <div>
                         <x-input-label for="aspect_rating" :value="__('Noté l\'aspect du bien')" />
                         <div class="rating">
+                            <input type="radio" name="aspect_rating" class="mask mask-star" value="" checked hidden/>
                             @for ($i = 1; $i
                             <= 5; $i++) <input type="radio" name="aspect_rating" class="mask mask-star" value="{{ $i }}" wire:model="aspect_rating" />
                             @endfor

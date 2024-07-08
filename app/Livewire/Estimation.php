@@ -55,6 +55,6 @@ class Estimation extends Component
             }
         }
 
-        $this->priceEstimation = $priceEstimation;
+        $this->priceEstimation = (int)$priceEstimation;
     }
 }
