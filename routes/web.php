@@ -59,6 +59,17 @@ Route::get('/test/{id}', function () {
     return view('test');
 })->name('test');
 
+Route::domain('admin.'. env('APP_URL'))->middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('admin.index');
+    })->middleware(['admin'])->name('admin');
+});
+
+
+Route::domain('prestataire.'. env('APP_URL'))->middleware('auth')->group(function () {
+    Route::get('/', [ProviderController::class, 'home'])->name('provider.dashboard');
+});
+
 Route::match(['get', 'post'], '/', [AppartementController::class, 'index'])->name('property.index');
 
 Route::middleware('auth')->group(function () {
@@ -174,7 +185,6 @@ Route::domain('prestataire.'. env('APP_URL'))->middleware(['auth'])->group(funct
 
     Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
-    Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
     Route::get('/providers/proposals/{id}', [InterventionController::class, 'show'])->name('proposals.show');
     Route::get('/providers/calendar', [ProviderController::class, 'calendar'])->name('provider.calendar');
@@ -284,9 +294,9 @@ Route::domain('admin.'. env('APP_URL'))->group(function () {
     })->name('admin.login');
 
     
-Route::get('/admin/dashboard', function () {
-    return view('admin.index');
-})->middleware(['admin'])->name('admin');
+// Route::get('/admin/dashboard', function () {
+//     return view('admin.index');
+// })->middleware(['admin'])->name('admin');
 });
 
 

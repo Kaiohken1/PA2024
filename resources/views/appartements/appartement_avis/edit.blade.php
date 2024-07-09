@@ -17,7 +17,7 @@
 
                 
 
-                            <x-input-label for="rating_cleanness" :value="__('Notez la propretée du bien')" />
+                            <x-input-label for="rating_cleanness" :value="__('Notez la propreté du bien')" />
                             <div class="rating">
                                 @for ($i = 1; $i <= 5; $i++)
                                     <input type="radio" name="rating_cleanness" class="mask mask-star" value="{{ $i }}" {{ $avis->rating_cleanness == $i ? 'checked' : '' }}/>

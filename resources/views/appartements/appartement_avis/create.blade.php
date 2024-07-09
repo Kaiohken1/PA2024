@@ -16,7 +16,7 @@
                             <form method="POST" action="{{ route('avis.store', $reservation->appartement_id) }}" enctype="multipart/form-data">
                                 @csrf
 
-                                <x-input-label for="rating_cleanness" :value="__('Notez la propretée du bien')" />
+                                <x-input-label for="rating_cleanness" :value="__('Notez la propreté du bien')" />
                                 <div class="rating">
                                     <input type="radio" name="rating_cleanness" class="mask mask-star hidden" value="" checked/>
                                     <input type="radio" name="rating_cleanness" class="mask mask-star" value="1"/>

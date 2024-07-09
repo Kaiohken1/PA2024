@@ -31,7 +31,7 @@
                         {{ __('Interventions') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index') || request()->routeIs('chat.index')">
+                    <x-nav-link :href="route('admin.chat.index')">
                         {{ __('Messagerie') }}                    
                     </x-nav-link>
 

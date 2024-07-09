@@ -44,9 +44,9 @@
 
     <div class="p-6 bg-white shadow-sm sm:rounded-lg">
         <form wire:submit.prevent="sendMessage" class="flex flex-row items-center justify-center space-x-4">
-            <textarea class="textarea textarea-bordered w-3/4 resize-none" rows="1" wire:model.debounce.2000m="message" placeholder="Envoyez votre message.." @if($lastMessageOfChatbot==0) disabled @endif></textarea>
+            <textarea class="textarea textarea-bordered w-3/4 resize-none" rows="1" wire:model.debounce.2000m="message" placeholder="{{ __('Envoyez votre message..') }}" @if($lastMessageOfChatbot==0) disabled @endif></textarea>
             @error('message') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            <button class="btn btn-warning w-1/5" type="submit" @if($lastMessageOfChatbot==0) disabled @endif>Envoyer</button>
+            <button class="btn btn-warning w-1/5" type="submit" @if($lastMessageOfChatbot==0) disabled @endif> {{ __('Envoyer') }} </button>
         </form>
     </div>
 </div>

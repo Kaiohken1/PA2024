@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-white leading-tight">
-            {{ __('Gestion des utilisateurs') }}
+        <h2 class="font-semibold text-xl leading-tight">
+            {{ __('Mes demandes') }}
         </h2>
 
         @if(session('success'))
@@ -18,16 +18,16 @@
                     <thead class="border-b">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Objet
+                            {{ __('Objet') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Catégorie
+                            {{ __('Catégorie') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Date
+                            {{ __('Date') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-center">
-                                Actions
+                            {{ __('Actions') }}
                             </th>
                     </thead>
                     <tbody class="bg-white">
@@ -48,12 +48,12 @@
                             <td class="py-3 px-6 text-center">
                                 <div class="flex justify-center space-x-2">
                                     <button class="btn btn-outline btn-sm">
-                                        <a href="{{ route('tickets.show', ['ticket' => $ticket->id]) }}">Détail</a>
+                                        <a href="{{ route('tickets.show', ['ticket' => $ticket->id]) }}">{{ __('Détail') }}</a>
                                     </button>
                                     @if ($ticket->attributed_user_id == null)
 
                                     <button class="btn btn-outline btn-sm">
-                                        <a href="{{ route('tickets.edit', ['ticket' => $ticket->id]) }}">Modifier</a>
+                                        <a href="{{ route('tickets.edit', ['ticket' => $ticket->id]) }}">{{ __('Modifier') }}</a>
                                     </button>
 
                                     <form action="{{ route('tickets.destroy', ['ticket' => $ticket->id]) }}" method="post" class="inline">

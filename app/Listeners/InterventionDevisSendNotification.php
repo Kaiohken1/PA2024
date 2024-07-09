@@ -29,7 +29,7 @@ class InterventionDevisSendNotification
         $notification = new General(
             'Devis reçu',
             'Vous avez reçu un devis pour la demande d\'intervention #' . $event->intervention->id,
-            url('/interventions/' . $event->intervention->id),
+            url('/interventions/client/' . $event->intervention->id),
             'Voir ma demande'
         );
 

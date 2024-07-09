@@ -29,7 +29,7 @@ class InterventionController extends Controller
      */
     public function index()
     {
-        $interventions = Intervention::query()
+        $interventions = Intervention::withTrashed()
                         ->where('user_id', Auth::user()->id)
                         ->paginate(10);
 
