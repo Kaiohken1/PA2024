@@ -14,24 +14,24 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('admin.users.index')">
+                    <x-nav-link class="text-white" :href="route('admin.users.index')">
                         {{ __('Utilisateurs') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.property.index')">
+                    <x-nav-link class="text-white" :href="route('admin.property.index')">
                         {{ __('Appartements') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.providers.index')">
+                    <x-nav-link class="text-white" :href="route('admin.providers.index')">
                         {{ __('Prestataires') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('services.index')">
+                    <x-nav-link class="text-white" :href="route('services.index')">
                         {{ __('Services') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('admin.interventions.index')">
+                    <x-nav-link class="text-white" :href="route('admin.interventions.index')">
                         {{ __('Interventions') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('admin.chat.index')">
+                    <x-nav-link class="text-white" :href="route('admin.chat.index')">
                         {{ __('Messagerie') }}                    
                     </x-nav-link>
 
@@ -69,7 +69,7 @@
                         <x-slot name="trigger">
                             <button
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-grey-800 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->first_name }} {{ Auth::user()->name }}</div>
+                                <div class="text-white">{{ Auth::user()->first_name }} {{ Auth::user()->name }}</div>
 
                                 <div class="ms-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -97,10 +97,10 @@
                 </div>
             @else
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
+                    <x-nav-link class="text-white" :href="route('login')" :active="request()->routeIs('login')">
                         {{ __('Connection') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                    <x-nav-link class="text-white" :href="route('register')" :active="request()->routeIs('register')">
                         {{ __('Inscription') }}
                     </x-nav-link>
                 </div>

@@ -11,7 +11,7 @@
         @endif
     </x-slot>
 
-    <div class="py-12">
+    {{-- <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <table class="w-full text-sm text-left text-white">
@@ -77,6 +77,8 @@
             <div class="mt-5">
             {{ $users->links() }}
             </div>
-        </div>
+        </div> --}}
+
+        <livewire:users-table/>
 </x-admin-layout>
 

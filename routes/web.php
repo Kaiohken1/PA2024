@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Chat;
+use Illuminate\Http\Request;
 use App\Livewire\Calendar;
 use App\Livewire\DynamicInput;
 use App\Livewire\Messagerie\Index;
@@ -13,6 +14,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DocumentController;
@@ -22,13 +24,16 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\EstimationController;
 use App\Http\Controllers\AppartementController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\TicketCategoryController;
 use App\Http\Controllers\CommissionTierController;
 use App\Http\Controllers\AppartementAvisController;
 use App\Livewire\Messagerie\Chat as MessagerieChat;
 use App\Http\Controllers\Provider\ServiceController;
 use App\Http\Controllers\Provider\ProviderController;
 use App\Http\Controllers\Admin\AvailabilityController;
+use App\Http\Controllers\SubscriptionControllerClient;
 use App\Http\Controllers\Admin\SubscriptionsController;
 use App\Http\Controllers\InterventionEstimateController;
 use App\Http\Controllers\Provider\InterventionController;
@@ -38,7 +43,6 @@ use App\Http\Controllers\Admin\AppartementController as AdminAppartementControll
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\InterventionController as AdminInterventionController;
 use App\Livewire\CitySelection;
-use App\Http\Controllers\TicketCategoryController;
 use App\Livewire\Estimation;
 use App\Livewire\Chatbot;
 use App\Models\Ticket;
@@ -109,6 +113,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/estimate/{id}', [InterventionEstimationController::class, 'destroy'])->name('estimate.destroy');
 
 
+    Route::get('/subscribe', [SubscriptionControllerClient::class, 'showSubscriptionForm'])->name('subscribe.form');
+    Route::post('/subscribe', [SubscriptionControllerClient::class, 'subscribe'])->name('subscribe');
+    Route::get('/subscribe/checkout/success', [SubscriptionControllerClient::class, 'success'])->name('checkout.success');
+    Route::get('/subscribe/checkout/cancel', [SubscriptionControllerClient::class, 'cancel'])->name('checkout.cancel');
+  
+
+    // Route::resource('/subscribe',SubscriptionControllerClient ::class);
+
 
     Route::prefix('property/{appartement}/edit')->group(function () {
         Route::resource('fermeture', FermetureController::class);
@@ -132,6 +144,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
     Route::get('/interventions/client/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+   
+
+Route::post('/interventions/{id}/use-free-service', [InterventionController::class, 'useFreeService'])->name('interventions.useFreeService');
+
     Route::get('/interventions/{id}', [InterventionController::class, 'show'])->name('interventions.show');
     Route::delete('/interventions/{id}', [InterventionController::class, 'destroy'])->name('interventions.delete');
     Route::post('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');

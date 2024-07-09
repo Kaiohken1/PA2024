@@ -6,7 +6,6 @@ use Stripe\Stripe;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
-use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
 use Illuminate\Routing\Controller;
@@ -15,19 +14,15 @@ use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-
-
         $reservations = Reservation::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         return view('Reservation.index', ['reservations' => $reservations]);
     }
+
     public function MobileIndex()
     {
         $user = Auth::user();
@@ -47,8 +42,6 @@ class ReservationController extends Controller
                         'name' => $reservation->appartement->name,
                         'address' => $reservation->appartement->address,
                         'city' => $reservation->appartement->city
-                        
-                        
                     ],
                     'prix' => $reservation->prix,
                 ];
@@ -59,14 +52,9 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Unauthenticated'], 401);
         }
     }
-    
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
-
         $appartement_id = $request->route('appartement_id');
 
         $selectedAppartement = Appartement::find($appartement_id);
@@ -78,7 +66,7 @@ class ReservationController extends Controller
             ->get();
 
         $fermeture = Fermeture::where("appartement_id", $appartement_id)
-            ->select("start","end")
+            ->select("start_time","end_time")
             ->get();
 
         return view('Reservation.create', [
@@ -91,26 +79,31 @@ class ReservationController extends Controller
         ]);
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'start_time' => ['required'],
-            'end_time' => ['required'],
+            'start_time' => ['required', 'date', 'after_or_equal:today'],
+            'end_time' => ['required', 'date', 'after:start_time'],
             'nombre_de_personne' => ['required', 'numeric'],
             'appartement_id' => ['required', 'exists:appartements,id'],
             'prix' => ['required', 'numeric'],
             'commission' => ['required', 'numeric']
         ]);
 
+        $user = Auth::user();
+
+        // Appliquer une réduction de 5% si l'utilisateur a un abonnement Explorator
+        if ($this->hasExploratorSubscription($user)) {
+            $validatedData['prix'] = $validatedData['prix'] * 0.95;
+        }
+
+        // Arrondir le prix avant de le convertir en centimes
+        $validatedData['prix'] = round($validatedData['prix'], 2);
+
         $request->session()->put('validatedData', $validatedData);
 
         $validatedData['start_time'] = date('Y-m-d', strtotime($validatedData['start_time']));
         $validatedData['end_time'] = date('Y-m-d', strtotime($validatedData['end_time']));
-
 
         Stripe::setApiKey(env('STRIPE_API_KEY'));
         $session = Session::create([
@@ -122,25 +115,19 @@ class ReservationController extends Controller
                         'product_data' => [
                             'name' => 'Réservation d\'appartement',
                         ],
-                        'unit_amount' => $validatedData['prix'] * 100,
+                        'unit_amount' => (int) round($validatedData['prix'] * 100),
                     ],
                     'quantity' => 1,
                 ],
             ],
             'mode' => 'payment',
             'success_url' => route('reservation.pay', ['id' => $validatedData['appartement_id']]),
-
             'cancel_url' => route('property.show', $validatedData['appartement_id']),
         ]);
 
         return redirect()->away($session->url);
     }
 
-
-
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $reservation = Reservation::findOrFail($id);
@@ -148,9 +135,6 @@ class ReservationController extends Controller
         return view('Reservation.show', ['reservation' => $reservation]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
         $reservation = Reservation::findOrFail($id);
@@ -158,19 +142,14 @@ class ReservationController extends Controller
         return view('Reservation.edit', ['reservation' => $reservation]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-
         $validatedData = $request->validate([
             'start_time' => ['required', 'date', 'after_or_equal:today'],
             'end_time' => ['required', 'date', 'after:start_date'],
             'nombre_de_personne' => ['required', 'numeric'],
             'prix' => ['required', 'numeric'],
         ]);
-
 
         $reservation = Reservation::findOrFail($id);
 
@@ -180,19 +159,13 @@ class ReservationController extends Controller
         $reservation->prix = $validatedData['prix'];
         $reservation->save();
 
-
         return redirect()->route('reservations.show', ['reservation' => $reservation->id])
             ->with('success', 'Reservation updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request, $id)
     {
-
         $reservation = Reservation::findOrFail($id);
-
         $reservation->delete();
 
         return redirect()->route('reservation.index')
@@ -214,7 +187,6 @@ class ReservationController extends Controller
         return redirect()->back()
             ->with('success', 'La reservation a été refusée avec succès');
     }
-
 
     public function showAll($appartement_id)
     {
@@ -242,5 +214,19 @@ class ReservationController extends Controller
         $reservation->save();
     
         return redirect()->route('reservation.index')->with('success', 'Réservation effectuée avec succès.');
+    }
+
+    private function hasExploratorSubscription($user)
+    {
+        $exploratorKeys = [
+            env('STRIPE_PRICE_PREMIUM_MONTHLY'),
+            env('STRIPE_PRICE_PREMIUM_YEARLY')
+        ];
+
+        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        if ($subscription && in_array($subscription->stripe_price, $exploratorKeys)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -63,11 +63,8 @@
                     <p class="text-lg"><label class="text-yellow-800 pr-10">{{__('Montant à payer')}}</label> @if($intervention->price) <strong>{{$intervention->price + ($intervention->price*0.20)}}€</strong> @else{{__('À définir')}}  @endif</p>
                 </div>
 
-                <div class="mt-4 flex flex-col ">
+                <div class="mt-4 flex flex-col">
                     @if($intervention->provider) 
-                        
-
-
                         @if($intervention->statut_id == 5 || $intervention->statut_id == 3)
                             <div>
                                 <a href="{{route('interventions.generate', $intervention->id)}}">
@@ -104,16 +101,37 @@
                     @endif  
  
                     @if($intervention->provider) 
-
                         @if(($intervention->statut_id !== 5 && $intervention->statut_id !== 3) && $intervention->estimations->where('statut_id', 9)->first())
-                        <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
-                            @csrf
-                                
-                            <button class="btn btn-warning mt-10">Valider et payer</button>
-                        </form>                          
+                            <form method="POST", action="{{route('interventions.checkout', $intervention->id)}}">
+                                @csrf
+                                <button class="btn btn-warning mt-10">Valider et payer</button>
+                            </form>                          
                         @endif     
                     @endif
+                    @if (auth()->user()->hasEligibleSubscription() && $intervention->statut_id == 10)
+                        <div>
+                            @php
+                                $subscription = auth()->user()->subscriptions()->where('stripe_status', 'active')->first();
+                                $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
+                                $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
+                                $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');
+                                $mediumYearly = env('STRIPE_PRICE_BASIC_YEARLY');
+                            @endphp
 
+                            @if (in_array($subscription->stripe_price, [$premiumMonthly, $premiumYearly]))
+                                <form action="{{ route('interventions.useFreeService', $intervention->id) }}" method="POST">                                        
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Utiliser votre prestation gratuite</button>
+                                </form>
+                            @elseif (in_array($subscription->stripe_price, [$mediumMonthly, $mediumYearly]) && $intervention->price < 80) 
+                                <form action="{{ route('interventions.useFreeService', $intervention->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Utiliser votre prestation gratuite</button>
+                                </form>
+                            @endif
+                        </div>            
+                    @endif
+                
                     @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3 && $intervention->statut_id !== 4)
                         <div>
                             <form method="POST", action="{{route('interventions.destroy', ['id' => $intervention->appartement->id, 'intervention' => $intervention->id])}}">
@@ -127,6 +145,8 @@
             </div>
         </div>
     </div>
+    
+   
 
     @if($intervention->estimations->where('statut_id', 9)->first())
     <dialog id="my_modal_1" class="modal fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">

@@ -233,6 +233,9 @@ class AppartementController extends Controller
      */
     public function show($id)
     {
+        $user = Auth::user();
+        $hasPremiumSubscription = $this->hasExploratorSubscription($user);
+    
         $appartement = Appartement::with('avis')
             ->withAvg('avis', 'rating_cleanness')
             ->withAvg('avis', 'rating_price_quality')
@@ -240,25 +243,22 @@ class AppartementController extends Controller
             ->withAvg('avis', 'rating_communication')
             ->withCount('avis')
             ->findOrFail($id);
-
+    
         $total_avg = ($appartement->avis_avg_rating_cleanness +
             $appartement->avis_avg_rating_price_quality +
-            $appartement->avis_avg_rating_location  +
+            $appartement->avis_avg_rating_location +
             $appartement->avis_avg_rating_communication) / 4;
-
+    
         $appartement->overall_rating = round($total_avg, 2);
-
-
-
-
+    
         $intervalles = Reservation::where("appartement_id", $appartement->id)
             ->select("start_time", "end_time")
             ->get();
-
+    
         $fermetures = Fermeture::where("appartement_id", $appartement->id)
             ->select("start", "end")
             ->get();
-
+    
         $reservedDates = Reservation::where('appartement_id', $id)
             ->get()
             ->map(function ($reservation) {
@@ -268,48 +268,47 @@ class AppartementController extends Controller
                 ];
             })
             ->toArray();
-
+    
         $appartementAvisSessionUser = AppartementAvis::where('appartement_id', $id)
             ->where('user_id', auth()->id())
             ->get();
-
+    
         $appartementAvisOtherUser = AppartementAvis::where('appartement_id', $id)
             ->latest()
             ->where('user_id', '!=', auth()->id())
             ->get();
-
+    
         $appartementAvis = $appartementAvisSessionUser->merge($appartementAvisOtherUser);
-
+    
         $appartementAvis = $appartementAvis->each(function ($avis) {
-            $avis->voyageur_rating = round(($avis->rating_cleanness + $avis->rating_price_quality  + $avis->rating_location  + $avis->rating_communication) / 4, 0);
+            $avis->voyageur_rating = round(($avis->rating_cleanness + $avis->rating_price_quality + $avis->rating_location + $avis->rating_communication) / 4, 0);
             return $avis;
         });
-
+    
         $dateInBase = [];
-
+    
         foreach ($fermetures as $fermeture) {
             $dateInBase[] = [
                 'from' => date("d-m-Y", strtotime($fermeture->start)),
                 'to' => date("d-m-Y", strtotime($fermeture->end))
             ];
         }
-
-
+    
         foreach ($intervalles as $intervalle) {
             $dateInBase[] = [
                 'from' => date("d-m-Y", strtotime($intervalle->start_time)),
                 'to' => date("d-m-Y", strtotime($intervalle->end_time))
             ];
         }
-
+    
         $mainImages = $appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
-
+    
         $rest = 4 - $mainImages->count();
-
+    
         $otherImages = $appartement->images()->where('is_main', false)->take($rest)->get();
-
+    
         $propertyImages = $mainImages->merge($otherImages);
-
+    
         return view('appartements.show', [
             'appartement' => $appartement,
             'fermetures' => $fermetures,
@@ -317,9 +316,25 @@ class AppartementController extends Controller
             'reservedDates' => $reservedDates,
             'appartementAvis' => $appartementAvis,
             'datesInBase' => $dateInBase,
-            'propertyImages' => $propertyImages
+            'propertyImages' => $propertyImages,
+            'hasPremiumSubscription' => $hasPremiumSubscription
         ]);
     }
+    
+    private function hasExploratorSubscription($user)
+    {
+        $exploratorKeys = [
+            env('STRIPE_PRICE_PREMIUM_MONTHLY'),
+            env('STRIPE_PRICE_PREMIUM_YEARLY')
+        ];
+    
+        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        if ($subscription && in_array($subscription->stripe_price, $exploratorKeys)) {
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Show the form for editing the specified resource.
      */

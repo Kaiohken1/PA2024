@@ -6,10 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "barryvdh/laravel-dompdf": "^2.2",
         "andreiio/blade-remix-icon": "^3.2",
+        "barryvdh/laravel-dompdf": "^2.2",
+        "blade-ui-kit/blade-heroicons": "^2.3",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/cashier": "^15.3",
+        "laravel/cashier": "^15.4",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
@@ -19,6 +20,7 @@
         "mpociot/versionable": "^4.4",
         "outhebox/laravel-translations": "^1.1",
         "owenvoke/blade-fontawesome": "^2.6",
+        "postare/blade-mdi": "^1.0",
         "propaganistas/laravel-phone": "^5.3",
         "pusher/pusher-php-server": "^7.2",
         "stripe/stripe-php": "^13.0"
