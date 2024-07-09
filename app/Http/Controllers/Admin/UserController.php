@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserAvis;
@@ -44,11 +45,51 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $userAvis = UserAvis::where('receiver_user_id', $id)->get();
+        
+        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        $freeServicesRemaining = null;
+        $nextFreeServiceTime = null;
+        $subscriptionName = null;
+    
+        if ($subscription) {
+            $freeServicesRemaining = $subscription->free_service_count == 0 ? 1 : 0;
+    
+            $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
+            $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
+            $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');
+            $mediumYearly = env('STRIPE_PRICE_BASIC_YEARLY');
+    
+            $currentDate = Carbon::now();
+            $lastFreeServiceDate = $subscription->last_free_service_date ? Carbon::parse($subscription->last_free_service_date) : null;
+    
+            if (in_array($subscription->stripe_price, [$premiumMonthly, $premiumYearly])) {
+                $subscriptionName = 'EXPLORATOR';
+                if ($freeServicesRemaining == 0 && $lastFreeServiceDate) {
+                    $monthsDifference = $currentDate->diffInMonths($lastFreeServiceDate);
+                    if ($monthsDifference < 6) {
+                        $nextFreeServiceTime = $lastFreeServiceDate->addMonths(6)->diffForHumans();
+                    }
+                }
+            } elseif (in_array($subscription->stripe_price, [$mediumMonthly, $mediumYearly])) {
+                $subscriptionName = 'BAG PACKER';
+                if ($freeServicesRemaining == 0 && $lastFreeServiceDate) {
+                    $monthsDifference = $currentDate->diffInMonths($lastFreeServiceDate);
+                    if ($monthsDifference < 12) {
+                        $nextFreeServiceTime = $lastFreeServiceDate->addYears(1)->diffForHumans();
+                    }
+                }
+            }
+        }
+    
         return view('profile.public_profile', [
             'user' => $user,
-            'userAvis' => $userAvis
+            'userAvis' => $userAvis,
+            'subscriptionName' => $subscriptionName,
+            'freeServicesRemaining' => $freeServicesRemaining,
+            'nextFreeServiceTime' => $nextFreeServiceTime
         ]);
     }
+    
 
     /**
      * Show the form for editing the specified resource.

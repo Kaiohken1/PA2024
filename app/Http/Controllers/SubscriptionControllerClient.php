@@ -147,7 +147,7 @@ class SubscriptionControllerClient extends Controller
         $user = \App\Models\User::where('stripe_id', $subscription->customer)->first();
     
         if ($user) {
-            // Récupérer les informations du produit et les métadonnées
+            
             Stripe::setApiKey(env('STRIPE_SECRET'));
             $stripeProduct = Product::retrieve($subscription->items->data[0]->price->product);
     
@@ -173,7 +173,7 @@ class SubscriptionControllerClient extends Controller
                 $user->save();
             } elseif (in_array($subscription->items->data[0]->price->id, [env('STRIPE_PRICE_BASIC_YEARLY')])) {
                 $user->free_services_remaining = 1; 
-                $user->last_free_service_date = Carbon::now()->subYear(); // Initier à 1 an avant pour permettre une prestation immédiatement
+                $user->last_free_service_date = Carbon::now()->subYear(); 
                 $user->save();
             }
         } else {
