@@ -308,18 +308,6 @@ Route::get('/estimation', Estimation::class)->name('property.estimation');
 Route::get('/property/{id}', [AppartementController::class, 'show'])->name('property.show');
 
 
-Route::domain('admin.'. env('APP_URL'))->group(function () {
-    Route::get('/login', function () {
-        return view('auth.admin-login');
-    })->name('admin.login');
-
-    
-Route::get('/admin/dashboard', function () {
-    return view('admin.index');
-})->middleware(['admin'])->name('admin');
-});
-
-
 Route::get('set-locale/{locale}', function ($locale) {
     App::setLocale($locale);
     session()->put('locale', $locale);
