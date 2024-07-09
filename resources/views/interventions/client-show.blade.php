@@ -86,6 +86,30 @@
                         </form>                          
                         @endif     
                     @endif
+<div>
+    @if (auth()->user()->hasEligibleSubscription() && $intervention->statut_id == 10)
+        @php
+            $subscription = auth()->user()->subscriptions()->where('stripe_status', 'active')->first();
+            $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
+            $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
+            $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');
+            $mediumYearly = env('STRIPE_PRICE_BASIC_YEARLY');
+        @endphp
+
+        @if (in_array($subscription->stripe_price, [$premiumMonthly, $premiumYearly]))
+            <form action="{{ route('interventions.useFreeService', $intervention->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-success">Utiliser votre prestation gratuite</button>
+            </form>
+        @elseif (in_array($subscription->stripe_price, [$mediumMonthly, $mediumYearly]) && $intervention->price < 80)
+            <form action="{{ route('interventions.useFreeService', $intervention->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-success">Utiliser votre prestation gratuite</button>
+            </form>
+        @endif
+    @endif
+</div>            
+                
 
                 @if($intervention->statut_id !== 5 && $intervention->statut_id !== 3 && $intervention->statut_id !== 4)
                     <div>
@@ -96,9 +120,13 @@
                         </form> 
                     </div>  
                 @endif
+
+               
             </div>
         </div>
     </div>
+    
+   
 
     @if($intervention->estimations->where('statut_id', 9)->first())
     <dialog id="my_modal_1" class="modal fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">

@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Provider;
 
-use App\Events\InterventionPaid;
 use Carbon\Carbon;
 use Stripe\Stripe;
+use App\Models\User;
 use App\Models\Absence;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Provider;
 use App\Models\Appartement;
+use App\Models\Reservation;
 use App\Models\Intervention;
 use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
+use App\Events\InterventionPaid;
 use App\Models\ServiceParameter;
 use App\Models\InterventionEvent;
 use App\Models\InterventionRefusal;
@@ -20,7 +22,6 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
-use App\Models\Reservation;
 
 class InterventionController extends Controller
 {
@@ -369,5 +370,33 @@ class InterventionController extends Controller
         return redirect()->back()->with('success', 'Intervention refusée, un autre devis vous sera envoyé.');
 
     }
+
+
+
+    public function useFreeService(Request $request, $id)
+{
+    $user = User::findOrFail(auth()->id());
+    $intervention = Intervention::findOrFail($id);
+
+    if ($user->hasEligibleSubscription()) {
+        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+
+        $intervention->price = 0;
+        $intervention->statut_id = 5;
+        $intervention->update();
+
+        $user->free_services_remaining -= 1;
+        $user->update();
+
+        $subscription->last_free_service_date = Carbon::now();
+        $subscription->free_service_count = $subscription->free_service_count + 1;
+        $subscription->update();
+
+        return redirect()->route('interventions.clientShow', $intervention->id)->with('success', 'Prestation gratuite utilisée avec succès.');
+    }
+
+    return redirect()->route('interventions.clientShow', $intervention->id)->with('error', 'Vous n\'êtes pas éligible pour une prestation gratuite.');
+}
+
 }
 

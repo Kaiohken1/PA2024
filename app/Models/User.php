@@ -3,20 +3,22 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Tag;
+use Carbon\Carbon;
 
+use App\Models\Tag;
 use App\Models\UserAvis;
 use App\Models\Appartement;
 use App\Models\Reservation;
-use App\Models\Subscription;
 
+use App\Models\Subscription;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
 use MBarlow\Megaphone\HasMegaphone;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notification;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +28,77 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class User extends Authenticatable
 {
 
-   
+    public function hasEligibleSubscription()
+{
+    $subscription = $this->subscriptions()->where('stripe_status', 'active')->first();
+
+    if (!$subscription) {
+        Log::info('No active subscription found.');
+        return false;
+    }
+
+    $currentDate = Carbon::now();
+    $lastFreeServiceDate = $subscription->last_free_service_date ? Carbon::parse($subscription->last_free_service_date) : null;
+    $freeServiceCount = $subscription->free_service_count;
+
+    Log::info('Subscription found: ' . $subscription->stripe_price);
+    if ($lastFreeServiceDate) {
+        Log::info('Last free service date: ' . $lastFreeServiceDate->toDateString());
+    } else {
+        Log::info('Last free service date: None');
+    }
+    Log::info('Free service count: ' . $freeServiceCount);
+    Log::info('Current date: ' . $currentDate->toDateString());
+
+    $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
+    $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
+    $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');
+    $mediumYearly = env('STRIPE_PRICE_BASIC_YEARLY');
+
+    if (in_array($subscription->stripe_price, [$premiumMonthly, $premiumYearly])) {
+        if ($freeServiceCount == 0) {
+            Log::info('Eligible for free service (Premium subscription, count is 0).');
+            return true;
+        } elseif ($freeServiceCount >= 1 && $lastFreeServiceDate) {
+            $monthsDifference = $lastFreeServiceDate->diffInMonths($currentDate);
+            Log::info('Months difference for Premium subscription: ' . $monthsDifference);
+            if ($monthsDifference >= 6) {
+                Log::info('Eligible for free service (Premium subscription, count is 1 or more, date check passed).');
+                return true;
+            } else {
+                Log::info('Not eligible for free service (Premium subscription, date check failed).');
+            }
+        }
+    } elseif (in_array($subscription->stripe_price, [$mediumMonthly, $mediumYearly])) {
+        if ($freeServiceCount == 0) {
+            Log::info('Eligible for free service (Medium subscription, count is 0).');
+            return true;
+        } elseif ($freeServiceCount >= 1 && $lastFreeServiceDate) {
+            $monthsDifference = $lastFreeServiceDate->diffInMonths($currentDate);
+            Log::info('Months difference for Medium subscription: ' . $monthsDifference);
+            if ($monthsDifference >= 12) {
+                Log::info('Eligible for free service (Medium subscription, count is 1 or more, date check passed).');
+                return true;
+            } else {
+                Log::info('Not eligible for free service (Medium subscription, date check failed).');
+            }
+        }
+    }
+
+    Log::info('Not eligible for free service.');
+    return false;
+}
+
+
+
+
+    
+
+    
+
+    
+    
+    
 
     use HasApiTokens, HasFactory, Notifiable, Billable, HasMegaphone;
 

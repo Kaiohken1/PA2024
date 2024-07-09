@@ -141,6 +141,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/interventions/dashboard', [InterventionController::class, 'index'])->name('interventions.dashboard');
     Route::get('/interventions/client/{id}', [InterventionController::class, 'clientShow'])->name('interventions.clientShow');
+   
+
+Route::post('/interventions/{id}/use-free-service', [InterventionController::class, 'useFreeService'])->name('interventions.useFreeService');
+
     Route::get('/interventions/{id}', [InterventionController::class, 'show'])->name('interventions.show');
     Route::delete('/interventions/{id}', [InterventionController::class, 'destroy'])->name('interventions.delete');
     Route::post('/interventions/{id}/plan', [InterventionController::class, 'plan'])->name('interventions.plan');
