@@ -426,5 +426,20 @@
     "Commentaire": "Comment",
     "Modifier votre avis sur l'appartement": "Change your review of the apartment",
     "Modifier": "To modify",
-    "Envoyer":"Send"
+    "Envoyer": "Send",
+    "Objet": "Object",
+    "Mes demandes": "My requests",
+    "Voir mes autres demandes": "See my other requests",
+    "Modifier un ticket": "Edit a ticket",
+    "Modifier le ticket": "Edit ticket",
+    "Détail du ticket": "Ticket details",
+    "Ticket numéro": "Ticket number",
+    "Objet:": "Object:",
+    "Catégorie:": "Category:",
+    "Description:": "Description:",
+    "Créé le:": "Created the:",
+    "Réponse de PCS": "Response from PCS",
+    "Solution:": "Solution:",
+    "Edité le:": "Edit it:",
+    "Détail": "Detail"
 }
