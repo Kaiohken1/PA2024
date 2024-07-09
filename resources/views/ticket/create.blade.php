@@ -3,6 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Créer un ticket') }}
         </h2>
+        <x-nav-link :href="route('tickets.index')">
+            {{ __('Voir mes autres demandes') }}
+        </x-nav-link>
     </x-slot>
 
     <div class="py-12">

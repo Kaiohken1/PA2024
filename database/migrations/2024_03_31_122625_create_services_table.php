@@ -30,7 +30,7 @@ return new class extends Migration
 
         Schema::create('provider_services', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('price_scale')->nullable();
             $table->foreignIdFor(Provider::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();

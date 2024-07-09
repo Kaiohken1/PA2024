@@ -28,7 +28,8 @@ class Provider extends Model
         'email', 
         'description',
         'avatar', 
-        'availability'
+        'availability',
+        'iban',
     ];
 
     protected $hidden = [

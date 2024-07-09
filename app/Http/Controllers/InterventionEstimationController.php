@@ -36,7 +36,7 @@ class InterventionEstimationController extends Controller
                     return $query->where('intervention_id', $request->intervention_id);
                 })
             ],
-            'estimate' => ['required', 'image'],
+            'estimate' => ['required', 'mimes:jpeg,jpg,png,pdf', 'max:5000'],
             'end_time' => [
                 'required',
                 'date',
@@ -68,7 +68,7 @@ class InterventionEstimationController extends Controller
     public function update($id, Request $request)
     {
         $validatedData = $request->validate([
-            'estimate' => ['required', 'image'],
+            'estimate' => ['required', 'mimes:jpeg,jpg,png,pdf', 'max:5000'],
             'end_time' => ['nullable',
             new CheckEventConflict($request->provider_id, $request->end_time)    
             ],

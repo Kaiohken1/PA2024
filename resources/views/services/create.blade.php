@@ -44,7 +44,12 @@
                             </div>
 
                             <div>
-                                {{-- <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
+                                <x-input-label for="adminOnly" :value="__('Reistreindre ce service au gestionnaires uniquement')" class="text-white" />
+                                <input type="checkbox" id="adminOnly" name="adminOnly" class="checkbox checkbox-warning">
+                            </div>
+
+                            {{--<div>
+                                <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
                                     <select name="role_id" id="role">
                                         <option value="">Selectionez un rôle</option>
                                         @foreach($roles as $role)

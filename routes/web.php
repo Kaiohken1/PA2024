@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\RedirectAfterPayment;
+use App\Livewire\PropertyInterventionsTable;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\TicketController;
@@ -161,25 +162,17 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('tickets', TicketController::class);
     Route::get('/tickets/{ticket}/chat/{user}', TicketChat::class)->name('tickets.chat');
-    Route::get('/chatbot', Chatbot::class);
-
-    
-
-    Route::get('/provider/chat', Index::class)->name('chat.index');
-    Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
-
-    Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
+    Route::get('/chatbot', Chatbot::class);    
     Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
 
+    Route::get('/property/{id}/interventions-sheets', PropertyInterventionsTable::class)->name('property-interventions');
 });
 
 Route::domain('prestataire.'. env('APP_URL'))->middleware(['auth'])->group(function () {
-
     Route::get('/providers/chat', Index::class)->name('chat.index');
     Route::get('/providers/chat/{query}', MessagerieChat::class)->name('chat');
 
     Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
-    Route::get('/reservation/{id}/pay', [ReservationController::class, 'pay'])->name('reservation.pay');
     Route::post('/providers/contract', [ContractController::class, 'store'])->name('contract.store-intervention');
     Route::get('/providers/dashboard', [ProviderController::class, 'home'])->name('provider.dashboard');
     Route::get('/providers/proposals', [ProviderController::class, 'proposals'])->name('providers.proposals');
@@ -192,13 +185,22 @@ Route::domain('prestataire.'. env('APP_URL'))->middleware(['auth'])->group(funct
     Route::get('/providers/interventions/{id}', [InterventionController::class, 'showProvider'])->name('interventions-provider.show');
     Route::get('/providers/profile', [ProviderController::class, 'edit'])->name('provider.edit');
     Route::patch('/provider', [ProviderController::class, 'update'])->name('provider.update');
-    Route::get('/provider/public-profile', [ProviderController::class, 'show'])->name('provider.show');
+
+    Route::get('/providers/public-profile', [ProviderController::class, 'show'])->name('provider.show');
+
+    
+    Route::get('/provider/chat', Index::class)->name('chat.index');
+    Route::get('/provider/chat/{query}', MessagerieChat::class)->name('chat');
+
+    Route::get('/providers/cities', CitySelection::class)->name('proposals.parameter');
 
     Route::get('/providers/invoices', function () {
         return view('provider.invoices.index');
     })->name('provider.invoices.index');
     Route::get('/providers/contract/{providerId}', [ContractController::class, 'generateIntervention'])->name('contract.generate-intervention');
     Route::get('/providers/fiche/{interventionId}', [ContractController::class, 'generateFiche'])->name('contract.fiche');
+
+
 });
 
 

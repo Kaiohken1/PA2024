@@ -57,11 +57,16 @@
                         <button class="btn btn-warning w-full">{{__('Réservations')}}</button>
                     </a>
 
-                    <a href="{{ route('calendar.show', $appartement->id) }}">
-                        <button class="btn btn-warning w-full">{{__('Calendrier')}}</button>
-                    </a>
                     <a href="{{ route('fermeture.index', $appartement->id) }}" >
                         <button class="btn btn-warning w-full">{{__('Fermetures')}}</button>
+                    </a>
+
+                    <a href="{{ route('property-interventions', $appartement->id) }}">
+                        <button class="btn btn-warning w-full">{{__('Interventions')}}</button>
+                    </a>
+
+                    <a href="{{ route('calendar.show', $appartement->id) }}" class="col-span-2">
+                        <button class="btn btn-warning w-full ">{{__('Calendrier')}}</button>
                     </a>
 
                     @if($appartement->statut_id == 11)

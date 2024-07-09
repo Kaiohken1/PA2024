@@ -29,9 +29,13 @@ class ServiceForm extends Component
     public function updateServices()
     {
         if ($this->selectedCategory) {
-            $this->services = Service::where('category_id', $this->selectedCategory)
-                ->where('active_flag', 1)
-                ->get();
+            $query = Service::where('category_id', $this->selectedCategory)
+                            ->where('active_flag', 1);
+                            
+            if (!Auth::user()->isAdmin()) {
+                $query->whereNull('role_id'); 
+            }
+            $this->services = $query->get();
             $this->selectedService = null;
         } else {
             $this->services = [];

@@ -19,9 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('avatar')->nullable();
+            $table->string('iban');
             $table->text('description');
             $table->boolean('availability')->default(1);
-            $table->string('statut')->default('en attente');
+            $table->string('statut')->default('En attente');
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->unique();
             $table->softDeletes();
             $table->timestamps();

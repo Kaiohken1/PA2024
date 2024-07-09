@@ -262,6 +262,7 @@
     "Inscription": "Inscription",
     "Profil": "Profil",
     "Modifier son profil": "Modifier son profil",
+    "Se déconnecter": "Se déconnecter",
     "Mot de psse": "Mot de passe",
     "Mot de passe oublié ?": "Mot de passe oublié ?",
     "Se rappeler de moi": "Se rappeler de moi",
@@ -380,5 +381,6 @@
     "Aspect du bien": "Aspect du bien",
     "Commencer la simulation": "Commencer la simulation",
     "Mes réservation":"Mes reservations",
-    "Devenir prestataire":"Devenir Prestataire"
+    "Devenir prestataire":"Devenir Prestataire",
+    "Profil de l'utilisateur": "Profil de l'utilisateur"
 }

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Provider;
+use App\Models\Intervention;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
@@ -37,7 +38,9 @@ class ProviderTable extends Component
             $intervention->commission = NULL;
             $intervention->statut_id = 1;
             $intervention->save();
-            $intervention->estimations->where('provider_id', $provider->id)->first()->delete();
+            foreach($intervention->estimations->where('provider_id', $provider->id) as $estimation) {
+                $estimation->delete();
+            }
         }
 
         $provider->delete();

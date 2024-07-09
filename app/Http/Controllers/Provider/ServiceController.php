@@ -32,7 +32,7 @@ class ServiceController extends Controller
         $categories = Category::all();
         $roles = Role::query()
                     ->where('nom', 'voyageur')
-                    ->orWhere('nom', 'bailleur')
+                    ->orWhere('nom', 'admin')
                     ->get();
         return view('services.create', ['categories' => $categories, 'roles' => $roles]);
     }
@@ -51,9 +51,14 @@ class ServiceController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'role_id' => ['nullable', 'exists:roles,id'],
             'hasRange' => ['required'],
+            'adminOnly' => ['nullable'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+
+        if(isset($validatedData['adminOnly'])) {
+            $validatedData['role_id'] = 1;
+        }
 
         $dynamicInputs = [];
         foreach ($request->all() as $key => $value) {
@@ -128,9 +133,18 @@ class ServiceController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'role_id' => ['nullable', 'exists:roles,id'],
             'hasRange' => ['required'],
+            'adminOnly' => ['nullable'],
         ]);
 
         $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+
+        $validatedData['flexPrice'] = $request->has('flexPrice') ? 1 : 0;
+
+        if(isset($validatedData['adminOnly'])) {
+            $validatedData['role_id'] = 1;
+        } else {
+            $validatedData['role_id'] = NULL;
+        }
 
         if ($validatedData['flexPrice']) {
             $service->price = null;

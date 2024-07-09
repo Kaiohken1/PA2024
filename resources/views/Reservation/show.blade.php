@@ -60,7 +60,7 @@
                         </a>
 
                         @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time))
-                            @if (!\App\Models\AppartementAvis::where('user_id', auth()->user()->id)->where('reservation_id', $reservation->reservation_id)->exists())
+                            @if (!\App\Models\AppartementAvis::where('user_id', auth()->user()->id)->where('reservation_id', $reservation->id)->exists())
                                 <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success mr-3" onclick="return">

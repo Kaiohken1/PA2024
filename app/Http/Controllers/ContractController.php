@@ -45,7 +45,7 @@ class ContractController extends Controller
 
         $validatedData = $request->validate([
             'intervention_id' => ['required', 'exists:interventions,id'],
-            'fiche' => ['required', 'image'],
+            'fiche' => ['required', 'mimes:jpeg,jpg,png,pdf', 'max:5000'],
             'comment' => ['nullable', 'string'],
         ]);
 

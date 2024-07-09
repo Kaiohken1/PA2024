@@ -18,6 +18,7 @@
 
                                 <x-input-label for="rating" :value="__('Notez le voyageur')" />
                                 <div class="rating">
+                                    <input type="radio" name="rating" class="mask mask-star" value="" checked hidden/>
                                     <input type="radio" name="rating" class="mask mask-star" value="1"/>
                                     <input type="radio" name="rating" class="mask mask-star" value="2"/>
                                     <input type="radio" name="rating" class="mask mask-star" value="3"/>

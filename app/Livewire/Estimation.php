@@ -36,17 +36,17 @@ class Estimation extends Component
     public function calculatePrice()
     {
         $validatedData = $this->validate([
-            'surface' => 'required|numeric',
-            'guestCount' => 'required|numeric',
-            'roomCount' => 'required|numeric',
+            'surface' => 'required|numeric|min:1',
+            'guestCount' => 'required|numeric|min:1',
+            'roomCount' => 'required|numeric|min:1',
             'tag_id' => 'array',
-            'aspect_rating' => 'required|numeric',
-            'location_rating' => 'required|numeric',
-            'property_type' => 'required|numeric'
+            'aspect_rating' => 'required|numeric|min:1',
+            'location_rating' => 'required|numeric|min:1',
+            'property_type' => 'required|numeric|min:1'
         ]);
 
         $basePrice = $validatedData['surface'] * (1 + $validatedData['location_rating'] / 5) * (1 + $validatedData['aspect_rating'] / 10) * $validatedData['property_type'];
-        $priceEstimation = $basePrice * (1 + $validatedData['roomCount'] / 100);
+        $priceEstimation = $basePrice * (1 + $validatedData['roomCount'] / 100) * (1 + $validatedData['guestCount'] / 100);
 
         if (!empty($validatedData['tag_id'])) {
             $selectedTags = Tag::whereIn('id', $validatedData['tag_id'])->get();

@@ -28,7 +28,7 @@
                             <span class="text-3xl font-extrabold">{{ __('Information du prestataire') }}</span>
                             <span class="text-base font-bold">{{ $provider->user->name }} {{ $provider->user->first_name }}</span>
                             <span class="text-base font-bold">{{ $provider->email }}</span>
-                            <span class="text-base font-bold">{{ $provider->phone }}</span>
+                            <span class="text-base font-bold">+{{ $provider->phone }}</span>
                             <span class="text-base font-bold">{{ $provider->address }}</span>
                         </div>
                     </div>
@@ -38,17 +38,16 @@
                         <div class="flex items-center">
 
                             <div class=" flex flex-col">
-                                <h2 class="text-2xl font-bold mb-4">Service proposé : </h2>
-                                <p><strong>{{ $service->name }}</strong></p>
-                                <p><strong>Description:</strong> {{ $service->pivot->description }}</p>
-                                @if($service->pivot->price_scale)<a href="{{ Storage::url($service->pivot->price_scale) }}" class="mt-2"><strong><u>Barème</u></strong></a>@endif
+                                <h2 class="text-2xl font-bold mb-4">Service proposé : {{ $service->name }}</h2>
+                                @if($service->pivot->price_scale)<a href="{{ Storage::url($service->pivot->price_scale) }}" class="mt-2 btn max-w-xs" target="_blank"><strong>Barème appliqué au service</strong></a>@endif
+                                <a href="{{ Storage::url($provider->iban) }}" class="mt-2 btn max-w-xs" target="_blank"><strong>Coordonées bancaires</strong></a>
                             </div>
                         </div>
                         <div class="flex flex-col text-right">
                             <h3 class="text-2xl font-bold mb-4">Documents envoyés : </h3>
                             @foreach ($provider->documents as $document)
                             <p>{{$document->name}} :
-                                <a href="{{Storage::url($document->pivot->document)}}"><strong><u>Télécharger</strong></u></a>
+                                <a href="{{Storage::url($document->pivot->document)}}" class="btn">Télécharger</a>
                             </p>
                             @endforeach
                             @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())

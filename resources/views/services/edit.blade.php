@@ -41,6 +41,11 @@
                             <input type="checkbox" id="flexPrice" name="flexPrice" value="{{$service->flexPrice}}" class="checkbox checkbox-warning">
                         </div>
 
+                        <div>
+                            <x-input-label for="adminOnly" :value="__('Reistreindre ce service au gestionnaires uniquement')" class="text-white" />
+                            <input type="checkbox" id="adminOnly" name="adminOnly" value="{{$service->flexPrice}}" class="checkbox checkbox-warning" {{$service->role_id !== NULL ? 'checked' : ''}}>
+                        </div>
+
                         {{-- <div>
                             <x-input-label for="role" :value="__('Role')" class="text-white mt-2" />
                                 <select name="role_id" id="role">

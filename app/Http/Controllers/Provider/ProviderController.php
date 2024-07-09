@@ -59,22 +59,31 @@ class ProviderController extends Controller
         $validateData = $request->validate([
             'name' => ['required'],
             'address' => ['required', 'max:255'],
-            'phone' => ['required', 'numeric'],
             'email' => ['required', 'unique:providers'],
             'description' => ['required', 'max:255'],
-            'avatar' => ['image'],
+            'avatar' => ['required', 'image'],
             'service_id' => ['required', 'exists:services,id'],
-            'provider_description' => ['max:255'],
+            'provider_description' => ['max:255', 'nullable'],
             'documents' => ['required', 'array'],
             'documents.*' => ['mimes:jpg,png,pdf'],
-            'bareme' => ['mimes:jpg,png,pdf']
+            'bareme' => ['mimes:jpg,png,pdf'],
+            'iban' => ['mimes:jpg,png,pdf'],
+            'phone' => ['required', 'phone:mobile'],
+
         ]);
+
+        $validateData['phone'] = $number = str_replace('+', '', $request->phone);
 
         $validateData['user_id'] = Auth()->id();
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('providerPfp', 'public');
             $validateData['avatar'] = $path;
+        }
+
+        if ($request->hasFile('iban')) {
+            $path = $request->file('iban')->store('providersDocs', 'public');
+            $validateData['iban'] = $path;
         }
 
         $provider = new Provider($validateData);
@@ -100,7 +109,7 @@ class ProviderController extends Controller
 
         $provider->services()->attach($validateData['service_id'], [
             'price_scale' => $validateData['bareme'],
-            'description' => $validateData['provider_description'],
+            // 'description' => $validateData['provider_description'],
         ]);
 
         Auth::logout();
@@ -114,7 +123,7 @@ class ProviderController extends Controller
      */
     public function show()
     {
-        $provider = Provider::findOrFail(auth()->id());
+        $provider = Provider::findOrFail(Auth::user()->provider->id);
         return view('provider.show', ['provider' => $provider, 'service' => $provider->services->first()]);
     }
 

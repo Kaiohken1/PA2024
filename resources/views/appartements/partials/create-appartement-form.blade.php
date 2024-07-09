@@ -85,7 +85,7 @@
 
     <div>
         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="multiple_files">{{__('Ajoutez vos
-            images')}}</label>
+            images')}} (min 4)</label>
         <input class="file-input file-input-ghost w-full max-w-xs border-gray-300" id="image" type="file"
             name='image[]' multiple>
         <x-input-error :messages="$errors->get('image')" class="mt-2" />
@@ -104,6 +104,15 @@
         </select>
     </div>
 
+    
+    @if(Auth()->user()->iban == NULL)
+        <div>
+            <x-input-label :value="__('Informations bancaires')" />
+            <input class="file-input w-full max-w-xs" id="iban" type="file"
+                name="iban">
+            <x-input-error :messages="$errors->get('bareme')" class="mt-2" />
+        </div>
+    @endif
 
     <x-primary-button class="ms-3 mt-5 ml-0">
         {{ __('Créer un appartement') }}

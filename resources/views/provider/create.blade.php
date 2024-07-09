@@ -16,31 +16,32 @@
 
                             <div>
                                 <x-input-label for="name" :value="__('Nom de la société')" />
-                                <x-text-input id="name" class="input input-bordered input-warning w-full max-w-xl" type="text" name="name" :value="old('name')"/>
+                                <x-text-input id="name" class="input input-bordered w-full" type="text" name="name" :value="old('name')"/>
                                 <x-input-error :messages="$errors->get('name')" class="mt-2" />
                             </div>
 
                             <div>
                                 <x-input-label for="email" :value="__('Email')" />
-                                <x-text-input id="email" class="input input-bordered input-warning w-full max-w-xl" type="email" name="email" :value="old('email')"/>
+                                <x-text-input id="email" class="input input-bordered w-full" type="email" name="email" :value="old('email')"/>
                                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
                             </div>
 
-                            <div>
+                            <div class="mt-4">
                                 <x-input-label for="phone" :value="__('Numéro de téléphone')" />
-                                <x-text-input id="phone" class="input input-bordered input-warning w-full max-w-xl" type="tel" name="phone" pattern="[0-9]{10}" :value="old('phone')"/>
+                                <input id="phone" class="input input-bordered w-full" type="tel" name="phone" :value="old('phone')" required autocomplete="username" placeholder="+33712345678" />
+                                <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{__('Entrez un numéro de téléphone qui respecte ce format')}}</p>
                                 <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                             </div>
 
                             <div>
                                 <x-input-label for="address" :value="__('Adresse')" />
-                                <x-text-input id="address" class="input input-bordered input-warning w-full max-w-xl" type="text" name="address" :value="old('address')" />
+                                <x-text-input id="address" class="input input-bordered w-full max-w-xl" type="text" name="address" :value="old('address')" />
                                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
                             </div>
 
                             <div>
                                 <x-input-label for="description" :value="__('Description')" />
-                                <textarea name="description" class="input input-bordered input-warning w-full max-w-xl" :value="old('description')"></textarea>
+                                <textarea name="description" class="input input-bordered w-full max-w-xl" :value="old('description')"></textarea>
                                 <x-input-error :messages="$errors->get('description')" class="mt-2" />
                             </div>
 
@@ -52,11 +53,11 @@
 
                             <livewire:show-service-form />
 
-                            <div>
+                            {{-- <div>
                                 <x-input-label for="provider_description" :value="__('Description de votre prestation')" />
-                                <textarea name="provider_description" class="input input-bordered input-warning w-full max-w-xl" :value="old('provider_description')"></textarea>
+                                <textarea name="provider_description" class="input input-bordered w-full max-w-xl" :value="old('provider_description')"></textarea>
                                 <x-input-error :messages="$errors->get('provider_description')" class="mt-2" />
-                            </div>
+                            </div> --}}
 
                             <button class="btn btn-warning mt-5">
                                 {{ __('Devenir prestataire') }}
