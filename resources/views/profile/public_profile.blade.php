@@ -3,6 +3,9 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profil de l\'utilisateur') }}
         </h2>
+
+        <x-session-statut></x-session-statut>
+
     </x-slot>
 
     <div class="py-12">

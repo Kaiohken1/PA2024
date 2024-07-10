@@ -22,6 +22,8 @@ use App\Http\Controllers\Controller;
 use App\Models\InterventionEstimate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterventionEstimation;
+use MBarlow\Megaphone\Types\Important;
+use Illuminate\Support\Facades\Notification;
 
 class InterventionController extends Controller
 {
@@ -118,6 +120,7 @@ class InterventionController extends Controller
             'select.*.*' => ['string', 'max:255'],
         ]);
 
+
         foreach ($validatedData['services'] as $service_id) {
             $intervention = Intervention::where('appartement_id', $validatedData['appartement_id'])
                 ->where('service_id', $service_id)
@@ -133,10 +136,10 @@ class InterventionController extends Controller
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
-        $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
-
+        $validatedData['planned_date'] = date("Y-m-d H:i:s", strtotime($validatedData['planned_date']));
+        
         if(isset($validatedData['max_end_date'])) {
-            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+            $validatedData['max_end_date'] = date("Y-m-d H:i:s", strtotime($validatedData['max_end_date']));
 
         }
 
@@ -349,7 +352,7 @@ class InterventionController extends Controller
         ]);
 
         $estimation = InterventionEstimation::findOrFail($id);
-        $estimation->statut_id = 8;
+        $estimation->statut_id = 7;
         $estimation->save();
 
         $intervention = Intervention::findOrFail($estimation->intervention_id);
@@ -371,6 +374,19 @@ class InterventionController extends Controller
         $intervention->statut_id = 1;
         
         $intervention->save();
+
+        $admins = User::whereHas('roles', function ($query) {
+            $query->where('nom', 'admin');
+        })->get();
+
+        $notification = new Important(
+            'Refus de devis',
+            'Un client vient de refuser le devis que vous lui avez proposé',
+            url('https://admin.paris-caretaker-services.store/admin/interventions/' . $intervention->id),
+            'Voir la demande'
+        );
+
+        Notification::send($admins, $notification);  
 
         return redirect()->back()->with('success', 'Intervention refusée, un autre devis vous sera envoyé.');
 

@@ -1,6 +1,6 @@
 <div>
     <section class="mt-10">
-        <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+        <div class="mx-auto max-w-screen px-4 lg:px-12">
             <div class="bg-gray-900 text-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden border border-gray-700">
                 <div class="flex items-center justify-between p-4 border-b border-gray-700">
                     <div class="flex">
@@ -54,10 +54,16 @@
                                         class="px-4 py-3 font-medium text-white whitespace-nowrap dark:text-white">
                                     {{$service->id}}</th>
                                     <td class="px-4 py-3">{{$service->name}}</td>
-                                    <td class="px-4 py-3                                        
-                                        {{ $service->active_flag ? 'text-green-500' : 'text-red-500' }}">
-                                         @if($service->active_flag)Activé @else Désactivé @endif
-                                    </td>
+                                    @if($service->deleted_at == NULL)
+                                        <td class="px-4 py-3                                        
+                                            {{ $service->active_flag ? 'text-green-500' : 'text-red-500' }}">
+                                            @if($service->active_flag)Activé @else Désactivé @endif
+                                        </td>
+                                    @else
+                                        <td class="px-4 py-3 text-red-500">
+                                            Supprimé
+                                        </td>
+                                    @endif
                                     <td class="px-4 py-3">{{$service->category->name}}</td>
                                     <td class="px-4 py-3">@if($service->price){{$service->price}}€@else Variable @endif</td>
                                     <td class="px-4 py-3 flex items-center justify-end">

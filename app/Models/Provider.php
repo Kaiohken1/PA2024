@@ -44,7 +44,8 @@ class Provider extends Model
     {
         return $this->belongsToMany(Service::class, 'provider_services')
                     ->withPivot(['description', 'service_id', 'price_scale'])
-                    ->withTimestamps();
+                    ->withTimestamps()
+                    ->withTrashed();
     }
 
     public function user(): BelongsTo {

@@ -8,10 +8,12 @@ use App\Models\User;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\AppartementAvis;
 use App\Models\AppartementImage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
@@ -207,6 +209,8 @@ class AppartementController extends Controller
         $validateData['user_id'] = Auth()->id();
 
         $appartement = new Appartement($validateData);
+        
+        $appartement->tokken = Str::random(32);
 
         $appartement->user()->associate($validateData['user_id']);
         $appartement->statut_id = 1;
@@ -474,5 +478,15 @@ class AppartementController extends Controller
 
         return redirect()->route('dashboard')
         ->with('success', "Statut de l'appartement mis à jour avec succès");
+    }
+
+    public function nfcWritterTokken($id)
+    {
+        $appartement = Appartement::findOrFail($id);
+        Log::info('appartement récupérer ', ['appartement' => $appartement]);
+
+    return response()->json([
+        'appartement_tokken' => $appartement->tokken
+    ]);
     }
 }

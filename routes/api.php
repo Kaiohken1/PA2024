@@ -3,8 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TicketController;
-use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\AppartementController;
 
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -30,6 +31,7 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']
 Route::middleware('guest:sanctum')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'apiLogin']);
     Route::post('/mobile/login', [AuthenticatedSessionController::class, 'apiMobileLogin']);
+    Route::post('/nfc-writer/login', [AuthenticatedSessionController::class, 'nfcWriterLogin']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -55,6 +57,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tickets/chat/send', [TicketController::class, 'apiTicketChatSend']);
 
     Route::get('/mobile/reservations/user',[ReservationController::class,'MobileIndex']);
+
+    Route::get('/nfc-writer/tokken{id}', [AppartementController::class, 'nfcWritterTokken']);
+    Route::put('/Mobile/nfc-update', [ReservationController::class, 'nfcUpdateReservation']);
 });
 
 

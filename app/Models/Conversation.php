@@ -69,4 +69,5 @@ class Conversation extends Model
                                     ->whereNull('read_at')->count();
         }
 
+
 }

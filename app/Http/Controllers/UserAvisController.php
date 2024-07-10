@@ -49,44 +49,23 @@ class UserAvisController extends Controller
        
         $receiverUser = User::with('roles')
                             ->findOrFail($receiver_user_id);
-                            
+                                              
         if($receiverUser->roles->contains('nom', 'prestataire')){
-            $alreadyintervened = Intervention::where('provider_id', $receiver_user_id)
+            $alreadyintervened = Intervention::where('provider_id', $receiverUser->provider->id)
                                                 ->where('user_id', $sender_user_id)
                                                 ->get();
+                                               
             if($alreadyintervened->isNotEmpty()){
                 $userAvis->save();
-                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                return redirect()->route('interventions.dashboard')
                 ->with('success', "Avis créé avec succès");
             }
             else{
-                return redirect()->route('users.show', ['user' => $receiver_user_id])
+                return redirect()->route('interventions.dashboard')
                 ->with('error', "Vous ne pouvez pas donner votre avis sur ce prestataire");
             }
 
         }
-        else{
-            $receiver_reservation = Reservation::where('user_id', $receiver_user_id)->get();
-            
-            $sender_appartement = Appartement::where('user_id', $sender_user_id)->get();
-            $alreadyReserved = $receiver_reservation->intersect($sender_appartement);
-            if($alreadyReserved->isNotEmpty()){
-                $userAvis->save();
-                return redirect()->route('users.show', ['user' => $receiver_user_id])
-                ->with('success', "Avis créé avec succès");
-            }
-            else{
-                return redirect()->route('users.show', ['user' => $receiver_user_id])
-                ->with('error', "Vous ne pouvez pas donner votre avis sur cet utilisateur");
-            }
-        }
-
-
-
-
-
-
-
         
     }
 

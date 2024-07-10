@@ -3,17 +3,10 @@
 <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
 
 <x-provider-layout>
-    @if (session('success'))
-        <div class="p-4 mb-3 mt-3 text-center text-sm text-green-800 rounded-lg bg-green-50 dark:text-green-600"
-            role="alert">
-            {{ session('success') }}
-        </div>
-    @elseif (session('error'))
-        <div class="p-4 mb-3 mt-3 text-center text-sm text-red-800 rounded-lg bg-red-50 dark:text-red-600"
-            role="alert">
-            {{ session('error') }}
-        </div>
-    @endif
+    <x-slot name="header">
+        <x-session-statut></x-session-statut>
+    </x-slot>
+
     
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -21,7 +14,6 @@
                 <div class="p-6">
                     <h2 class="text-2xl font-bold mb-4 text-center">Intervention #{{$intervention->id}}</h2>
 
-                    
                     <ul class="timeline flex justify-center mt-5">
                         <li>
                           <div class="timeline-start timeline-box">En attente</div>
@@ -55,6 +47,36 @@
                           </div>
                         </li>
                     </ul>
+
+                    <div class="stats shadow">
+                        <div class="stat">
+                            <div class="stat-figure text-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    class="inline-block h-8 w-8 mt-5 stroke-current text-yellow-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-title">{{ __('Date d\'intervention souhaitée') }}</div>
+                            <div class="stat-value text-2xl">
+                                {{ \Carbon\Carbon::parse($intervention->planned_date)->format('d/m H:i') }}</div>
+                        </div>
+
+                        @if($intervention->max_end_date !== NULL)
+                            <div class="stat">
+                                <div class="stat-figure text-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        class="inline-block h-8 w-8 mt-5 stroke-current text-yellow-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="stat-title">{{ __('Date de fin limite') }}</div>
+                                <div class="stat-value text-2xl">
+                                    {{ \Carbon\Carbon::parse($intervention->max_end_date)->format('d/m H:i') }}</div>
+                            </div>
+                        @endif
+                    </div>
 
                     <p><strong>Client :</strong> {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                     <p><strong>Appartement :</strong>{{ $intervention->appartement->address }}</p>
@@ -102,7 +124,7 @@
                                             @enderror
                 
                                             <div class="mt-5">
-                                                <x-primary-button>Modifier</x-primary-button>
+                                                <button class="btn btn-warning">Modifier</button>
                                             </div>
                                         </form>
                                     @endif
@@ -136,7 +158,7 @@
                                         @enderror
             
                                         <div class="mt-5">
-                                            <x-primary-button>Modifier</x-primary-button>
+                                            <button class="btn btn-warning">Modifier</button>
                                         </div>
                                     </form>
                                 @endif
@@ -172,7 +194,7 @@
                             <input type="hidden" name="intervention_id" value="{{$intervention->id}}" />
 
                             <div class="mt-5">
-                                <x-primary-button>envoyer</x-primary-button>
+                                <button class="btn btn-warning">Envoyer</button>
                             </div>
                         </form>
                     @endforelse

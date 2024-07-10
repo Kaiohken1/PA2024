@@ -86,7 +86,7 @@
                         <input type="hidden" name="intervention_id" value="{{$intervention->id}}" />
 
                         <div class="mt-5">
-                            <x-primary-button>envoyer</x-primary-button>
+                            <button class="btn btn-warning">Envoyer</button>
                         </div>
                     </form>
                     @else

@@ -49,7 +49,8 @@ class ServicesTable extends Component
     {
         return view('livewire.services-table',
         [
-            'services' => Service::search($this->search)
+            'services' => Service::withTrashed()
+            ->search($this->search)
             ->when($this->statut !== '', function($query) {
                 $query->where('active_flag', $this->statut);
             })

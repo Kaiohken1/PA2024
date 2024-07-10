@@ -53,7 +53,7 @@ class InterventionEstimationController extends Controller
 
         $validatedData['statut_id'] = 1;
 
-        $validatedData['end_time'] = date("Y-m-d H:m:s", strtotime($validatedData['end_time']));
+        $validatedData['end_time'] = date("Y-m-d H:i:s", strtotime($validatedData['end_time']));
 
 
         $validatedData['commission'] = $this->calculateCommission($validatedData['price']);
@@ -83,7 +83,7 @@ class InterventionEstimationController extends Controller
         $path = $doc->store('InterventionEstimates', 'public');
         $validatedData['estimate'] = $path;
         $estimation->statut_id = 1;
-        $validatedData['end_time'] = date("Y-m-d H:m:s", strtotime($validatedData['end_time']));
+        $validatedData['end_time'] = date("Y-m-d H:i:s", strtotime($validatedData['end_time']));
 
 
         $validatedData['commission'] = $this->calculateCommission($validatedData['price']);

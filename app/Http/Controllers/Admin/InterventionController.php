@@ -127,10 +127,10 @@ class InterventionController extends Controller
         $user = Auth::user();
         $validatedData['user_id'] = Auth()->id();
 
-        $validatedData['planned_date'] = date("Y-m-d H:m:s", strtotime($validatedData['planned_date']));
+        $validatedData['planned_date'] = date("Y-m-d H:i:s", strtotime($validatedData['planned_date']));
 
         if(isset($validatedData['max_end_date'])) {
-            $validatedData['max_end_date'] = date("Y-m-d H:m:s", strtotime($validatedData['max_end_date']));
+            $validatedData['max_end_date'] = date("Y-m-d H:i:s", strtotime($validatedData['max_end_date']));
 
         }
 

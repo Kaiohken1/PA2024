@@ -231,4 +231,20 @@ class ReservationController extends Controller
         }
         return false;
     }
+
+    public function nfcUpdateReservation(Request $request)
+    {
+
+        $arrived_at = time();
+        $arrived_at = date('Y-m-d H:i:s', $arrived_at);
+        $reservation = Reservation::query()
+                                ->with('appartement')
+                                ->whereRelation('appartement', 'tokken', $request->appartement_tokken)
+                                ->where('start_time', '<', $arrived_at)
+                                ->where('end_time', '>', $arrived_at)
+                                ->get();
+        
+        Log::info('reservation obtenu : ', ['reservation' => $reservation]);
+
+    }
 }

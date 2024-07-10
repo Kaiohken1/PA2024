@@ -44,10 +44,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Créer un répertoire de travail
 WORKDIR /var/www
 
-# Copier les fichiers de l'application (composer.json et composer.lock en premier pour profiter du cache de Docker)
-COPY composer.json composer.lock ./
-
 # Copier les fichiers de l'application
+COPY composer.json composer.lock ./
 COPY . .
 
 # Installer les dépendances PHP avec Composer
