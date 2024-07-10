@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('statuts')->insert([
+        DB::table('commission_tiers')->insert([
             ['min_amount' => 0, 'max_amount' => 5, 'percentage' => 20],
             ['min_amount' => 5, 'max_amount' => 45, 'percentage' => 15],
             ['min_amount' => 45, 'max_amount' => 75, 'percentage' => 11],

@@ -50,7 +50,7 @@
                                 <a href="{{Storage::url($document->pivot->document)}}" class="btn">Télécharger</a>
                             </p>
                             @endforeach
-                            @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())
+                            @if ($provider->statut === 'En attente' && Auth::user()->isAdmin())
                             <div class="p-6 flex">
                                 <form action="{{ route('admin.providers.validate', $provider) }}" method="POST" class="mr-5">
                                     @csrf

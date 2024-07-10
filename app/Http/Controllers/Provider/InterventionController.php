@@ -400,9 +400,9 @@ class InterventionController extends Controller
     $intervention = Intervention::findOrFail($id);
 
     if ($user->hasEligibleSubscription()) {
-        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        $subscription = $user->subscriptions()->first();
 
-        $intervention->price = 0;
+       
         $intervention->statut_id = 5;
         $intervention->update();
 

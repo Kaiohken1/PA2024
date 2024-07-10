@@ -111,7 +111,7 @@
                     @if (auth()->user()->hasEligibleSubscription() && $intervention->statut_id == 10)
                         <div>
                             @php
-                                $subscription = auth()->user()->subscriptions()->where('stripe_status', 'active')->first();
+                                $subscription = auth()->user()->subscriptions()->first();
                                 $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
                                 $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
                                 $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');

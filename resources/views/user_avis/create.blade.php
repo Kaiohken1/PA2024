@@ -3,7 +3,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Donner votre avis sur l\'utilisateur') }}
+            {{ __('Donner votre avis sur le prestataire') }}
         </h2>
 
     </x-slot>
@@ -17,7 +17,7 @@
                             <form method="POST" action="{{ route('users.avis.store', $receive_user_id) }}" enctype="multipart/form-data">
                                 @csrf
 
-                                <x-input-label for="rating" :value="__('Notez le voyageur')" />
+                                <x-input-label for="rating" :value="__('Notez le prestataire')" />
                                 <div class="rating">
                                     <input type="radio" name="rating" class="mask mask-star" value="" checked hidden/>
                                     <input type="radio" name="rating" class="mask mask-star" value="1"/>

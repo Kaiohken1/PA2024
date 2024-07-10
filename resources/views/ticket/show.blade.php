@@ -26,6 +26,7 @@
                     <h2 class="text-2xl font-bold mt-4 mb-2">{{ __('Réponse de PCS') }}</h2>
                     <p><strong>{{ __('Solution:') }}</strong> {{ $ticket->solution }}</p>
                     <p><strong>{{ __('Edité le:') }}</strong> {{ \Carbon\Carbon::parse($ticket->updated_at)->format('d/m/Y H:i') }}</p>
+                    <p><strong>{{ __('Statut:') }}</strong> {{ $ticket->status }} </p>
                     @if ( $ticket->attributed_user_id !== NULL)
                     <button class="btn btn-outline bg-white btn-sm">
                         <a href="{{ route('tickets.chat', ['ticket' => $ticket->id, 'user' => $ticket->attributed_user_id]) }}">{{ __('Chat') }}</a>

@@ -33,12 +33,12 @@
     {
       "tag": "problème réservation",
       "patterns": ["comment faire si j'ai un problème avec ma réservation", "bug ", "aide pour réservation", "assistance", "contacter"],
-      "responses": ["Si vous avez un problème de réservation ou tout autre problème cliquer <a href='http://localhost/tickets/create'>ici</a> pour contacter PCS."]
+      "responses": ["Si vous avez un problème de réservation ou tout autre problème cliquer <a href='https://www.paris-caretaker-services.store/tickets/create'>ici</a> pour contacter PCS."]
     },
     {
       "tag": "modifier profil",
       "patterns": ["comment modifier mon profil", "changer informations", "mettre à jour", "changer adresse", "ville", "mot de passe", "identifiants"],
-      "responses": ["Si vous souhaiter modifier une information sur votre profil cliquez <a href='http://localhost/profile'>ici</a>."]
+      "responses": ["Si vous souhaiter modifier une information sur votre profil cliquez <a href='https://www.paris-caretaker-services.store/profile'>ici</a>."]
     },
     {
       "tag": "laisser avis appartement",
@@ -58,7 +58,7 @@
     {
       "tag": "signaler utilisateur",
       "patterns": ["comment signaler un utilisateur", "rapport utilisateur", "problème avec un utilisateur", "comportement"],
-      "responses": ["Vous pouvez signaler le comportement d'un utlisateur <a href='http://localhost/tickets/create'>ici</a> et en sélectionnant la catégorie Signalement"]
+      "responses": ["Vous pouvez signaler le comportement d'un utlisateur <a href='https://www.paris-caretaker-services.store/tickets/create'>ici</a> et en sélectionnant la catégorie Signalement"]
     },
     {
       "tag": "question univers",

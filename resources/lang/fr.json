@@ -340,7 +340,7 @@
     "Type de logement": "Type de logement",
     "Appartement": "Appartement",
     "Maison": "Maison",
-    "Gite": "Gite",
+    "Gite": "Gîte",
     "Logement complet": "Logement complet",
     "Chambre d'hôte": "Chambre d'hôte",
     "Titre": "Titre",
@@ -425,9 +425,9 @@
     "Solution:": "Solution:",
     "Edité le:": "Edité le:",
     "Détail": "Détail",
-    "house":"Maison",
-    "appartement":"Appartement",
-    "gite":"Gîte",
-    "full_property":"Logement complet",
-    "guestroom":"Chambre d'hôte"
+    "house": "Maison",
+    "full_property": "Logement complet",
+    "guestroom": "Chambre d'hôte",
+    "Donnez votre avis sur le prestataire": "Donnez votre avis sur le prestataire",
+    "Notez le prestataire": "Notez le prestataire"
 }

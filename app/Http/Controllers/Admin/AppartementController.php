@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use App\Models\Appartement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -84,6 +85,11 @@ class AppartementController extends Controller
     public function validateProperty($id)
     {
         $appartement = Appartement::findOrFail($id);
+        $user = User::findOrFail($appartement->user_id);
+        if(!$user->roles->contains(3)){
+            $user->roles()->attach(3);
+        }
+        
 
         $appartement->statut_id = 11;
         $appartement->update();

@@ -51,22 +51,22 @@
                                 <a href="{{Storage::url($document->pivot->document)}}" class="btn">Télécharger</a>
                             </p>
                             @endforeach
-                            @if ($provider->statut === 'en attente' && Auth::user()->isAdmin())
+                            @if ($provider->statut === 'En attente' && Auth::user()->isAdmin())
                             <div class="p-6 text-white flex">
                                 <form action="{{ route('admin.providers.validate', $provider) }}" method="POST" class="mr-5">
                                     @csrf
                                     @method('patch')
-                                    <x-primary-button>
+                                    <button class="btn btn-warning">
                                         Valider le prestataire
-                                    </x-primary-button>
+                                    </button>
                                 </form>
 
                                 <form action="{{ route('admin.providers.destroy', $provider) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <x-danger-button>
+                                    <button class="btn btn-error">
                                         Refuser le prestataire
-                                    </x-danger-button>
+                                    </button>
                                 </form>
                             </div>
                             @endif

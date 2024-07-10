@@ -68,7 +68,7 @@ class ProviderController extends Controller
             'documents.*' => ['mimes:jpg,png,pdf'],
             'bareme' => ['mimes:jpg,png,pdf'],
             'iban' => ['mimes:jpg,png,pdf'],
-            'phone' => ['required', 'phone:mobile', 'unique:providers,phone'],
+            'phone' => ['required', 'phone:mobile'],
         ]);
 
         $validateData['phone'] = $number = str_replace('+', '', $request->phone);
