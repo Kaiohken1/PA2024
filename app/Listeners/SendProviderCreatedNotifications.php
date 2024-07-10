@@ -34,7 +34,7 @@ class SendProviderCreatedNotifications
         $notification = new General(
             'Nouvelle demande de prestataire',
             'Vous avez reçu une inscription de prestataire',
-            url('/admin/providers/' . $event->provider->id),
+            url('https://admin.paris-caretaker-services.store/admin/providers/' . $event->provider->id),
             'Voir le Prestataire'
         );
 

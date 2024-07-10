@@ -141,37 +141,76 @@ class AuthenticatedSessionController extends Controller
 
     
     public function apiMobileLogin(LoginRequest $request)
-{
-    try {
-        $request->authenticate();
-
-        $user = Auth::user();
-        Log::info('User authenticated', ['user_id' => $user->id]);
-
-        $user = User::where('id', $user->id)->with('roles')->first();
-        Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
-
-        $user->formatted_date = Carbon::parse($user->created_at)->format('d/m/Y');
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-        Log::info('Token created', ['token' => $token]);
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => [
-                'first_name' => $user->first_name,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->roles,
-                'created_at' => $user->formatted_date
-            ]
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Login error: ' . $e->getMessage());
-        return response()->json(['message' => 'Internal Server Error'], 500);
+    {
+        try {
+            $request->authenticate();
+    
+            $user = Auth::user();
+            Log::info('User authenticated', ['user_id' => $user->id]);
+    
+            $user = User::where('id', $user->id)->with('roles')->first();
+            Log::info('Roles loaded', ['roles' => $user->roles->pluck('nom')]);
+    
+            $user->formatted_date = Carbon::parse($user->created_at)->format('d/m/Y');
+    
+            $subscription = $user->subscriptions()->where('stripe_status', 'incomplete')->first();
+            $freeServicesRemaining = null;
+            $nextFreeServiceTime = null;
+            $subscriptionName = null;
+    
+            if ($subscription) {
+                $freeServicesRemaining = $subscription->free_service_count == 0 ? 1 : 0;
+    
+                $premiumMonthly = env('STRIPE_PRICE_PREMIUM_MONTHLY');
+                $premiumYearly = env('STRIPE_PRICE_PREMIUM_YEARLY');
+                $mediumMonthly = env('STRIPE_PRICE_BASIC_MONTHLY');
+                $mediumYearly = env('STRIPE_PRICE_BASIC_YEARLY');
+    
+                $currentDate = Carbon::now();
+                $lastFreeServiceDate = $subscription->last_free_service_date ? Carbon::parse($subscription->last_free_service_date) : null;
+    
+                if (in_array($subscription->stripe_price, [$premiumMonthly, $premiumYearly])) {
+                    $subscriptionName = 'EXPLORATOR';
+                    if ($freeServicesRemaining == 0 && $lastFreeServiceDate) {
+                        $monthsDifference = $currentDate->diffInMonths($lastFreeServiceDate);
+                        if ($monthsDifference < 6) {
+                            $nextFreeServiceTime = $lastFreeServiceDate->addMonths(6)->diffForHumans();
+                        }
+                    }
+                } elseif (in_array($subscription->stripe_price, [$mediumMonthly, $mediumYearly])) {
+                    $subscriptionName = 'BAG PACKER';
+                    if ($freeServicesRemaining == 0 && $lastFreeServiceDate) {
+                        $monthsDifference = $currentDate->diffInMonths($lastFreeServiceDate);
+                        if ($monthsDifference < 12) {
+                            $nextFreeServiceTime = $lastFreeServiceDate->addYears(1)->diffForHumans();
+                        }
+                    }
+                }
+            }
+    
+            $token = $user->createToken('auth_token')->plainTextToken;
+            Log::info('Token created', ['token' => $token]);
+    
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => [
+                    'first_name' => $user->first_name,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->roles,
+                    'created_at' => $user->formatted_date,
+                    'subscriptionName' => $subscriptionName,
+                    'freeServicesRemaining' => $freeServicesRemaining,
+                    'nextFreeServiceTime' => $nextFreeServiceTime
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Login error: ' . $e->getMessage());
+            return response()->json(['message' => 'Internal Server Error'], 500);
+        }
     }
-}
+    
 
 public function apiMobileLogout(Request $request)
 {

@@ -32,20 +32,22 @@ class ReservationController extends Controller
                 ->with('appartement') 
                 ->get();
     
-            $reservationsArray = $reservations->map(function($reservation) {
-                return [
-                    'start_time' => Carbon::parse($reservation->start_time)->format('d/m/Y'),
-                    'end_time' => Carbon::parse($reservation->end_time)->format('d/m/Y'),
-                    'nombre_de_personne' => $reservation->nombre_de_personne,
-                    'appartement' => [
-                        'id' => $reservation->appartement->id,
-                        'name' => $reservation->appartement->name,
-                        'address' => $reservation->appartement->address,
-                        'city' => $reservation->appartement->city
-                    ],
-                    'prix' => $reservation->prix,
-                ];
-            });
+                $reservationsArray = $reservations->map(function($reservation) {
+                    return [
+                        'start_time' => Carbon::parse($reservation->start_time)->format('d/m/Y'),
+                        'end_time' => Carbon::parse($reservation->end_time)->format('d/m/Y'),
+                        'nombre_de_personne' => $reservation->nombre_de_personne,
+                        'appartement' => [
+                            'id' => $reservation->appartement->id,
+                            'name' => $reservation->appartement->name,
+                            'address' => $reservation->appartement->address,
+                            'city' => $reservation->appartement->city,
+                            'postal_code' => $reservation->appartement->postal_code  
+                        ],
+                        'prix' => $reservation->prix,
+                        'property_type' => $reservation->property_type  
+                    ];
+                });
     
             return response()->json($reservationsArray);
         } else {

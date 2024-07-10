@@ -32,7 +32,7 @@ class InterventionNotification
         $notification = new General(
             'Nouvelle demande d\'intervention de prestataire',
             'Vous avez reçu une demande d\'intervention prestataire',
-            url('/admin/interventions/' . $event->intervention->id),
+            url('https://admin.paris-caretaker-services.store/admin/interventions/' . $event->intervention->id),
             'Voir la demande'
         );
 

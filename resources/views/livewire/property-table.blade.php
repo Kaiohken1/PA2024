@@ -30,6 +30,7 @@
                                 <option value="1">En attente</option>
                                 <option value="11">Validé</option>
                                 <option value="12">Supprimé</option>
+                                <option value="13">Refusé</option>
                             </select>
                         </div>
                         <button wire:click="exportCsv" class="btn btn-warning" @if($appartements->isEmpty()) disabled @endif>Exporter CSV</button>
@@ -74,16 +75,20 @@
                                     <td class="px-4 py-3 
                                         {{ $appartement->statut->id == 1 ? 'text-yellow-500' : '' }}
                                         {{ $appartement->statut->id == 11 ? 'text-green-500' : '' }}
-                                         {{ $appartement->statut->id == 12 ? 'text-red-500' : '' }}">
+                                         {{ $appartement->statut->id == 12 || $appartement->statut->id == 13  ? 'text-red-500' : '' }}">
                                     {{ $appartement->statut->nom }}
                                     </td>
                                     <td class="px-4 py-3 flex items-center justify-end">
                                         <a href="{{ route('admin.property.show', $appartement->id) }}"> 
                                         <button class="btn btn-info mr-3">Voir</button></a>
 
-                                        <a href="{{ route('admin.interventions.create', $appartement->id) }}"> 
-                                            <button class="btn btn-success mr-3">Intervention</button></a>
-                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3 {{$appartement->deleted_at === NULL ? 'visible' : 'invisible'}}">X</button>
+                                        <a href="{{ route('admin.calendar.show', $appartement->id) }}" class="{{$appartement->statut_id == 11 ? '' : 'pointer-events-none'}}">
+                                            <button class="btn btn-warning mr-3" {{$appartement->statut_id == 11 ? '' : 'disabled'}} >{{__('Calendrier')}}</button>
+                                        </a>
+
+                                        <a href="{{ route('admin.interventions.create', $appartement->id) }}" class="{{$appartement->statut_id == 11 ? '' : 'pointer-events-none'}}"> 
+                                            <button class="btn btn-success mr-3" {{$appartement->statut_id == 11 ? '' : 'disabled'}}>Intervention</button></a>
+                                        <button onclick="confirm('Etes vous sûr de vouloir supprimer l\'appartement #{{$appartement->id}}') ? '' : event.stopImmediatePropagation()" wire:click="delete({{$appartement->id}})" class="btn btn-error mr-3 " {{$appartement->deleted_at === NULL ? '' : 'disabled'}}>X</button>
                                     </td>
                                 </tr>
                             @endforeach

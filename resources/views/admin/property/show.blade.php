@@ -9,19 +9,33 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-slate-950 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-white">
+                <div class="p-6 text-white flex justify-between">
+                    <div>
                     <h2 class="text-2xl font-bold mb-4">{{ $appartement->name }}</h2>
                     <ul class="list-unstyled">
-                        <li><strong>Address:</strong> {{ $appartement->address }}</li>
+                        <li><strong>Addresse:</strong> {{ $appartement->address }}</li>
+                        <li><strong>Ville:</strong> {{ $appartement->city }}</li>
+                        <li><strong>Code Postal:</strong> {{ $appartement->postal_code }}</li>
                         <li><strong>Surface:</strong> {{ $appartement->surface }} m²</li>
                         <li><strong>Nombre de personnes:</strong> {{ $appartement->guestCount }}</li>
                         <li><strong>Salles:</strong> {{ $appartement->roomCount }}</li>
                         <li><strong>Prix:</strong> {{ $appartement->price }}€</li>
-                        <li><strong>Type de propriété:</strong> {{ $appartement->property_type }}</li>
-                        <li><strong>Ville:</strong> {{ $appartement->city }}</li>
-                        <li><strong>Type de location:</strong> {{ $appartement->location_type }}</li>
+                        <li><strong>Type de propriété:</strong> {{ __($appartement->property_type) }}</li>
+                        <li><strong>Type de location:</strong> {{ __($appartement->location_type) }}</li>
                         <li><strong>Activé:</strong> {{ $appartement->active_flag ? 'Oui' : 'Non' }}</li>
                     </ul>
+                    </div>
+
+                    <div>
+                    <h2 class="text-2xl font-bold mb-4">{{ __('Informations sur le bailleur') }}</h2>
+                    <ul class="list-unstyled">
+                        <li><strong>Nom Prénom :</strong> {{ $appartement->user->name }} {{ $appartement->user->first_name }}</li>
+                        <li><strong>Email :</strong> {{ $appartement->user->email }}</li>
+                        <li><strong>Téléphone :</strong> +{{ $appartement->user->number }}</li>
+                        <li><a href="{{ Storage::url($appartement->user->iban) }}" class="mt-2 btn btn-info max-w-xs" target="_blank"><strong>Coordonées bancaires</strong></a></li>
+
+                    </ul>
+                    </div>
                 </div>
 
 
@@ -30,7 +44,7 @@
                 </div>
 
 
-                <div class="container w-3/4 flex">
+                <div class="p-6 container w-3/4 flex">
                     <div class="carousel w-3/4">
                         @foreach($appartement->images as $index => $image)
                             <div id="slide{{ $index + 1 }}" class="carousel-item relative w-full">

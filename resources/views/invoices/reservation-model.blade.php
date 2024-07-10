@@ -98,7 +98,6 @@
     <table class="w-full bg-white border">
       <thead class="bg-gray-200">
         <tr>
-          <th class="border px-4 py-2">#</th>
           <th class="border px-4 py-2">Logement</th>
           <th class="border px-4 py-2">Du</th>
           <th class="border px-4 py-2">Au</th>
@@ -108,7 +107,6 @@
       </thead>
       <tbody>
         <tr class="bg-white">
-          <th scope="row" class="border px-4 py-2">{{ $reservation->id }}</th>
           <td class="border px-4 py-2">{{ $reservation->appartement->name }} <br> {{$reservation->appartement->address}} <br> {{$reservation->appartement->city}}</td>
           <td class="border px-4 py-2 text-center">{{ \Carbon\Carbon::parse($reservation->start_time)->format('d/m/Y') }}</td>
           <td class="border px-4 py-2 text-center">{{ \Carbon\Carbon::parse($reservation->end_time)->format('d/m/Y') }}</td>

@@ -34,12 +34,43 @@ class SubscriptionControllerClient extends Controller
         return $productList;
     }
 
+    protected function handleSubscriptionUpdated($subscription)
+    {
+        $user = User::where('stripe_id', $subscription->customer)->first();
+
+        if ($user) {
+            // Récupérer l'abonnement existant
+            $existingSubscription = Subscription::where('stripe_id', $subscription->id)->first();
+
+            if ($existingSubscription) {
+                // Mettre à jour les informations de l'abonnement
+                $existingSubscription->update([
+                    'stripe_status' => $subscription->status,
+                    'quantity' => $subscription->quantity,
+                    'trial_ends_at' => $subscription->trial_end ? Carbon::createFromTimestamp($subscription->trial_end) : null,
+                    'ends_at' => $subscription->cancel_at ? Carbon::createFromTimestamp($subscription->cancel_at) : null,
+                ]);
+
+                Log::info('Subscription updated for user ID: ' . $user->id);
+            } else {
+                Log::error('Subscription not found for ID: ' . $subscription->id);
+            }
+        } else {
+            Log::error('User not found for customer ID: ' . $subscription->customer);
+        }
+    }
+
+    protected function handlePaymentSucceeded($invoice)
+    {
+        Log::info('Payment succeeded for invoice: ' . $invoice->id);
+    }
+
     public function showSubscriptionForm(Request $request)
     {
         $user = $request->user();
         $subscription = $user->subscriptions()->first();
     
-        // Récupérer les informations des abonnements depuis Stripe
+        // informations des abonnements depuis Stripe
         $plan = null;
         if ($subscription) {
             $stripePlan = Plan::retrieve($subscription->stripe_price);
@@ -55,7 +86,7 @@ class SubscriptionControllerClient extends Controller
             $planName = $planNames[$stripePlan->id] ?? 'Unknown Plan';
             $plan = [
                 'name' => $planName,
-                'amount' => $stripePlan->amount / 100, // assuming the amount is in cents
+                'amount' => $stripePlan->amount / 100, 
                 'interval' => $stripePlan->interval,
             ];
         }
@@ -119,6 +150,7 @@ class SubscriptionControllerClient extends Controller
         try {
             $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
 
+            // Handle the event
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
                     $invoice = $event->data->object;
@@ -128,6 +160,10 @@ class SubscriptionControllerClient extends Controller
                     $subscription = $event->data->object;
                     $this->handleSubscriptionCreated($subscription);
                     break;
+                case 'customer.subscription.updated':
+                    $subscription = $event->data->object;
+                    $this->handleSubscriptionUpdated($subscription);
+                    break;
                 default:
                     Log::info('Received unknown event type ' . $event->type);
             }
@@ -135,9 +171,11 @@ class SubscriptionControllerClient extends Controller
             return response()->json(['status' => 'success'], 200);
         } catch (\UnexpectedValueException $e) {
             // Invalid payload
+            Log::error('Invalid payload: ' . $e->getMessage());
             return response()->json(['status' => 'invalid payload'], 400);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
+            Log::error('Invalid signature: ' . $e->getMessage());
             return response()->json(['status' => 'invalid signature'], 400);
         }
     }

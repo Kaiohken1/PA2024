@@ -83,6 +83,16 @@
 
 
         @foreach($reservations as $reservation)
+        @php
+        $mainImages = $reservation->appartement->images()->where('is_main', true)->orderBy('main_order')->take(4)->get();
+        
+        $rest = 4 - $mainImages->count();
+        
+        $otherImages = $reservation->appartement->images()->where('is_main', false)->take($rest)->get();
+        
+        $propertyImages = $mainImages->merge($otherImages);
+        
+        @endphp
         <a href="{{route('reservation.show', $reservation->id)}}" class="hover:shadow-md">
             <div class="py-5">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -90,7 +100,7 @@
                         <div class="p-6 text-gray-900">
                             <article class="flex">
                                 <div class="mr-10">
-                                    <img class="rounded-md" src="{{ Storage::url($reservation->appartement->images->first()->image) }}" width="200px">
+                                    <img class="rounded-md" src="{{ Storage::url($propertyImages->first()->image) }}" width="200px">
                                 </div>
                                 <div>
                                     <h1 class="text-2xl font-extrabold">{{ $reservation->appartement->name }}</h1>

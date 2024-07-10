@@ -115,8 +115,7 @@
                     mode: "single",
                     enableTime: true,
                     dateFormat: "d-m-Y H:i",
-                    minDate: start_time ? new Date(start_time) : "today",
-                    maxDate: end_time ? new Date(end_time) : null,
+                    enable: config,
                     locale: "fr",
                 });
                 let additionalFields = document.getElementById('additional-fields');

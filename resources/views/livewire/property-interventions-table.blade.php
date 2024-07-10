@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Interventions effectuées sur le logement') }} {{$interventions->first()->appartement->name}}
+            {{ __('Interventions effectuées sur le logement') }} {{$appartement->name}}
         </h2>
     </x-slot>
 

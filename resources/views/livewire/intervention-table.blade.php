@@ -71,7 +71,13 @@
                                     <td class="px-4 py-3">{{$intervention->user->name}} {{$intervention->user->first_name}}</td>
                                     <td class="px-4 py-3">@if(!$intervention->provider) Pas encore attribué @else {{$intervention->provider->name}}@endif</td>
                                     <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->created_at)->format('d/m/Y H:i')}}</td>
-                                    <td class="px-4 py-3">{{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}}</td>
+                                    @php
+                                        $plannedDate = \Carbon\Carbon::parse($intervention->planned_date);
+                                        $isPastDate = $plannedDate->isBefore(now()) && $intervention->statut_id == 1;
+                                    @endphp
+                                    <td class="px-4 py-3 {{ $isPastDate ? 'text-red-600' : '' }}">
+                                        {{\Carbon\Carbon::parse($intervention->planned_date)->format('d/m/Y H:i')}}
+                                    </td>
                                     <td class="px-4 py-3">@if($intervention->price){{$intervention->price + ($intervention->price*0.20)}}€@endif</td>
                                     <td class="px-4 py-3">@if($intervention->estimations->where('statut_id', 9)->first()){{$intervention->estimations->first()->commission}}€@endif</td>
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.interventions.show', $intervention->id) }}">

@@ -13,4 +13,12 @@ class CalendarController extends Controller
         
         return view('home', compact('appartement'));
     }
+
+
+    public function showAdmin($appartement_id)
+    {
+        $appartement = Appartement::findOrFail($appartement_id);
+        
+        return view('admin.property.calendar', compact('appartement'));
+    }
 }

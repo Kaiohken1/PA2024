@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Appartement;
 use App\Models\Intervention;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -56,7 +57,8 @@ class PropertyInterventionsTable extends Component
             ->where('statut_id', 3)
             ->search($this->search)
             ->orderBy($this->sortBy, $this->sortDir)
-            ->paginate($this->perPage)
+            ->paginate($this->perPage),
+            'appartement' => Appartement::findOrFail($this->propertyId)
         ]);
     }
 }

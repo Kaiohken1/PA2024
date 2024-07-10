@@ -30,7 +30,7 @@ class InterventionPaidNotification
         $notification = new General(
             'Intervention confirmée',
             'L\'intervention #' . $event->intervention->id . ' a été confirmée et payée par le client.',
-            url('/providers/interventions/' . $event->intervention->id),
+            url('https://prestataire.paris-caretaker-services.store/providers/interventions/' . $event->intervention->id),
             'Voir l\'intervention'
         );
 

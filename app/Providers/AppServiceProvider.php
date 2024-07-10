@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Laravel\Cashier\Cashier;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
         Cashier::calculateTaxes();
 
         if($this->app->environment('production')) {
-            \URL::forceScheme('https');
+            URL::forceScheme('https');
         }
     }
 }

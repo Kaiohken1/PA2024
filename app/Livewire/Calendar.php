@@ -5,10 +5,11 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Fermeture;
 use App\Models\Appartement;
-use App\Models\Intervention;
-use App\Models\InterventionEvent;
 use App\Models\Reservation;
 use Illuminate\Support\Arr;
+use App\Models\Intervention;
+use App\Models\InterventionEvent;
+use Illuminate\Support\Facades\Auth;
 
 class Calendar extends Component
 {
@@ -16,6 +17,7 @@ class Calendar extends Component
     public $reservations = [];
     public $interventions = [];
     public $appartementId;
+    public $isAdmin = false;
 
     protected $listeners = ['createClosure', 'updateClosure'];
 
@@ -90,6 +92,10 @@ class Calendar extends Component
                 'type' => "intervention",
                 'intervention_id' => $intervention->intervention_id,
             ];
+        }
+
+        if(Auth::user()->isAdmin()) {
+            $this->isAdmin = true;
         }
 
         $this->fermetures = json_encode($formatFermeture);

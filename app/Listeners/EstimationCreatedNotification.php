@@ -32,7 +32,7 @@ class EstimationCreatedNotification
         $notification = new General(
             'Nouvelle estimation - Intervention #' . $event->estimation->intervention->id,
             'Une nouvelle estimation de prestataire a été envoyée',
-            url('/admin/interventions/' . $event->estimation->intervention->id),
+            url('https://admin.paris-caretaker-services.store/admin/interventions/' . $event->estimation->intervention->id),
             'Voir l\'intervention'
         );
 

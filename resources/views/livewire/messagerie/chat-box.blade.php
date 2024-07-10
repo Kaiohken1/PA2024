@@ -27,7 +27,7 @@
                     </svg>
                 </a>
                 <div class="shrink-0">
-                    <x-avatar class="h-9 w-9 lg:w-11 lg:h-11" src="{{ $selectedConversation->getReceiver()->provider ? $selectedConversation->getReceiver()->provider->avatar : $selectedConversation->getReceiver()->getImageUrl() }}" />
+                    <x-avatar class="h-9 w-9 lg:w-11 lg:h-11" src="{{ $selectedConversation->getReceiver()->getImageUrl() }}" />
                 </div>
                 <h6 class="font-bold truncate {{ Auth::user()->isAdmin() ? 'text-white' : 'text-black' }}"> {{ $selectedConversation->getReceiver()->email }} </h6>
             </div>
@@ -71,7 +71,7 @@
                             'invisible' => $previousMessage?->sender_id == $message->sender_id,
                             'hidden' => $message->sender_id === auth()->id(),
                         ])>
-                            <x-avatar src="{{$message->conversation->getReceiver()->getImageUrl()}}" />
+                            <x-avatar src="{{ $selectedConversation->getReceiver()->getImageUrl() }}" />
                         </div>
 
                         <div @class([

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Tag;
+use App\Models\User;
 use App\Models\Fermeture;
 use App\Models\Appartement;
 use App\Models\Reservation;
@@ -14,8 +15,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
+use MBarlow\Megaphone\Types\Important;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Notification;
 
 class AppartementController extends Controller
 {
@@ -152,6 +155,7 @@ class AppartementController extends Controller
 
         $appartements = Appartement::query()
                         ->where('user_id', Auth::user()->id)
+                        ->where('statut_id', 11)
                         ->paginate(3);
 
         return view('appartements.userIndex', [
@@ -176,7 +180,7 @@ class AppartementController extends Controller
     public function store(Request $request)
     {
         $validateData = $request->validate([
-            'name' => ['required', 'max:255', 'regex:/^[a-zA-Z\s]*$/'],
+            'name' => ['required', 'max:140'],
             'address' => ['required', 'max:255'],
             'surface' => ['required', 'numeric'],
             'guestCount' => ['required', 'numeric'],
@@ -190,6 +194,7 @@ class AppartementController extends Controller
             'city' => ['string', 'required'],
             'location_type' => ['string', 'required'],
             'postal_code' => ['integer', 'regex:/^[0-9]{5}$/','required'],
+            'iban' => ['nullable', 'mimes:jpg,png,pdf']
         ]);
 
         $images = $request->file('image');
@@ -222,6 +227,28 @@ class AppartementController extends Controller
                 $appartementImage->save();
             }
         }
+
+        if ($request->hasFile('iban')) {
+            $path = $request->file('iban')->store('providerDocs', 'public');
+            $validateData['iban'] = $path;
+
+            $user = User::find(Auth::id());
+            $user->iban = $validateData['iban'];
+            $user->save();
+        }
+
+        $admins = User::whereHas('roles', function ($query) {
+            $query->where('nom', 'admin');
+        })->get();
+
+        $notification = new Important(
+            'Nouvelle demande d\'inscription de logement',
+            'Un nouveau bien doit passer par une validation de location',
+            url('https://admin.paris-caretaker-services.store/admin/property/' . $appartement->id),
+            'Voir la demande'
+        );
+
+        Notification::send($admins, $notification);  
 
 
         return redirect()->route('property.index')

@@ -10,6 +10,7 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Détails événement</h3>
                         @if($intervention)
                             <div class="mt-2">
+                                <p><span class="text-gray-600">Prestataire</span> : {{ $intervention->provider->name }}</p>
                                 <p><span class="text-gray-600">Client</span> : {{ $intervention->user->name }} {{ $intervention->user->first_name }}</p>
                                 <p><span class="text-gray-600">Adresse de l'appartement :</span> {{ $intervention->appartement->address }}</p>
                                 <br>

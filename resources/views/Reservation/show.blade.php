@@ -59,7 +59,7 @@
                             <button class="btn btn-info mr-3">{{__('Facture')}}</button>
                         </a>
 
-                        @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time))
+                        @if (\Carbon\Carbon::now()->addHours(24)->isAfter($reservation->end_time) && $reservation->appartement->deleted_at === NULL)
                             @if (!\App\Models\AppartementAvis::where('user_id', auth()->user()->id)->where('reservation_id', $reservation->id)->exists())
                                 <form action="{{ route('avis.create', $reservation->id) }}" method="POST">
                                     @csrf

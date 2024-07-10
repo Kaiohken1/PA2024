@@ -252,6 +252,7 @@ Route::domain('admin.'. env('APP_URL'))->prefix('admin')->middleware(['admin'])-
     Route::resource('/subscriptions', SubscriptionsController::class);
     Route::resource('/providers', AdminProviderController::class)->names('admin.providers');
     Route::resource('/property', AdminAppartementController::class)->names('admin.property');
+    Route::get('/calendar/{appartement_id}', [CalendarController::class, 'showAdmin'])->name('admin.calendar.show');
 
     Route::patch('/interventions/{provider_id}/attribuate', [InterventionController::class, 'attribuate'])->name('admin.attribuate');
 

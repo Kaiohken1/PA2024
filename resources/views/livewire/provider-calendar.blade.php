@@ -1,7 +1,3 @@
-@if($isAdmin)
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/slate/bootstrap.min.css">
-@endif
-
 <style>
     #calendar-container {
         position: fixed;
@@ -15,6 +11,10 @@
         padding: 10px;
         max-width: 1100px;
         height: 700px;
+    }
+
+    #calendar.admin-calendar {
+        color: white !important;
     }
 </style>
 
@@ -42,13 +42,24 @@
     }
 
     document.addEventListener('livewire:initialized', function () {
+        const isAdmin = @this.isAdmin
         const Calendar = FullCalendar.Calendar;
         const calendarEl = document.getElementById('calendar');
+        if (isAdmin) {
+            calendarEl.classList.add('admin-calendar');
+        }
         const calendar = new Calendar(calendarEl, {
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'Aujourd\'hui',
+                month: 'Mois',
+                week: 'Semaine',
+                day: 'Jour',
+                list: 'Liste'
             },
             locale: '{{ config('app.locale') }}',
             events: [
@@ -67,5 +78,6 @@
 </script>
 
 <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.css' rel='stylesheet' />
+
 
 @endpush

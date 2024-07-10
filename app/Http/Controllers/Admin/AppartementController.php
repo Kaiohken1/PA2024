@@ -72,9 +72,9 @@ class AppartementController extends Controller
     {
         $appartement = Appartement::findOrFail($id);
         
-        foreach ($appartement->images as $image) {
-            Storage::disk('public')->delete($image->image);
-        }
+        $appartement->statut_id = 13;
+        $appartement->save();
+        
         $appartement->delete();
 
         return redirect()->route('admin.property.index')

@@ -69,8 +69,8 @@
                                     <td class="px-4 py-3 flex items-center justify-end"><a href="{{ route('admin.providers.show', $provider->id) }}">
                                         <button class="btn btn-info mr-3">Voir</button></a>
 
-                                        <a href="{{ route('admin.providers.calendar', $provider->id) }}" class="{{ $provider->deleted_at == NULL ? '' : 'pointer-events-none' }}">
-                                            <button class="btn btn-warning mr-3 {{ $provider->deleted_at == NULL ? '' : 'opacity-50 cursor-not-allowed' }}" {{ $provider->deleted_at == NULL ? '' : 'disabled' }}>
+                                        <a href="{{ route('admin.providers.calendar', $provider->id) }}" class="{{ $provider->statut_id !== 1 ? '' : 'pointer-events-none' }}">
+                                            <button class="btn btn-warning mr-3 {{ $provider->statut_id !== 1 ? '' : 'opacity-50 cursor-not-allowed' }}" {{ $provider->statut_id !== 1 ? '' : 'disabled' }}>
                                                 Calendrier
                                             </button>
                                         </a>

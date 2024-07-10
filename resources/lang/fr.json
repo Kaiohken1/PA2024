@@ -424,5 +424,10 @@
     "Réponse de PCS": "Réponse de PCS",
     "Solution:": "Solution:",
     "Edité le:": "Edité le:",
-    "Détail": "Détail"
+    "Détail": "Détail",
+    "house":"Maison",
+    "appartement":"Appartement",
+    "gite":"Gîte",
+    "full_property":"Logement complet",
+    "guestroom":"Chambre d'hôte"
 }

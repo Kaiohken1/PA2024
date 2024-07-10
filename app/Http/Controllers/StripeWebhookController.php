@@ -14,13 +14,17 @@ class StripeWebhookController extends Controller
 {
     public function handleWebhook(Request $request)
     {
+        Log::info('Received webhook', ['request' => $request->all()]);
+
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
         $endpointSecret = env('STRIPE_WEBHOOK_SECRET');
 
         try {
             $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+            Log::info('Webhook event constructed successfully', ['event' => $event]);
 
+            // Handle the event
             switch ($event->type) {
                 case 'invoice.payment_succeeded':
                     $invoice = $event->data->object;
@@ -30,19 +34,35 @@ class StripeWebhookController extends Controller
                     $subscription = $event->data->object;
                     $this->handleSubscriptionCreated($subscription);
                     break;
+                case 'customer.subscription.updated':
+                    $subscription = $event->data->object;
+                    $this->handleSubscriptionUpdated($subscription);
+                    break;
+                case 'invoice.payment_failed':
+                    $invoice = $event->data->object;
+                    $this->handlePaymentFailed($invoice);
+                    break;
                 default:
-                    Log::info('Received unknown event type ' . $event->type);
+                    Log::info('Received unknown event type', ['event_type' => $event->type]);
             }
 
             return response()->json(['status' => 'success'], 200);
         } catch (\UnexpectedValueException $e) {
-            Log::error('Invalid payload: ' . $e->getMessage());
+            // Invalid payload
+            Log::error('Invalid payload', ['exception' => $e->getMessage()]);
             return response()->json(['status' => 'invalid payload'], 400);
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            Log::error('Invalid signature: ' . $e->getMessage());
+            // Invalid signature
+            Log::error('Invalid signature', ['exception' => $e->getMessage()]);
             return response()->json(['status' => 'invalid signature'], 400);
         }
     }
+
+protected function handlePaymentFailed($invoice)
+{
+    Log::error('Payment failed for invoice: ' . $invoice->id . ' Reason: ' . $invoice->last_payment_error->message);
+}
+
 
     protected function handleSubscriptionCreated($subscription)
     {

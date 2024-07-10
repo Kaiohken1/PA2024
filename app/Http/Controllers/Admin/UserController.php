@@ -46,7 +46,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $userAvis = UserAvis::where('receiver_user_id', $id)->get();
         
-        $subscription = $user->subscriptions()->where('stripe_status', 'active')->first();
+        $subscription = $user->subscriptions()->where('stripe_status', 'incomplete')->first();
         $freeServicesRemaining = null;
         $nextFreeServiceTime = null;
         $subscriptionName = null;
@@ -89,6 +89,10 @@ class UserController extends Controller
             'nextFreeServiceTime' => $nextFreeServiceTime
         ]);
     }
+
+
+
+    
     
 
     /**
